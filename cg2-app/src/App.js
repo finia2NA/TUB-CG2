@@ -1,56 +1,52 @@
-import React, { useRef, useState } from 'react';
-import { Canvas, useFrame } from 'react-three-fiber';
-import { OrbitControls, Point } from '@react-three/drei';
+import React, { useRef, useState, useEffect } from 'react';
+import { Canvas } from 'react-three-fiber';
+import { OrbitControls } from '@react-three/drei';
+import Sidemenu from './components/UI/Sidemenu';
+import PointRep from './model/PointM';
+import Point3D from './components/3D/Point3D';
+import Card from './components/UI/Card';
 
-function App() {
+const App = () => {
 
-  // generate 20 random point locations between -1 and 1
-  let pointCoordinates = [];
-  for (let i = 0; i < 20; i++) {
-    pointCoordinates.push([Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1]);
+  const [pointRepresentations, setPointRepresentations] = useState([]);
+  const [selectedPoints, setSelectedPoints] = useState([]);
+  const [highlightedPoints, setHighlightedPoints] = useState([]);
+
+  const handlePointClick = (thePoint) => {
+    if (selectedPoints.includes(thePoint)) {
+      setSelectedPoints(selectedPoints.filter(point => point !== thePoint));
+    } else { setSelectedPoints([...selectedPoints, thePoint]); }
   }
 
-  const particlesCount = 100;
-  const particlePositions = new Float32Array(particlesCount * 3);
-
-  function Point(props) {
-    // This reference gives us direct access to the THREE.Mesh object
-    const ref = useRef()
-
-    // Hold state for hovered and clicked events
-    const [hovered, hover] = useState(false)
-    const [clicked, click] = useState(false)
-
-    // Return the view, these are regular Threejs elements expressed in JSX
-    return (
-      <mesh
-        {...props}
-        ref={ref}
-        scale={clicked ? 0.15 : 0.1}
-        onClick={(event) => click(!clicked)}
-        onPointerOver={(event) => hover(true)}
-        onPointerOut={(event) => hover(false)}>
-        <sphereGeometry args={[1, 32, 32]} /> {/* array: [radius, widthSegments, heightSegments] */}
-        <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-      </mesh>
-    )
-  }
+  // generate random points
+  useEffect(() => {
+    let points = [];
+    for (let i = 0; i < 100; i++) {
+      points.push(new PointRep(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5));
+    }
+    setPointRepresentations(points);
+  }, []);
 
 
   return (
-    // canvas of size 80% screen
-    <Canvas camera={{ position: [0, 0, 2] }} style={{ width: '80vw', height: '80vh', background: "grey" }} >
-      <ambientLight />
+    <div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }}>
+      <Card style={{ flex: 5 }}>
+        <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
+          <ambientLight />
 
-      {/* point cloud */}
-      {pointCoordinates.map((point, index) => (
-        <Point key={index} position={point} />
-      ))}
+          {/* point cloud */}
+          {pointRepresentations.map((point, index) => (
+            <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} />
+          ))}
 
-
-
-      <OrbitControls enablePan={false} />
-    </Canvas>
+          {/* controls */}
+          <OrbitControls />
+        </Canvas>
+      </Card>
+      <Card style={{ flex: 2 }}>
+        <Sidemenu />
+      </Card>
+    </div>
   );
 }
 
