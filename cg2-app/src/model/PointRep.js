@@ -1,4 +1,5 @@
-class PointM {
+// PointRep is a class that represents a 3D point in space.
+class PointRep {
   constructor(x, y, z) {
     this.x = x;
     this.y = y;
@@ -10,4 +11,4 @@ class PointM {
   }
 }
 
-export default PointM;
+export default PointRep;

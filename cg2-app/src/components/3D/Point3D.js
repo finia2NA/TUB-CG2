@@ -1,5 +1,8 @@
 import { useRef, useState } from "react"
 
+// this is the component that *renders* a single point in 3D space
+// it represents a PointRep object
+
 const Point3D = (props) => {
   // This reference gives us direct access to the THREE.Mesh object
   const ref = useRef()

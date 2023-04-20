@@ -6,7 +6,7 @@ class PointDataStructure {
   includes(point) { };
 }
 
-class LinearPointDataStructure extends PointDataStructure {
+export class LinearPointDataStructure extends PointDataStructure {
   // example very bad implementation
 
   constructor() {

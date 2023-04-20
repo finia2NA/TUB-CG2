@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { Button, Col, Dropdown, Form, Row } from "react-bootstrap";
-import Card from "./Card";
+import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 
 const Sidemenu = () => {
 
