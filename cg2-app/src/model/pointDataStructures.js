@@ -4,6 +4,12 @@ class PointDataStructure {
   knnSearch(point, k) { };
   radiusSearch(point, radius) { };
   includes(point) { };
+
+  // this function should return a way to visualize the data structure.
+  // my idea right now would be to return an array of objects representing
+  // cubes in case of octree, and planes for kdtree like demonstrated in
+  // the exercise sheet
+  getRepresentation(depth) { };
 }
 
 export class LinearPointDataStructure extends PointDataStructure {
