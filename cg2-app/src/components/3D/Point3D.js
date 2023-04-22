@@ -12,12 +12,15 @@ const Point3D = (props) => {
 
   // Set up color
   let myColor = "orange"
+
+  if (props.highlighted) {
+    myColor = "blue"
+  }
+
   if (props.selected || hovered) {
     myColor = "red"
   }
-  if (props.highlighted) {
-    myColor = "green"
-  }
+
 
   // Return the view, these are regular Threejs elements expressed in JSX
   return (

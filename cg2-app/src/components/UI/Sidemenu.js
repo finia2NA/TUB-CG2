@@ -59,7 +59,7 @@ const Sidemenu = (props) => {
               min={sliderMode.min}
               max={sliderMode.max}
             />
-            <Button variant="contained" color="primary">Gather</Button>
+            <Button variant="contained" color="primary" onClick={props.onPointQuery}>Gather</Button>
           </FormControl>
         </div>
         <div>

@@ -74,25 +74,13 @@ export class LinearPointDataStructure extends PointDataStructure {
   }
 
   knnSearch(point, k) {
-    let distances = [];
-    let points = this.points;
-    for (let i = 0; i < points.length; i++) {
-      distances.push([points[i], points[i].distanceTo(point)]);
-    }
-    distances.sort((a, b) => a[1] - b[1]);
-    return distances.slice(0, k);
+    const copy = [...this.points];
+    copy.sort((a, b) => a.distanceTo(point) - b.distanceTo(point));
+    return copy.slice(0, k);
   }
 
   radiusSearch(point, radius) {
-    let distances = [];
-    let points = this.points;
-    for (let i = 0; i < points.length; i++) {
-      let distance = points[i].distanceTo(point);
-      if (distance <= radius) {
-        distances.push([points[i], distance]);
-      }
-    }
-    return distances;
+    throw new Error("not implemented");
   }
 
   includes(point) {

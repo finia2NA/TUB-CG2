@@ -44,6 +44,17 @@ const App = () => {
   // The camera is set to a position that is 2 units away from the origin (0, 0, 2)
   // The canvas is grey
 
+  const onPointQuery = () => {
+    const newHighlightedPoints = [];
+    for (const p of selectedPoints) {
+      debugger;
+      const targets = pointRepresentations.knnSearch(p, 10)
+      newHighlightedPoints.push(...targets);
+    }
+    setHighlightedPoints(newHighlightedPoints);
+    console.log(newHighlightedPoints);
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }}>
       <Card style={{ flex: 5 }}>
@@ -52,7 +63,7 @@ const App = () => {
 
           {/* point cloud */}
           {pointRepresentations.getAllPoints().map((point, index) => (
-            <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} />
+            <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} highlighted={highlightedPoints.includes(point)} />
           ))}
 
           {/* controls */}
@@ -60,7 +71,7 @@ const App = () => {
         </Canvas>
       </Card>
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={() => setSelectedPoints([])} />
+        <Sidemenu onClearSelection={() => setSelectedPoints([])} onPointQuery={onPointQuery} />
       </Card>
     </div>
   );
