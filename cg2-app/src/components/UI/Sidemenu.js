@@ -1,46 +1,77 @@
 import { useState } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import Button from '@mui/material/Button';
+import { FormControl, FormLabel, MenuItem, RadioGroup, Select, Slider } from "@mui/material";
 
-const Sidemenu = () => {
+const slidermodes = {
+  knn: {
+    mode: 'knn',
+    min: 0,
+    max: 100,
+    step: 1,
+    defaultValue: 10,
+    sliderText: 'Number of Neighbours',
 
-  const [sliderValue, setSliderValue] = useState(50);
-  const [dropdownValue, setDropdownValue] = useState('knn');
+  },
+  radius: {
+    mode: 'radius',
+    min: 0,
+    max: 1,
+    step: 0.01,
+    defaultValue: 0.3,
+    sliderText: 'Radius',
+  }
+}
+
+const Sidemenu = (props) => {
+
+  const [sliderMode, setSliderMode] = useState(slidermodes.knn);
+  const [sliderValue, setSliderValue] = useState(slidermodes.knn.defaultValue);
 
   const handleSliderChange = (e) => {
     setSliderValue(e.target.value);
   };
 
+  const handleDropdownChange = (e) => {
+    setSliderMode(slidermodes[e.target.value]);
+    setSliderValue(slidermodes[e.target.value].defaultValue);
+  };
+
 
   return (
-    <>
-      {/* TODO make this prettier */}
-      <div style={{ display: "flex", flexDirection: "column", margin: "16px 16px 80px" }}>
-        <h1>Side menu</h1>
-        This doesn't do anything yet.
+    <div>
+
+      <h1>Side Menu</h1>
+      <div>
+        <div>
+          <h2>Gather Controls</h2>
+          <FormControl>
+            <FormLabel>Slider Mode</FormLabel>
+            <Select defaultValue={"knn"} onChange={handleDropdownChange}>
+              <MenuItem value={"knn"}>K-nearest-neighbour</MenuItem>
+              <MenuItem value={"radius"}>Radius</MenuItem>
+            </Select>
+            <FormLabel>{sliderMode.sliderText}</FormLabel>
+            <Slider
+              value={sliderValue}
+              onChange={handleSliderChange}
+              valueLabelDisplay="auto"
+              step={sliderMode.step}
+              min={sliderMode.min}
+              max={sliderMode.max}
+            />
+            <Button variant="contained" color="primary">Gather</Button>
+          </FormControl>
+        </div>
+        <div>
+          <h2>Selection Controls</h2>
+
+          <FormControl>
+            <FormLabel>Selection Mode</FormLabel>
+            <Button variant="contained" color="secondary" onClick={props.clearSelection}>Clear Selection</Button>
+          </FormControl>
+        </div>
       </div>
-      <div className="container">
-        <Row>
-          <Col>
-            <Form.Group controlId="formDropdown">
-              <Form.Label>Gather Method</Form.Label>
-              <div>
-                <Form.Select onChange={(e) => setDropdownValue(e.target.value)}>
-                  <Form.Label value={dropdownValue}>gather method</Form.Label>
-                  <option value="knn">K-nearest-neighbour</option>
-                  <option value="radius">Radius</option>
-                </Form.Select>
-              </div>
-            </Form.Group>
-            <Form.Group controlId="formSlider">
-              <Form.Label>Value</Form.Label>
-              <div>
-                <Form.Range min="0" max="100" value={sliderValue} onChange={handleSliderChange} />
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
-      </div >
-    </>
+    </div >
   );
 }
 

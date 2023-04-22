@@ -44,7 +44,7 @@ const App = () => {
   // The camera is set to a position that is 2 units away from the origin (0, 0, 2)
   // The canvas is grey
 
-return (
+  return (
     <div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }}>
       <Card style={{ flex: 5 }}>
         <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
@@ -59,8 +59,8 @@ return (
           <OrbitControls />
         </Canvas>
       </Card>
-      <Card style={{ flex: 2 }}>
-        <Sidemenu />
+      <Card style={{ flex: 2 }} >
+        <Sidemenu onClearSelection={() => setSelectedPoints([])} />
       </Card>
     </div>
   );
