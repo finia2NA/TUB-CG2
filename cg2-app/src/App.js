@@ -39,8 +39,8 @@ const App = () => {
   // generate random points
   useEffect(() => {
     let points = new PointDataStructure();
-    for (let i = 0; i < 100; i++) {
-      points.addPoint(new PointRep(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5));
+    for (let i = 0; i < 200; i++) {
+      points.addPoint(new PointRep([Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5]));
     }
     setPointRepresentations(points);
   }, []);
@@ -81,8 +81,8 @@ const App = () => {
           ))}
 
           {/* data structures TEST */}
-          {/* <Cuboid3D representation={{ position: [1, 0, 0], dimensions: [0.2, 1, 1] }} /> */}
-          {/* <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} /> */}
+          {/* <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
+          <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} /> */}
 
           {/* controls */}
           <OrbitControls />
