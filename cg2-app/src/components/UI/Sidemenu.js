@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from '@mui/material/Button';
-import { FormControl, FormLabel, MenuItem, RadioGroup, Select, Slider } from "@mui/material";
+import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
 
 const slidermodes = {
   knn: {
@@ -72,6 +72,13 @@ const Sidemenu = (props) => {
           <FormControl>
             <FormLabel>Selection Mode</FormLabel>
             <Button variant="contained" color="secondary" onClick={props.onClearSelection}>Clear Selection</Button>
+          </FormControl>
+        </div>
+        <div>
+          <h2>Display Controls</h2>
+          <FormControl>
+            <FormControlLabel control={<Checkbox defaultValue={props.displayLines} value={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
+            } />} label="Show Lines" />
           </FormControl>
         </div>
       </div>

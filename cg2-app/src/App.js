@@ -18,15 +18,18 @@ import Plane3D from './components/3D/Plane3D';
 
 const App = () => {
 
+  // used to render the point cloud
   const [pointRepresentations, setPointRepresentations] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
+
+  // used to render query results
   const [highlightedPoints, setHighlightedPoints] = useState([]);
-  const [methods, setMethods] = useState("");
-  const [parameters, setParameters] = useState();
+  const [highlightedLines, setHighlightedLines] = useState([]);
+  const [displayLines, setDisplayLines] = useState(true);
 
-
-  const [planes, setPlanes] = useState([]);
-  const [cubes, setCubes] = useState([]);
+  // used to render the data structures
+  const [planes, setPlanes] = useState([]); // array of ds planes
+  const [cubes, setCubes] = useState([]); // array of ds cubes
   const [dsRenderMode, setDsRenderMode] = useState(0) // controls which data structure is rendered. 0 = none, 1 = planes, 2 = cubes
 
   const handlePointClick = (thePoint) => {
@@ -49,33 +52,34 @@ const App = () => {
   }, []);
 
 
+  const onClearSelection = () => {
+    setSelectedPoints([]);
+    setHighlightedPoints([]);
+    setHighlightedLines([]);
+  }
 
   // function that is called when the user clicks the "Gather" button
   const onPointQuery = (gatherMethod = "knn", gatherParameter = 10) => {
-    if (gatherMethod === "knn") {
-      setMethods("knn")
-      setParameters(gatherParameter)
-    }
-    if (gatherMethod === "radius") {
-      setMethods("radius")
-      setParameters(gatherParameter)
-    }
     const newHighlightedPoints = [];
+    const newHighlightedLines = [];
     for (const p of selectedPoints) {
       if (gatherMethod === "knn") {
         const targets = pointRepresentations.knnSearch(p, gatherParameter)
         newHighlightedPoints.push(...targets);
+        newHighlightedLines.push(...targets.map(target => ({ start: p.position, end: target.position })));
       }
       if (gatherMethod === "radius") {
         const targets = pointRepresentations.radiusSearch(p, gatherParameter)
         newHighlightedPoints.push(...targets);
+        newHighlightedLines.push(...targets.map(target => ({ start: p.position, end: target.position })));
       }
 
     }
     setHighlightedPoints(newHighlightedPoints);
+    setHighlightedLines(newHighlightedLines);
   }
 
- 
+
   // Renders the 3D point cloud
   // Also renders the orbit controls, which allows for the user to rotate the camera using the mouse
   // The camera is set to a position that is 2 units away from the origin (0, 0, 2)
@@ -92,19 +96,13 @@ const App = () => {
           ))}
 
           {/* draw lines */}
-          {pointRepresentations.getAllPoints().map((point) => (
-            methods === "knn" ?
-            pointRepresentations.knnSearch(point, parameters).map((target, index) => (
-              <Line3D key={index} start={point.position} end={target.position} />
-            )) :
-            pointRepresentations.radiusSearch(point, parameters).map((target, index) => (
-              <Line3D key={index} start={point.position} end={target.position} />
-            ))
+          {displayLines && highlightedLines.map((line, index) => (
+            <Line3D key={index} start={line.start} end={line.end} />
           ))}
 
           {/* data structures TEST */}
-          <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
-          <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} />
+          {/* <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
+          <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} /> */}
 
 
           {/* controls */}
@@ -113,7 +111,7 @@ const App = () => {
 
       </Card>
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={() => setSelectedPoints([]) & setHighlightedPoints([])} onPointQuery={onPointQuery} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} />
       </Card>
     </div>
   );
