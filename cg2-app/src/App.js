@@ -12,12 +12,19 @@ import PointRep from './model/PointRep';
 import Point3D from './components/3D/Point3D';
 import Card from './components/UI/Card';
 import { LinearPointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
+import Cuboid3D from './components/3D/Cuboid3D';
+import Plane3D from './components/3D/Plane3D';
 
 const App = () => {
 
   const [pointRepresentations, setPointRepresentations] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
   const [highlightedPoints, setHighlightedPoints] = useState([]);
+
+
+  const [planes, setPlanes] = useState([]);
+  const [cubes, setCubes] = useState([]);
+  const [dsRenderMode, setDsRenderMode] = useState(0) // controls which data structure is rendered. 0 = none, 1 = planes, 2 = cubes
 
   const handlePointClick = (thePoint) => {
     if (selectedPoints.includes(thePoint)) {
@@ -55,7 +62,6 @@ const App = () => {
 
     }
     setHighlightedPoints(newHighlightedPoints);
-    console.log(newHighlightedPoints);
   }
 
 
@@ -73,6 +79,10 @@ const App = () => {
           {pointRepresentations.getAllPoints().map((point, index) => (
             <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} highlighted={highlightedPoints.includes(point)} />
           ))}
+
+          {/* data structures TEST */}
+          {/* <Cuboid3D representation={{ position: [1, 0, 0], dimensions: [0.2, 1, 1] }} /> */}
+          {/* <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} /> */}
 
           {/* controls */}
           <OrbitControls />
