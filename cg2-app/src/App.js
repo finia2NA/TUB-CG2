@@ -10,6 +10,7 @@ import { OrbitControls } from '@react-three/drei';
 import Sidemenu from './components/UI/Sidemenu';
 import PointRep from './model/PointRep';
 import Point3D from './components/3D/Point3D';
+import Line3D from './components/3D/Line3D';
 import Card from './components/UI/Card';
 import { LinearPointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 
@@ -18,6 +19,8 @@ const App = () => {
   const [pointRepresentations, setPointRepresentations] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
   const [highlightedPoints, setHighlightedPoints] = useState([]);
+  const [methods, setMethods] = useState("");
+  const [parameters, setParameters] = useState();
 
   const handlePointClick = (thePoint) => {
     if (selectedPoints.includes(thePoint)) {
@@ -42,6 +45,14 @@ const App = () => {
 
   // function that is called when the user clicks the "Gather" button
   const onPointQuery = (gatherMethod = "knn", gatherParameter = 10) => {
+    if (gatherMethod === "knn") {
+      setMethods("knn")
+      setParameters(gatherParameter)
+    }
+    if (gatherMethod === "radius") {
+      setMethods("radius")
+      setParameters(gatherParameter)
+    }
     const newHighlightedPoints = [];
     for (const p of selectedPoints) {
       if (gatherMethod === "knn") {
@@ -57,7 +68,7 @@ const App = () => {
     setHighlightedPoints(newHighlightedPoints);
   }
 
-
+ 
   // Renders the 3D point cloud
   // Also renders the orbit controls, which allows for the user to rotate the camera using the mouse
   // The camera is set to a position that is 2 units away from the origin (0, 0, 2)
@@ -73,13 +84,24 @@ const App = () => {
             <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} highlighted={highlightedPoints.includes(point)} />
           ))}
 
+          {/* draw lines */}
+          {pointRepresentations.getAllPoints().map((point) => (
+            methods === "knn" ?
+            pointRepresentations.knnSearch(point, parameters).map((target, index) => (
+              <Line3D key={index} start={[point.x, point.y, point.z]} end={[target.x, target.y, target.z]} />
+            )) :
+            pointRepresentations.radiusSearch(point, parameters).map((target, index) => (
+              <Line3D key={index} start={[point.x, point.y, point.z]} end={[target.x, target.y, target.z]} />
+            ))
+          ))}
+
           {/* controls */}
           <OrbitControls />
         </Canvas>
 
       </Card>
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={() => setSelectedPoints([])} onPointQuery={onPointQuery} />
+        <Sidemenu onClearSelection={() => setSelectedPoints([]) & setHighlightedPoints([])} onPointQuery={onPointQuery} />
       </Card>
     </div>
   );
