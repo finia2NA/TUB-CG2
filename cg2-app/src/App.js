@@ -55,7 +55,6 @@ const App = () => {
 
     }
     setHighlightedPoints(newHighlightedPoints);
-    console.log(newHighlightedPoints);
   }
 
 

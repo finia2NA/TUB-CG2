@@ -80,7 +80,7 @@ export class LinearPointDataStructure extends PointDataStructure {
   }
 
   radiusSearch(point, radius) {
-    throw new Error("not implemented");
+    return this.points.filter(p => p.distanceTo(point) <= radius && p !== point);
   }
 
   includes(point) {
