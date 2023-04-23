@@ -81,8 +81,8 @@ const App = () => {
           ))}
 
           {/* data structures TEST */}
-          {/* <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
-          <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} /> */}
+          <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
+          <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} />
 
           {/* controls */}
           <OrbitControls />
