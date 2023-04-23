@@ -74,7 +74,7 @@ export class LinearPointDataStructure extends PointDataStructure {
   }
 
   knnSearch(point, k) {
-    const copy = [...this.points];
+    const copy = [...this.points].filter(p => p !== point); // we don't want to include the point itself
     copy.sort((a, b) => a.distanceTo(point) - b.distanceTo(point));
     return copy.slice(0, k);
   }

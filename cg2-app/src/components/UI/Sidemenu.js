@@ -36,6 +36,10 @@ const Sidemenu = (props) => {
     setSliderValue(slidermodes[e.target.value].defaultValue);
   };
 
+  const onPointQuery = () => {
+    props.onPointQuery(sliderMode.mode, sliderValue);
+  }
+
 
   return (
     <div>
@@ -59,7 +63,7 @@ const Sidemenu = (props) => {
               min={sliderMode.min}
               max={sliderMode.max}
             />
-            <Button variant="contained" color="primary" onClick={props.onPointQuery}>Gather</Button>
+            <Button variant="contained" color="primary" onClick={onPointQuery}>Gather</Button>
           </FormControl>
         </div>
         <div>
@@ -67,7 +71,7 @@ const Sidemenu = (props) => {
 
           <FormControl>
             <FormLabel>Selection Mode</FormLabel>
-            <Button variant="contained" color="secondary" onClick={props.clearSelection}>Clear Selection</Button>
+            <Button variant="contained" color="secondary" onClick={props.onClearSelection}>Clear Selection</Button>
           </FormControl>
         </div>
       </div>

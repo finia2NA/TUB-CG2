@@ -39,22 +39,30 @@ const App = () => {
   }, []);
 
 
-  // Renders the 3D point cloud and the 2D point cloud
-  // Also renders the orbit controls, which allows for the user to rotate the camera using the mouse
-  // The camera is set to a position that is 2 units away from the origin (0, 0, 2)
-  // The canvas is grey
 
-  const onPointQuery = () => {
+  // function that is called when the user clicks the "Gather" button
+  const onPointQuery = (gatherMethod = "knn", gatherParameter = 10) => {
     const newHighlightedPoints = [];
     for (const p of selectedPoints) {
-      debugger;
-      const targets = pointRepresentations.knnSearch(p, 10)
-      newHighlightedPoints.push(...targets);
+      if (gatherMethod === "knn") {
+        const targets = pointRepresentations.knnSearch(p, gatherParameter)
+        newHighlightedPoints.push(...targets);
+      }
+      if (gatherMethod === "radius") {
+        const targets = pointRepresentations.radiusSearch(p, gatherParameter)
+        newHighlightedPoints.push(...targets);
+      }
+
     }
     setHighlightedPoints(newHighlightedPoints);
     console.log(newHighlightedPoints);
   }
 
+
+  // Renders the 3D point cloud
+  // Also renders the orbit controls, which allows for the user to rotate the camera using the mouse
+  // The camera is set to a position that is 2 units away from the origin (0, 0, 2)
+  // The canvas is grey
   return (
     <div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }}>
       <Card style={{ flex: 5 }}>
@@ -69,6 +77,7 @@ const App = () => {
           {/* controls */}
           <OrbitControls />
         </Canvas>
+
       </Card>
       <Card style={{ flex: 2 }} >
         <Sidemenu onClearSelection={() => setSelectedPoints([])} onPointQuery={onPointQuery} />
