@@ -13,6 +13,8 @@ import Point3D from './components/3D/Point3D';
 import Line3D from './components/3D/Line3D';
 import Card from './components/UI/Card';
 import { LinearPointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
+import Cuboid3D from './components/3D/Cuboid3D';
+import Plane3D from './components/3D/Plane3D';
 
 const App = () => {
 
@@ -21,6 +23,11 @@ const App = () => {
   const [highlightedPoints, setHighlightedPoints] = useState([]);
   const [methods, setMethods] = useState("");
   const [parameters, setParameters] = useState();
+
+
+  const [planes, setPlanes] = useState([]);
+  const [cubes, setCubes] = useState([]);
+  const [dsRenderMode, setDsRenderMode] = useState(0) // controls which data structure is rendered. 0 = none, 1 = planes, 2 = cubes
 
   const handlePointClick = (thePoint) => {
     if (selectedPoints.includes(thePoint)) {
@@ -35,8 +42,8 @@ const App = () => {
   // generate random points
   useEffect(() => {
     let points = new PointDataStructure();
-    for (let i = 0; i < 100; i++) {
-      points.addPoint(new PointRep(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5));
+    for (let i = 0; i < 200; i++) {
+      points.addPoint(new PointRep([Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5]));
     }
     setPointRepresentations(points);
   }, []);
@@ -88,12 +95,17 @@ const App = () => {
           {pointRepresentations.getAllPoints().map((point) => (
             methods === "knn" ?
             pointRepresentations.knnSearch(point, parameters).map((target, index) => (
-              <Line3D key={index} start={[point.x, point.y, point.z]} end={[target.x, target.y, target.z]} />
+              <Line3D key={index} start={point.position} end={target.position} />
             )) :
             pointRepresentations.radiusSearch(point, parameters).map((target, index) => (
-              <Line3D key={index} start={[point.x, point.y, point.z]} end={[target.x, target.y, target.z]} />
+              <Line3D key={index} start={point.position} end={target.position} />
             ))
           ))}
+
+          {/* data structures TEST */}
+          <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
+          <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} />
+
 
           {/* controls */}
           <OrbitControls />

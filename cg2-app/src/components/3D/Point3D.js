@@ -8,7 +8,7 @@ const Point3D = (props) => {
   const ref = useRef()
 
   // Set up state for the hovered state
-  const [hovered, hover] = useState(false)
+  const [hovered, setHover] = useState(false)
 
   // Set up color
   let myColor = "orange"
@@ -26,12 +26,12 @@ const Point3D = (props) => {
   return (
     <mesh
       {...props}
-      position={[props.representation.x, props.representation.y, props.representation.z]}
+      position={props.representation.position}
       ref={ref}
       scale={hovered ? [1.3, 1.3, 1.3] : [1, 1, 1]}
-      onPointerOver={(event) => hover(true)}
+      onPointerOver={(event) => setHover(true)}
       onClick={(event) => props.onClick(props.representation)}
-      onPointerOut={(event) => hover(false)}>
+      onPointerOut={(event) => setHover(false)}>
       <sphereGeometry args={[0.01, 32, 32]} /> {/* array: [radius, widthSegments, heightSegments] */}
       <meshStandardMaterial color={myColor} />
     </mesh>

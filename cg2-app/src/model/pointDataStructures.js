@@ -1,34 +1,20 @@
 // a class that represents a cube of an octree by specifying two opposite corners
 class octreeCube {
-  constructor(corner1, corner2) {
-    this.corner1 = corner1;
-    this.corner2 = corner2;
+  constructor(position, dimensions) {
+    this.position = position;
+    this.dimensions = dimensions;
     this.children = []
   }
 
   getVolume() {
-    return Math.abs((this.corner1.x - this.corner2.x) * (this.corner1.y - this.corner2.y) * (this.corner1.z - this.corner2.z));
+    return this.dimensions[0] * this.dimensions[1] * this.dimensions[2];
   }
 }
 
 // a class that represents a plane of a kdtree by specifying a point and an axis.
-// Axis is a vector with all zeros and one one
+// Axis is the # of the dimension that the plane is on.
 class kdTreePlane {
   constructor(point, axis) {
-    // testsing that axis is valid
-    let count0 = 0;
-    let count1 = 0
-    for (let key in axis) {
-      if (point[key] === 0) {
-        count0++;
-      }
-      if (point[key] === 1) {
-        count1++
-      }
-    }
-    if (!(count0 === axis.length - 1 && count1 === 1)) {
-      throw new Error("invalid kdTree parameters")
-    }
 
 
     // construct internal vars

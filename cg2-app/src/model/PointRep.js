@@ -1,13 +1,17 @@
 // PointRep is a class that represents a 3D point in space.
 class PointRep {
-  constructor(x, y, z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+
+  constructor(position) {
+    this.position = position;
   }
 
   distanceTo(point) {
-    return Math.sqrt(Math.pow(this.x - point.x, 2) + Math.pow(this.y - point.y, 2) + Math.pow(this.z - point.z, 2));
+    // use pythagoras to calculate distance
+    let x = this.position[0] - point.position[0];
+    let y = this.position[1] - point.position[1];
+    let z = this.position[2] - point.position[2];
+
+    return Math.sqrt(x * x + y * y + z * z);
   }
 }
 
