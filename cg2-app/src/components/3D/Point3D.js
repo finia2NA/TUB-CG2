@@ -3,7 +3,6 @@ import { useRef, useState } from "react"
 // this is the component that *renders* a single point in 3D space
 // it represents a PointRep object
 
-const spriteSizes = [0.03, 0.02]
 
 const Point3D = (props) => {
   // This reference gives us direct access to the THREE.Mesh object
@@ -22,6 +21,8 @@ const Point3D = (props) => {
     )
   }
 
+  const spriteSizes = [3, 2].map(x => x * props.size)
+
   let materialIndex = 0
   if (props.highlighted) {
     materialIndex = 1
@@ -30,6 +31,8 @@ const Point3D = (props) => {
   if (props.selected || hovered) {
     materialIndex = 2
   }
+
+  console.log("point!")
 
 
   // Return the view, these are regular Threejs elements expressed in JSX

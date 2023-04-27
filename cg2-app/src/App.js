@@ -8,7 +8,6 @@ import React, { useState, useEffect } from 'react';
 import { Canvas } from 'react-three-fiber';
 import { OrbitControls } from '@react-three/drei';
 import Sidemenu from './components/UI/Sidemenu';
-import PointRep from './model/PointRep';
 import Point3D from './components/3D/Point3D';
 import Line3D from './components/3D/Line3D';
 import Card from './components/UI/Card';
@@ -20,7 +19,7 @@ import Plane3D from './components/3D/Plane3D';
 const App = () => {
 
   // used to render the point cloud
-  const [dataName, setData] = useState("teapot");
+  const [dataName, setData] = useState("eight");
   const [pointRepresentations, setPointRepresentations] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -63,7 +62,7 @@ const App = () => {
       setPointRepresentations(points);
     }
     readData()
-  }, []);
+  }, [dataName]);
 
 
   const onClearSelection = () => {
@@ -93,6 +92,8 @@ const App = () => {
     setHighlightedLines(newHighlightedLines);
   }
 
+  // might need some more finetuning
+  const size = Math.min(20 / pointRepresentations.getAllPoints().length, 0.1)
 
   // Renders the 3D point cloud
   // Also renders the orbit controls, which allows for the user to rotate the camera using the mouse
@@ -106,7 +107,7 @@ const App = () => {
 
           {/* point cloud */}
           {pointRepresentations.getAllPoints().map((point, index) => (
-            <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} highlighted={highlightedPoints.includes(point)} materials={materials} />
+            <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} highlighted={highlightedPoints.includes(point)} materials={materials} size={size} />
           ))}
 
           {/* draw lines */}
