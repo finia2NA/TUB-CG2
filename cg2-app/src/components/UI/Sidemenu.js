@@ -77,7 +77,7 @@ const Sidemenu = (props) => {
         <div>
           <h2>Display Controls</h2>
           <FormControl>
-            <FormControlLabel control={<Checkbox defaultValue={props.displayLines} value={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
+            <FormControlLabel control={<Checkbox checked={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
             } />} label="Show Lines" />
           </FormControl>
         </div>
