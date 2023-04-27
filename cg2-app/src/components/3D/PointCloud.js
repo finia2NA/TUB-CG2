@@ -6,7 +6,6 @@ const PointCloud = (props) => {
   const [colors, setColors] = useState(["orange", "blue", "red"])
   const [materials, setMaterials] = useState(null)
 
-
   useEffect(() => {
     const newMaterials = colors.map(
       color => <spriteMaterial color={color} />
