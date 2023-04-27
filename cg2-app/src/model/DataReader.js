@@ -25,7 +25,7 @@ class DataReader {
     // read vertices
     const [vertexCount, faceCount, _] = lines.shift().split(" ").map(Number);
     for (let i = 0; i < vertexCount; i++) {
-      const vertex = lines.shift().split(" ").map(parseFloat);
+      const vertex = lines.shift().trim().split(" ").map(parseFloat);
       points.addPoint(new PointRep(vertex));
     }
     
