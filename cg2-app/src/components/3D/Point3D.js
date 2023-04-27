@@ -12,15 +12,23 @@ const Point3D = (props) => {
   // Set up state for the hovered state
   const [hovered, setHover] = useState(false)
 
-  // Set up color
-  let myColor = "orange"
+  let materials = props.materials
 
+  if (!materials) {
+    console.warn("Point3D did not receive cached materials, reverting to inbuilt generator")
+    const colors = ["orange", "blue", "red"]
+    materials = colors.map(
+      color => <spriteMaterial color={color} />
+    )
+  }
+
+  let materialIndex = 0
   if (props.highlighted) {
-    myColor = "blue"
+    materialIndex = 1
   }
 
   if (props.selected || hovered) {
-    myColor = "red"
+    materialIndex = 2
   }
 
 
@@ -36,7 +44,7 @@ const Point3D = (props) => {
       onPointerOver={(event) => setHover(true)}
       onClick={(event) => props.onClick(props.representation)}
       onPointerOut={(event) => setHover(false)}>
-      <spriteMaterial color={myColor} />
+      {materials[materialIndex]}
     </sprite>
   )
 }
