@@ -34,6 +34,18 @@ const App = () => {
   const [cubes, setCubes] = useState([]); // array of ds cubes
   const [dsRenderMode, setDsRenderMode] = useState(0) // controls which data structure is rendered. 0 = none, 1 = planes, 2 = cubes
 
+  const [colors, setColors] = useState(["orange", "blue", "red"])
+
+  const [materials, setMaterials] = useState(null)
+
+  useEffect(() => {
+    const newMaterials = colors.map(
+      color => <spriteMaterial color={color} />
+    )
+    setMaterials(newMaterials)
+  }, [colors])
+
+
   const handlePointClick = (thePoint) => {
     if (selectedPoints.includes(thePoint)) {
       // if the point is already selected, remove it from the list
@@ -94,7 +106,7 @@ const App = () => {
 
           {/* point cloud */}
           {pointRepresentations.getAllPoints().map((point, index) => (
-            <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} highlighted={highlightedPoints.includes(point)} />
+            <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} highlighted={highlightedPoints.includes(point)} materials={materials} />
           ))}
 
           {/* draw lines */}
