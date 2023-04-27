@@ -13,12 +13,14 @@ import Point3D from './components/3D/Point3D';
 import Line3D from './components/3D/Line3D';
 import Card from './components/UI/Card';
 import { LinearPointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
+import DataReader from './model/DataReader'; // change import here to switch between data structures
 import Cuboid3D from './components/3D/Cuboid3D';
 import Plane3D from './components/3D/Plane3D';
 
 const App = () => {
 
   // used to render the point cloud
+  const [dataName, setData] = useState("teapot");
   const [pointRepresentations, setPointRepresentations] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -42,13 +44,13 @@ const App = () => {
     }
   }
 
-  // generate random points
   useEffect(() => {
-    let points = new PointDataStructure();
-    for (let i = 0; i < 200; i++) {
-      points.addPoint(new PointRep([Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5]));
+    const reader = new DataReader(dataName)
+    const readData = async () => {
+      const points = await reader.read_file(new PointDataStructure())
+      setPointRepresentations(points);
     }
-    setPointRepresentations(points);
+    readData()
   }, []);
 
 

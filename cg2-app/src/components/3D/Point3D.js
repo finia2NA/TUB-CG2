@@ -32,7 +32,7 @@ const Point3D = (props) => {
       onPointerOver={(event) => setHover(true)}
       onClick={(event) => props.onClick(props.representation)}
       onPointerOut={(event) => setHover(false)}>
-      <sphereGeometry args={[0.01, 32, 32]} /> {/* array: [radius, widthSegments, heightSegments] */}
+      <sphereGeometry args={[0.1, 3, 3]} /> {/* array: [radius, widthSegments, heightSegments] */}
       <meshStandardMaterial color={myColor} />
     </mesh>
   )
