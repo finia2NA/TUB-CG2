@@ -15,12 +15,13 @@ import { LinearPointDataStructure as PointDataStructure } from './model/pointDat
 import DataReader from './model/DataReader'; // change import here to switch between data structures
 import Cuboid3D from './components/3D/Cuboid3D';
 import Plane3D from './components/3D/Plane3D';
+import PointCloud from './components/3D/PointCloud';
 
 const App = () => {
 
   // used to render the point cloud
   const [dataName, setData] = useState("eight");
-  const [pointRepresentations, setPointRepresentations] = useState(new PointDataStructure());
+  const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
   // used to render query results
@@ -59,7 +60,7 @@ const App = () => {
     const reader = new DataReader(dataName)
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure())
-      setPointRepresentations(points);
+      setPoints(points);
     }
     readData()
   }, [dataName]);
@@ -77,12 +78,12 @@ const App = () => {
     const newHighlightedLines = [];
     for (const p of selectedPoints) {
       if (gatherMethod === "knn") {
-        const targets = pointRepresentations.knnSearch(p, gatherParameter)
+        const targets = points.knnSearch(p, gatherParameter)
         newHighlightedPoints.push(...targets);
         newHighlightedLines.push(...targets.map(target => ({ start: p.position, end: target.position })));
       }
       if (gatherMethod === "radius") {
-        const targets = pointRepresentations.radiusSearch(p, gatherParameter)
+        const targets = points.radiusSearch(p, gatherParameter)
         newHighlightedPoints.push(...targets);
         newHighlightedLines.push(...targets.map(target => ({ start: p.position, end: target.position })));
       }
@@ -91,9 +92,6 @@ const App = () => {
     setHighlightedPoints(newHighlightedPoints);
     setHighlightedLines(newHighlightedLines);
   }
-
-  // might need some more finetuning
-  const size = Math.min(20 / pointRepresentations.getAllPoints().length, 0.1)
 
   // Renders the 3D point cloud
   // Also renders the orbit controls, which allows for the user to rotate the camera using the mouse
@@ -106,9 +104,7 @@ const App = () => {
           <ambientLight />
 
           {/* point cloud */}
-          {pointRepresentations.getAllPoints().map((point, index) => (
-            <Point3D key={index} representation={point} selected={selectedPoints.includes(point)} onClick={handlePointClick} highlighted={highlightedPoints.includes(point)} materials={materials} size={size} />
-          ))}
+          <PointCloud points = {points} selectedPoints = {selectedPoints} handlePointClick = {handlePointClick} highlightedPoints = {highlightedPoints}/>
 
           {/* draw lines */}
           {displayLines && highlightedLines.map((line, index) => (
