@@ -4,7 +4,7 @@
 
 // The handlePointClick function is passed to the Point3D component, and is called when a point is clicked. The handlePointClick function adds or removes the point representation from the selectedPoints array.
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Canvas } from 'react-three-fiber';
 import { OrbitControls } from '@react-three/drei';
 import Sidemenu from './components/UI/Sidemenu';
@@ -20,7 +20,7 @@ import PointCloud from './components/3D/PointCloud';
 const App = () => {
 
   // used to render the point cloud
-  const [dataName, setData] = useState("eight");
+  const [dataName, setData] = useState("bunny");
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -89,25 +89,27 @@ const App = () => {
   return (
     <div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }}>
       <Card style={{ flex: 5 }}>
-        <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
-          <ambientLight />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
+            <ambientLight />
 
-          {/* point cloud */}
-          <PointCloud points = {points} selectedPoints = {selectedPoints} handlePointClick = {handlePointClick} highlightedPoints = {highlightedPoints}/>
+            {/* point cloud */}
+            <PointCloud points={points} selectedPoints={selectedPoints} handlePointClick={handlePointClick} highlightedPoints={highlightedPoints} />
 
-          {/* draw lines */}
-          {displayLines && highlightedLines.map((line, index) => (
-            <Line3D key={index} start={line.start} end={line.end} />
-          ))}
+            {/* draw lines */}
+            {displayLines && highlightedLines.map((line, index) => (
+              <Line3D key={index} start={line.start} end={line.end} />
+            ))}
 
-          {/* data structures TEST */}
-          {/* <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
+            {/* data structures TEST */}
+            {/* <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
           <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} /> */}
 
 
-          {/* controls */}
-          <OrbitControls />
-        </Canvas>
+            {/* controls */}
+            <OrbitControls />
+          </Canvas>
+        </Suspense>
 
       </Card>
       <Card style={{ flex: 2 }} >
