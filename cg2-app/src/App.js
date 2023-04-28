@@ -4,7 +4,7 @@
 
 // The handlePointClick function is passed to the Point3D component, and is called when a point is clicked. The handlePointClick function adds or removes the point representation from the selectedPoints array.
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import { Canvas } from 'react-three-fiber';
 import { OrbitControls } from '@react-three/drei';
 import Sidemenu from './components/UI/Sidemenu';
@@ -16,11 +16,12 @@ import DataReader from './model/DataReader'; // change import here to switch bet
 import Cuboid3D from './components/3D/Cuboid3D';
 import Plane3D from './components/3D/Plane3D';
 import PointCloud from './components/3D/PointCloud';
+import PointRep from './model/PointRep';
 
 const App = () => {
 
   // used to render the point cloud
-  const [dataName, setData] = useState("bunny");
+  const [dataName, setData] = useState("eight");
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -81,6 +82,7 @@ const App = () => {
     setHighlightedPoints(newHighlightedPoints);
     setHighlightedLines(newHighlightedLines);
   }
+  console.log(selectedPoints)
 
   // Renders the 3D point cloud
   // Also renders the orbit controls, which allows for the user to rotate the camera using the mouse
@@ -89,27 +91,29 @@ const App = () => {
   return (
     <div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }}>
       <Card style={{ flex: 5 }}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
-            <ambientLight />
+        <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
+          <ambientLight />
 
-            {/* point cloud */}
-            <PointCloud points={points} selectedPoints={selectedPoints} handlePointClick={handlePointClick} highlightedPoints={highlightedPoints} />
+          {/* point cloud */}
+          {/* TODO: I have no idea why it throws errors if it doesn't get the fully loadad points immediatly, this && is the workaround for now*/}
 
-            {/* draw lines */}
-            {displayLines && highlightedLines.map((line, index) => (
-              <Line3D key={index} start={line.start} end={line.end} />
-            ))}
+          {points.getAllPoints().length > 0 &&
+            <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} />
+          }
 
-            {/* data structures TEST */}
-            {/* <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
+          {/* draw lines */}
+          {displayLines && highlightedLines.map((line, index) => (
+            <Line3D key={index} start={line.start} end={line.end} />
+          ))}
+
+          {/* data structures TEST */}
+          {/* <Cuboid3D representation={{ position: [-0.5, -0.3, 0.2], dimensions: [0.2, 0.7, 0.3] }} />
           <Plane3D representation={{ axis: 2, point: [0, 0, 0] }} /> */}
 
 
-            {/* controls */}
-            <OrbitControls />
-          </Canvas>
-        </Suspense>
+          {/* controls */}
+          <OrbitControls />
+        </Canvas>
 
       </Card>
       <Card style={{ flex: 2 }} >

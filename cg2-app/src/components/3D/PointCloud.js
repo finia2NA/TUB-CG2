@@ -1,30 +1,37 @@
-import { Suspense, useMemo } from "react"
+// https://threejs.org/docs/#api/en/objects/Points
+
+import { Suspense, useCallback, useMemo } from "react"
 import * as THREE from "three";
 
 import circleImg from "../../asset/circle.png";
 import { useLoader } from "react-three-fiber";
 
-
-const PointCloud = (props) => {
+const SubCloud = props => {
   const CircleImg = useLoader(THREE.TextureLoader, circleImg);
+  const vertexSize = 0.02
 
-  // Use "useMemo" to create an array of positions for each point in the grid.
-  let positions = useMemo(() => {
-    const points = props.points.getAllPoints()
+  const positions = useMemo(() => {
+    const positionsArray = [];
+    for (let i = 0; i < props.points.length; i++) {
+      const thePoint = props.points[i]
 
-    let positions = [];
-    for (let i = 0; i < points.length; i++) {
-      const thePoint = points[i]
-      positions.push(...thePoint.position)
+      positionsArray.push(...thePoint.position)
     }
 
-    return new Float32Array(positions); // Create an array that is compatible with "bufferAttribute".
+    return new Float32Array(positionsArray);
   }, [props.points]);
 
-  console.log(positions)
+  console.log("rendering subcloud")
+
+  const onClick = useCallback((e) => {
+    if (e.distanceToRay < vertexSize / 2) {
+      console.log(e.point)
+      props.handlePointClick(e.point)
+    }
+  }, [])
 
   return (
-    <points>
+    <points onClick={onClick}>
       <bufferGeometry attach="geometry">
         <bufferAttribute
           attach="attributes-position" // The attribute parameter that will be controlled.
@@ -36,15 +43,54 @@ const PointCloud = (props) => {
       <pointsMaterial
         attach="material"
         map={CircleImg}
-        color={0x00aaff}
-        sizes={0.005}
-        sizeAttenuation // This parameter scales the object based on the perspective camera.
+        color={props.color}
+        size={vertexSize}
         transparent={false}
-        alphaTest={0.5} // This is the threshold when rendering to prevent opacity below the alpha test value.
+        alphaTest={0.5}
         opacity={1.0}
       />
     </points>
   );
+
+}
+
+
+const PointCloud = (props) => {
+
+  const points = props.points.getAllPoints()
+
+  // replace with actual highlightable once that works again
+  const highlighted = props.highlightedPoints
+  const selected = props.selectedPoints
+  const normal = props.points.getAllPoints().filter(point => !selected.includes(point) && !highlighted.includes(point))
+
+  const handlePointClick = (vector) => {
+
+    console.log(vector.x, vector.y, vector.z)
+
+    // TODO: why does the closest point return exactly the one I want, but filtering from the array returns nothing???
+    const closestPoint = points.reduce((prev, curr) => {
+      const prevDistance = Math.sqrt(Math.pow(prev.position[0] - vector.x, 2) + Math.pow(prev.position[1] - vector.y, 2) + Math.pow(prev.position[2] - vector.z, 2))
+      const currDistance = Math.sqrt(Math.pow(curr.position[0] - vector.x, 2) + Math.pow(curr.position[1] - vector.y, 2) + Math.pow(curr.position[2] - vector.z, 2))
+      return prevDistance < currDistance ? prev : curr
+    })
+
+    props.handlePointClick(closestPoint)
+  }
+
+  return (
+    <>
+      {normal.length > 0 &&
+        <SubCloud points={normal} color={"blue"} handlePointClick={handlePointClick} />
+      }
+      {selected.length > 0 &&
+        <SubCloud points={selected} color={"red"} handlePointClick={handlePointClick} />
+      }
+      {highlighted.length > 0 &&
+        <SubCloud points={highlighted} color={"green"} handlePointClick={handlePointClick} />
+      }
+    </>
+  )
 
 }
 

@@ -46,9 +46,9 @@ class PointDataStructure {
 export class LinearPointDataStructure extends PointDataStructure {
   // example very bad implementation
 
-  constructor() {
+  constructor(points=[]) {
     super();
-    this.points = [];
+    this.points = points;
   }
 
   getAllPoints() {
