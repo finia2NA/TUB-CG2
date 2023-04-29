@@ -5,64 +5,16 @@ import * as THREE from "three";
 
 import circleImg from "../../asset/circle.png";
 import { useLoader } from "react-three-fiber";
-
-const SubCloud = props => {
-  const CircleImg = useLoader(THREE.TextureLoader, circleImg);
-  const vertexSize = 0.02
-
-  const positions = useMemo(() => {
-    const positionsArray = [];
-    for (let i = 0; i < props.points.length; i++) {
-      const thePoint = props.points[i]
-
-      positionsArray.push(...thePoint.position)
-    }
-
-    return new Float32Array(positionsArray);
-  }, [props.points]);
-
-  console.log("rendering subcloud")
-
-  const onClick = useCallback((e) => {
-    if (e.distanceToRay < vertexSize / 2) {
-      console.log(e.point)
-      props.handlePointClick(e.point)
-    }
-  }, [])
-
-  return (
-    <points onClick={onClick}>
-      <bufferGeometry attach="geometry">
-        <bufferAttribute
-          attach="attributes-position" // The attribute parameter that will be controlled.
-          array={positions}
-          count={positions.length / 3} // The count is divided by 3 because each array type axis will contain 3 values in the 1D array.
-          itemSize={3} // It is known that each array type axis will contain 3 values in the 1D array.
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        attach="material"
-        map={CircleImg}
-        color={props.color}
-        size={vertexSize}
-        transparent={false}
-        alphaTest={0.5}
-        opacity={1.0}
-      />
-    </points>
-  );
-
-}
+import SubCloud from "./SubPointCloud";
 
 
 const PointCloud = (props) => {
 
   const points = props.points.getAllPoints()
 
-  // replace with actual highlightable once that works again
-  const highlighted = props.highlightedPoints
-  const selected = props.selectedPoints
-  const normal = props.points.getAllPoints().filter(point => !selected.includes(point) && !highlighted.includes(point))
+  const normal = useMemo(() => {
+    return props.points.getAllPoints().filter(point => !props.selectedPoints.includes(point) && !props.highlightedPoints.includes(point))
+  }, [props.points, props.selectedPoints, props.highlightedPoints])
 
   const handlePointClick = (vector) => {
 
@@ -81,13 +33,15 @@ const PointCloud = (props) => {
   return (
     <>
       {normal.length > 0 &&
-        <SubCloud points={normal} color={"blue"} handlePointClick={handlePointClick} />
+        <SubCloud points={
+          props.points.getAllPoints().filter(p => ![...props.selectedPoints, ...props.highlightedPoints].includes(p))}
+          color={"blue"} handlePointClick={handlePointClick} />
       }
-      {selected.length > 0 &&
-        <SubCloud points={selected} color={"red"} handlePointClick={handlePointClick} />
+      {props.selectedPoints.length > 0 &&
+        <SubCloud points={props.selectedPoints} color={"red"} handlePointClick={handlePointClick} logging />
       }
-      {highlighted.length > 0 &&
-        <SubCloud points={highlighted} color={"green"} handlePointClick={handlePointClick} />
+      {props.highlightedPoints.length > 0 &&
+        <SubCloud points={props.highlightedPoints} color={"green"} handlePointClick={handlePointClick} />
       }
     </>
   )
