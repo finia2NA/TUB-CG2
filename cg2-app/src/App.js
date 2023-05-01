@@ -12,7 +12,7 @@ import PointRep from './model/PointRep';
 import Point3D from './components/3D/Point3D';
 import Line3D from './components/3D/Line3D';
 import Card from './components/UI/Card';
-import { LinearPointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
+import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import Cuboid3D from './components/3D/Cuboid3D';
 import Plane3D from './components/3D/Plane3D';
 
@@ -48,6 +48,7 @@ const App = () => {
     for (let i = 0; i < 200; i++) {
       points.addPoint(new PointRep([Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5]));
     }
+    points.buildTree()
     setPointRepresentations(points);
   }, []);
 
