@@ -32,9 +32,6 @@ const Point3D = (props) => {
     materialIndex = 2
   }
 
-  console.log("point!")
-
-
   // Return the view, these are regular Threejs elements expressed in JSX
   return (
 
