@@ -7,9 +7,9 @@ class PointRep {
 
   distanceTo(point) {
     // use pythagoras to calculate distance
-    let x = this.position[0] - point.position[0];
-    let y = this.position[1] - point.position[1];
-    let z = this.position[2] - point.position[2];
+    const x = this.position[0] - point.position[0];
+    const y = this.position[1] - point.position[1];
+    const z = this.position[2] - point.position[2];
 
     return Math.sqrt(x * x + y * y + z * z);
   }

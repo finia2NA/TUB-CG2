@@ -17,20 +17,29 @@ function spliceArray(arr, maxSliceLength = 100) {
 
 const SubPointCloud = props => {
 
-  const pointsPerSubSubCloud = 500
+  // choose these
+  const pointsPerSubSubCloud = 1000
+  const vertexSize = 0.02
 
+  // used lated
   const myColor = colors[props.coloring]
-
   const slices = spliceArray(props.points, pointsPerSubSubCloud)
 
+  // the click handler
+
+  const onClick = useCallback((e) => {
+    if (e.distanceToRay < vertexSize / 2) {
+      props.handlePointClick(e.point)
+    }
+  }, [props])
 
   return <>
     {slices.map((slice, sliceIndex) =>
-      <Points key={sliceIndex} limit={pointsPerSubSubCloud}>
+      <Points key={sliceIndex} limit={pointsPerSubSubCloud} onClick={onClick}>
         <pointsMaterial attach={"material"}
           map={props.texture}
-          color={new THREE.Color(Math.random(), Math.random(), Math.random())}
-          size={0.001}
+          color={myColor}
+          size={vertexSize}
           transparent={false}
           alphaTest={0.5}
           opacity={1.0}

@@ -10,7 +10,7 @@ import PointCloud from './components/3D/PointCloud';
 
 const App = () => {
   // used to render the point cloud
-  const [dataName, setDataName] = useState("bunny");
+  const [dataName, setDataName] = useState("eight");
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -21,6 +21,7 @@ const App = () => {
 
 
   const handlePointClick = (thePoint) => {
+    console.log(thePoint)
     if (selectedPoints.includes(thePoint)) {
       // if the point is already selected, remove it from the list
       setSelectedPoints(selectedPoints.filter(point => point !== thePoint));
