@@ -13,7 +13,7 @@
 
 // a class that represents a plane of a kdtree by specifying a point and an axis.
 // Axis is the # of the dimension that the plane is on.
-class kdTree_node {
+class kdTreeNode {
   constructor(point, axis) {
 
     // construct internal vars
@@ -94,7 +94,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
       points.sort((a,b) => a.position[axis] - b.position[axis]);
       const index_median = Math.floor(points.length / 2);
       const median = points[index_median];
-      const node = new kdTree_node(median, axis);
+      const node = new kdTreeNode(median, axis);
       node.leftChildren = recur_buildTree(points.slice(0, index_median), depth + 1 );
       node.rightChildren = recur_buildTree(points.slice(index_median + 1), depth + 1 );
       
@@ -123,11 +123,11 @@ export class KDTreePointDataStructure extends PointDataStructure {
       } else {
         const dist1 = point.distanceTo(node.point)
         const dist2 = point.distanceTo(nearest[nearest.length - 1])
-        if (dist1 < dist2) {{
+        if (dist1 < dist2) {
           nearest.pop();
           nearest.push(node.point);
           nearest.sort((a, b) => a.distanceTo(point) - b.distanceTo(point));
-        }}
+        }
       }
 
       const axisDist = Math.abs(point.position[axis] - node.point.position[axis])
