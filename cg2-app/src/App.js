@@ -12,7 +12,7 @@ import PointRep from './model/PointRep';
 import Point3D from './components/3D/Point3D';
 import Line3D from './components/3D/Line3D';
 import Card from './components/UI/Card';
-import { LinearPointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
+import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import DataReader from './model/DataReader'; // change import here to switch between data structures
 import Cuboid3D from './components/3D/Cuboid3D';
 import Plane3D from './components/3D/Plane3D';
@@ -48,10 +48,11 @@ const App = () => {
     const reader = new DataReader(dataName)
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure())
+      points.buildTree()
       setPointRepresentations(points);
     }
     readData()
-  }, []);
+  }, [dataName])
 
 
   const onClearSelection = () => {
