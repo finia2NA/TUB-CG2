@@ -9,9 +9,8 @@ import DataReader from './model/DataReader'; // change import here to switch bet
 import PointCloud from './components/3D/PointCloud';
 
 const App = () => {
-
   // used to render the point cloud
-  const [dataName, setDataName] = useState("eight");
+  const [dataName, setDataName] = useState("bunny");
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -73,7 +72,8 @@ const App = () => {
   // The camera is set to a position that is 2 units away from the origin (0, 0, 2)
   // The canvas is grey
   return (
-    <div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }}>
+    < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
+    }>
       <Card style={{ flex: 5 }}>
         <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
           <ambientLight />
@@ -100,7 +100,7 @@ const App = () => {
       <Card style={{ flex: 2 }} >
         <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} />
       </Card>
-    </div>
+    </div >
   );
 }
 
