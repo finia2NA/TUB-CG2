@@ -6,6 +6,8 @@ import { useLoader } from "react-three-fiber";
 import { Point, Points } from "@react-three/drei";
 import colors from "./Colors";
 
+const logging = false
+
 const SubPointCloud = props => {
 
   // the <Points/> tag can only handle a limited number of points, so we need to split the point cloud into smaller sub clouds
@@ -15,11 +17,11 @@ const SubPointCloud = props => {
     for (let i = 0; i < arr.length; i += maxSliceLength) {
       result.push(arr.slice(i, i + maxSliceLength));
     }
-    console.log("using " + result.length + " slices")
+    if(logging) console.log(props.coloring + ": using " + result.length + " slices")
     return result;
   }
 
-  const pointsPerSubSubCloud = 100
+  const pointsPerSubSubCloud = 1000
   const vertexSize = 0.02
 
   const myColor = colors[props.coloring]
@@ -29,13 +31,17 @@ const SubPointCloud = props => {
     // guard against ray not hitting point
     if (event.distanceToRay > vertexSize / 2) return
 
+    // we got a hit!
     event.stopPropagation()
     const eventArray = event.object.geometry.attributes.position.array
-    const pointPosition = new THREE.Vector3(eventArray[event.index * 3], eventArray[event.index * 3 + 1], eventArray[event.index * 3 + 2])
+    const pointPosition = new THREE.Vector3(
+      eventArray[event.index * 3],
+      eventArray[event.index * 3 + 1],
+      eventArray[event.index * 3 + 2]
+    )
 
-    console.log("clicked point at " + pointPosition.x + ", " + pointPosition.y + ", " + pointPosition.z)
-    // props.onClick(pointPosition)
-  }, [props.onClick])
+    props.handlePointClick(pointPosition)
+  }, [props])
 
 
   return <>

@@ -34,7 +34,7 @@ const PointCloud = (props) => {
     return { vanillaPoints, selectedPoints, highlightedPoints };
   }, [props.points, props.selectedPoints, props.highlightedPoints]);
 
-  const handlePointClick = () => { }
+  const handlePointClick = (position) => { props.handlePointClick(position) }
 
 
   return (

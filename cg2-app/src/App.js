@@ -8,9 +8,11 @@ import { KDTreePointDataStructure as PointDataStructure } from './model/pointDat
 import DataReader from './model/DataReader'; // change import here to switch between data structures
 import PointCloud from './components/3D/PointCloud';
 
+const logging = true
+
 const App = () => {
   // used to render the point cloud
-  const [dataName, setDataName] = useState("cube");
+  const [dataName, setDataName] = useState("cube2");
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -29,7 +31,34 @@ const App = () => {
     readData()
   }, [dataName])
 
-  const handlePointClick = (point) => {
+  const handlePointClick = (position) => {
+    console.log("hi")
+
+    // console.log(points.getAllPoints().map(p => p.position))
+
+
+    const matchingPoints = points.getAllPoints().filter(p => p.distanceToPosition(position) < 0.0001)
+
+    if(logging) {
+      console.log("clicked point at " + position.x + ", " + position.y + ", " + position.z)
+      console.log("matched to:", matchingPoints)
+    }
+
+
+    // console.log(points)
+    console.log(matchingPoints)
+    // console.log(points.getAllPoints.map(p => p.position))
+    // const matchingPoints = points.getAllPoints().filter(p => p.position)
+    if (matchingPoints.length === 0) {
+      console.error("no matching points found")
+    }
+
+    if (selectedPoints.includes(matchingPoints[0])) {
+      setSelectedPoints(selectedPoints.filter(p => p !== matchingPoints[0]))
+    } else {
+      setSelectedPoints([...selectedPoints, matchingPoints[0]])
+    }
+
   }
 
   const onClearSelection = () => {
