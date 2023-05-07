@@ -21,34 +21,44 @@ const App = () => {
   const [highlightedLines, setHighlightedLines] = useState([]);
   const [displayLines, setDisplayLines] = useState(true);
 
+  const [shiftPressed, setShiftPressed] = useState(false);
+  onkeydown = (e) => {
+    if (e.key === "Shift") {
+      setShiftPressed(true);
+    }
+  }
+
+  onkeyup = (e) => {
+    if (e.key === "Shift") {
+      setShiftPressed(false);
+    }
+  }
+
+
+
   useEffect(() => {
     const reader = new DataReader(dataName)
     const readData = async () => {
+      // time how long this takes
+      console.time("read data")
       const points = await reader.read_file(new PointDataStructure())
       points.buildTree()
+      console.timeEnd("read data")
+
       setPoints(points);
     }
     readData()
   }, [dataName])
 
   const handlePointClick = (position) => {
-    console.log("hi")
-
-    // console.log(points.getAllPoints().map(p => p.position))
-
-
     const matchingPoints = points.getAllPoints().filter(p => p.distanceToPosition(position) < 0.0001)
 
-    if(logging) {
+    if (logging) {
       console.log("clicked point at " + position.x + ", " + position.y + ", " + position.z)
       console.log("matched to:", matchingPoints)
     }
 
 
-    // console.log(points)
-    console.log(matchingPoints)
-    // console.log(points.getAllPoints.map(p => p.position))
-    // const matchingPoints = points.getAllPoints().filter(p => p.position)
     if (matchingPoints.length === 0) {
       console.error("no matching points found")
     }
@@ -69,10 +79,11 @@ const App = () => {
 
   // function that is called when the user clicks the "Gather" button
   const onPointQuery = (gatherMethod = "knn", gatherParameter = 10) => {
+    // debugger;
     const newHighlightedPoints = [];
     const newHighlightedLines = [];
     for (const p of selectedPoints) {
-      const search = gatherMethod === "knn" ? points.knnSearch : points.radiusSearch;
+      const search = gatherMethod === "knn" ? points.knnSearch.bind(points) : points.radiusSearch.bind(points);
       const targets = search(p, gatherParameter)
       newHighlightedPoints.push(...targets);
       newHighlightedLines.push(...targets.map(target => ({ start: p.position, end: target.position })));
@@ -86,11 +97,11 @@ const App = () => {
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
-        <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
+        <Canvas camera={{ position: [0, 0, 2], near: 0.001 }} style={{ background: "grey" }} >
 
 
           {points.getAllPoints().length > 0 &&
-            <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} />
+            <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} />
           }
 
           {/* lines */}
