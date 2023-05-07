@@ -41,7 +41,6 @@ const App = () => {
   useEffect(() => {
     const reader = new DataReader(dataName)
     const readData = async () => {
-      // time how long this takes
       const points = await reader.read_file(new PointDataStructure())
       points.buildTree()
 

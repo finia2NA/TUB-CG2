@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from '@mui/material/Button';
-import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
+import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider, TextField } from "@mui/material";
 
 const searchSliderModes = {
   knn: {
@@ -42,8 +42,7 @@ const Sidemenu = (props) => {
 
 
   return (
-    <div style={{ overflow: "auto" }}>
-
+    <div style={{ overflow: "auto", height: "100%"}}>
       <h1>Side Menu</h1>
       <div>
         <h2>Gather Controls</h2>
@@ -69,7 +68,7 @@ const Sidemenu = (props) => {
         <h2>Selection Controls</h2>
 
         <FormControl>
-          <FormLabel>Selection Mode</FormLabel>
+          <p style={{ margin: "-16px 0px 8px 0px", color: "grey" }}>Click on a point while holding shift to select it</p>
           <Button variant="contained" color="secondary" onClick={props.onClearSelection}>Clear Selection</Button>
         </FormControl>
       </div>
