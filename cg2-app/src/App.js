@@ -7,12 +7,16 @@ import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import DataReader from './model/DataReader'; // change import here to switch between data structures
 import PointCloud from './components/3D/PointCloud';
+import KDVisualizer from './components/3D/kdVisualizer';
+import Plane3D from './components/3D/Plane3D';
 
 const logging = true
 
 const App = () => {
   // used to render the point cloud
-  const [dataName, setDataName] = useState("cube2");
+  const [dataName, setDataName] = useState("cow");
+  const [dsDisplayDepth, setDsDisplayDepth] = useState(1);
+
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -35,19 +39,19 @@ const App = () => {
   }
 
 
-
   useEffect(() => {
     const reader = new DataReader(dataName)
     const readData = async () => {
       // time how long this takes
-      console.time("read data")
       const points = await reader.read_file(new PointDataStructure())
       points.buildTree()
-      console.timeEnd("read data")
 
       setPoints(points);
     }
+    console.time("read data")
     readData()
+    console.timeEnd("read data")
+
   }, [dataName])
 
   const handlePointClick = (position) => {
@@ -109,6 +113,10 @@ const App = () => {
             <Line3D key={index} start={line.start} end={line.end} />
           ))}
 
+          {/* Visualizing DataStructure */}
+          <KDVisualizer points={points} displayDepth={dsDisplayDepth} />
+
+
           {/* controls */}
           <OrbitControls />
           <Stats />
@@ -117,7 +125,7 @@ const App = () => {
 
       </Card>
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} />
       </Card>
     </div >
   );

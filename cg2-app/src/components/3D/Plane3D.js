@@ -6,29 +6,14 @@ const Plane3D = (props) => {
 
   // the position is 0 in 2 dimensions and the actual position in the axis direction
   let rotation = [0, 0, 0];
-  rotation[props.representation.axis] = Math.PI / 2;
-
-  //   <mesh
-  //   {...props}
-  //   ref={ref}
-  //   position={[...position]}
-  // >
-  //   <planeBufferGeometry args={[1, 1]} />
-  //   <meshBasicMaterial color="green" side={DoubleSide} />
-  // </mesh>
+  rotation[props.axis] = Math.PI / 2;
+  let position = [0, 0, 0];
+  position[props.axis] = props.position[props.axis];
 
   return (
-    <mesh position={[0, 0, 0]} scale={[1, 1, 1]}
+    <mesh position={position} scale={[1, 1, 1]}
       rotation={rotation}>
-      {/*
-        The thing that gives the mesh its shape
-        In this case the shape is a flat plane
-      */}
-      <planeBufferGeometry />
-      {/*
-        The material gives a mesh its texture or look.
-        In this case, it is just a uniform green
-      */}
+      <planeGeometry />
       <meshBasicMaterial color="black" transparent opacity={0.3} side={DoubleSide} />
     </mesh>
   );
