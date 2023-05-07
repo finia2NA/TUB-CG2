@@ -43,23 +43,16 @@ const App = () => {
     const newHighlightedPoints = [];
     const newHighlightedLines = [];
     for (const p of selectedPoints) {
-      if (gatherMethod === "knn") {
-        const targets = points.knnSearch(p, gatherParameter)
-        newHighlightedPoints.push(...targets);
-        newHighlightedLines.push(...targets.map(target => ({ start: p.position, end: target.position })));
-      }
-      if (gatherMethod === "radius") {
-        const targets = points.radiusSearch(p, gatherParameter)
-        newHighlightedPoints.push(...targets);
-        newHighlightedLines.push(...targets.map(target => ({ start: p.position, end: target.position })));
-      }
-
+      const search = gatherMethod === "knn" ? points.knnSearch : points.radiusSearch;
+      const targets = search(p, gatherParameter)
+      newHighlightedPoints.push(...targets);
+      newHighlightedLines.push(...targets.map(target => ({ start: p.position, end: target.position })));
     }
     setHighlightedPoints(newHighlightedPoints);
     setHighlightedLines(newHighlightedLines);
   }
-  
-  
+
+
   return (
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
