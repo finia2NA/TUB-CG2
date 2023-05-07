@@ -1,5 +1,5 @@
- // a class that represents a cube of an octree by specifying two opposite corners
- class octreeCube {
+// a class that represents a cube of an octree by specifying two opposite corners
+class octreeCube {
   constructor(position, dimensions) {
     this.position = position;
     this.dimensions = dimensions;
@@ -13,7 +13,7 @@
 
 // a class that represents a plane of a kdtree by specifying a point and an axis.
 // Axis is the # of the dimension that the plane is on.
-class kdTreeNode {
+export class kdTreeNode {
   constructor(point, axis) {
 
     // construct internal vars
@@ -42,9 +42,9 @@ class PointDataStructure {
 export class LinearPointDataStructure extends PointDataStructure {
   // example very bad implementation
 
-  constructor() {
+  constructor(points = []) {
     super();
-    this.points = [];
+    this.points = points;
   }
 
   getAllPoints() {
@@ -91,13 +91,13 @@ export class KDTreePointDataStructure extends PointDataStructure {
       if (points.length === 0) { return null; }
 
       const axis = depth % 3;
-      points.sort((a,b) => a.position[axis] - b.position[axis]);
-      const index_median = Math.floor(points.length / 2);
-      const median = points[index_median];
+      points.sort((a, b) => a.position.toArray()[axis] - b.position.toArray()[axis]);
+      const medianIndex = Math.floor(points.length / 2);
+      const median = points[medianIndex];
       const node = new kdTreeNode(median, axis);
-      node.leftChildren = recur_buildTree(points.slice(0, index_median), depth + 1 );
-      node.rightChildren = recur_buildTree(points.slice(index_median + 1), depth + 1 );
-      
+      node.leftChildren = recur_buildTree(points.slice(0, medianIndex), depth + 1);
+      node.rightChildren = recur_buildTree(points.slice(medianIndex + 1), depth + 1);
+
       return node;
     }
 
@@ -110,12 +110,12 @@ export class KDTreePointDataStructure extends PointDataStructure {
       if (node === null) { return; }
 
       const axis = depth % 3
-      const isLeft = point.position[axis] < node.point.position[axis];
-      
-      let leftSubtree = isLeft ? node.leftChildren : node.rightChildren ; 
-      let rightSubtree = isLeft ? node.rightChildren : node.leftChildren ;
-      
-      recur_search(leftSubtree, depth + 1) 
+      const isLeft = point.position.toArray()[axis] < node.point.position.toArray()[axis];
+
+      let leftSubtree = isLeft ? node.leftChildren : node.rightChildren;
+      let rightSubtree = isLeft ? node.rightChildren : node.leftChildren;
+
+      recur_search(leftSubtree, depth + 1)
 
       if (nearest.length < k) {
         nearest.push(node.point)
@@ -130,7 +130,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
         }
       }
 
-      const axisDist = Math.abs(point.position[axis] - node.point.position[axis])
+      const axisDist = Math.abs(point.position.toArray()[axis] - node.point.position.toArray()[axis])
 
       if (nearest.length < k || axisDist <= point.distanceTo(nearest[nearest.length - 1])) {
         recur_search(rightSubtree, depth + 1)
@@ -139,7 +139,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
 
     recur_search(this.root, 0)
 
-    return nearest.slice(0, k+1);
+    return nearest.slice(0, k + 1);
 
   }
 
@@ -153,15 +153,15 @@ export class KDTreePointDataStructure extends PointDataStructure {
       }
 
       const axis = depth % 3
-      const isLeft = point.position[axis] < node.point.position[axis];
+      const isLeft = point.position.toArray()[axis] < node.point.position.toArray()[axis];
 
-      let leftSubtree = isLeft ? node.leftChildren : node.rightChildren ; 
-      let rightSubtree = isLeft ? node.rightChildren : node.leftChildren ;
-      
-      recur_search(leftSubtree, depth + 1) 
+      let leftSubtree = isLeft ? node.leftChildren : node.rightChildren;
+      let rightSubtree = isLeft ? node.rightChildren : node.leftChildren;
 
-      const axisDist = Math.abs(point.position[axis] - node.point.position[axis])
-      
+      recur_search(leftSubtree, depth + 1)
+
+      const axisDist = Math.abs(point.position.toArray()[axis] - node.point.position.toArray()[axis])
+
       if (axisDist <= radius) {
         recur_search(rightSubtree, depth + 1)
       }

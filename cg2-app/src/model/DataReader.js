@@ -1,4 +1,5 @@
 import PointRep from "./PointRep";
+import * as THREE from "three";
 
 /**
  * Reads .off data from local files
@@ -25,8 +26,9 @@ class DataReader {
     // read vertices
     const [vertexCount, faceCount, _] = lines.shift().split(" ").map(Number);
     for (let i = 0; i < vertexCount; i++) {
-      const vertex = lines.shift().trim().split(" ").map(parseFloat);
-      points.addPoint(new PointRep(vertex));
+      const positionArray = lines.shift().trim().split(" ").map(parseFloat);
+      const vector = new THREE.Vector3(...positionArray);
+      points.addPoint(new PointRep(vector));
     }
     
     return points
