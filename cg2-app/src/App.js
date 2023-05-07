@@ -10,7 +10,7 @@ import PointCloud from './components/3D/PointCloud';
 
 const App = () => {
   // used to render the point cloud
-  const [dataName, setDataName] = useState("eight");
+  const [dataName, setDataName] = useState("cube");
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
 
@@ -18,18 +18,6 @@ const App = () => {
   const [highlightedPoints, setHighlightedPoints] = useState([]);
   const [highlightedLines, setHighlightedLines] = useState([]);
   const [displayLines, setDisplayLines] = useState(true);
-
-
-  const handlePointClick = (thePoint) => {
-    console.log(thePoint)
-    if (selectedPoints.includes(thePoint)) {
-      // if the point is already selected, remove it from the list
-      setSelectedPoints(selectedPoints.filter(point => point !== thePoint));
-    } else {
-      // otherwise, add it to the list
-      setSelectedPoints([...selectedPoints, thePoint]);
-    }
-  }
 
   useEffect(() => {
     const reader = new DataReader(dataName)
@@ -41,6 +29,8 @@ const App = () => {
     readData()
   }, [dataName])
 
+  const handlePointClick = (point) => {
+  }
 
   const onClearSelection = () => {
     setSelectedPoints([]);
@@ -68,25 +58,20 @@ const App = () => {
     setHighlightedPoints(newHighlightedPoints);
     setHighlightedLines(newHighlightedLines);
   }
-  // Renders the 3D point cloud
-  // Also renders the orbit controls, which allows for the user to rotate the camera using the mouse
-  // The camera is set to a position that is 2 units away from the origin (0, 0, 2)
-  // The canvas is grey
+  
+  
   return (
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
         <Canvas camera={{ position: [0, 0, 2] }} style={{ background: "grey" }} >
-          <ambientLight />
 
-          {/* point cloud */}
-          {/* TODO: I have no idea why it throws errors if it doesn't get the fully loadad points immediatly, this && is the workaround for now*/}
 
           {points.getAllPoints().length > 0 &&
             <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} />
           }
 
-          {/* draw lines */}
+          {/* lines */}
           {displayLines && highlightedLines.map((line, index) => (
             <Line3D key={index} start={line.start} end={line.end} />
           ))}

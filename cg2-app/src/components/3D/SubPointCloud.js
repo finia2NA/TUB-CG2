@@ -6,36 +6,41 @@ import { useLoader } from "react-three-fiber";
 import { Point, Points } from "@react-three/drei";
 import colors from "./Colors";
 
-function spliceArray(arr, maxSliceLength = 100) {
-  const result = [];
-  for (let i = 0; i < arr.length; i += maxSliceLength) {
-    result.push(arr.slice(i, i + maxSliceLength));
-  }
-  return result;
-}
-
-
 const SubPointCloud = props => {
 
-  // choose these
-  const pointsPerSubSubCloud = 1000
+  // the <Points/> tag can only handle a limited number of points, so we need to split the point cloud into smaller sub clouds
+  // this function splits the array into smaller arrays
+  function spliceArray(arr, maxSliceLength = 100) {
+    const result = [];
+    for (let i = 0; i < arr.length; i += maxSliceLength) {
+      result.push(arr.slice(i, i + maxSliceLength));
+    }
+    console.log("using " + result.length + " slices")
+    return result;
+  }
+
+  const pointsPerSubSubCloud = 100
   const vertexSize = 0.02
 
-  // used lated
   const myColor = colors[props.coloring]
   const slices = spliceArray(props.points, pointsPerSubSubCloud)
 
-  // the click handler
+  const handlePointClick = useCallback((event) => {
+    // guard against ray not hitting point
+    if (event.distanceToRay > vertexSize / 2) return
 
-  const onClick = useCallback((e) => {
-    if (e.distanceToRay < vertexSize / 2) {
-      props.handlePointClick(e.point)
-    }
-  }, [props])
+    event.stopPropagation()
+    const eventArray = event.object.geometry.attributes.position.array
+    const pointPosition = new THREE.Vector3(eventArray[event.index * 3], eventArray[event.index * 3 + 1], eventArray[event.index * 3 + 2])
+
+    console.log("clicked point at " + pointPosition.x + ", " + pointPosition.y + ", " + pointPosition.z)
+    // props.onClick(pointPosition)
+  }, [props.onClick])
+
 
   return <>
     {slices.map((slice, sliceIndex) =>
-      <Points key={sliceIndex} limit={pointsPerSubSubCloud} onClick={onClick}>
+      <Points key={sliceIndex} limit={pointsPerSubSubCloud} onPointerUp={e => handlePointClick(e)}>
         <pointsMaterial attach={"material"}
           map={props.texture}
           color={myColor}
