@@ -1,9 +1,8 @@
 // https://threejs.org/docs/#api/en/geometries/WireframeGeometry
 
 
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
-import { useLoader } from '@react-three/fiber'
-import * as THREE from 'three';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { useLoader } from '@react-three/fiber';
 
 
 const Cuboid3D = (props) => {

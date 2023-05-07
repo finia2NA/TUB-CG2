@@ -1,6 +1,6 @@
 // https://threejs.org/docs/#api/en/objects/Points
 
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import SubPointCloud from "./SubPointCloud";
 import circleImg from "../../asset/circle.png";
 import { useLoader } from "react-three-fiber";

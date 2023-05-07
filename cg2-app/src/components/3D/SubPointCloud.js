@@ -1,8 +1,6 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useMemo } from "react";
 import * as THREE from "three";
 
-import circleImg from "../../asset/circle.png";
-import { useLoader } from "react-three-fiber";
 import { Point, Points } from "@react-three/drei";
 import colors from "./Colors";
 

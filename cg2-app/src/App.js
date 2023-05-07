@@ -8,13 +8,12 @@ import { KDTreePointDataStructure as PointDataStructure } from './model/pointDat
 import DataReader from './model/DataReader'; // change import here to switch between data structures
 import PointCloud from './components/3D/PointCloud';
 import KDVisualizer from './components/3D/kdVisualizer';
-import Plane3D from './components/3D/Plane3D';
 
 const logging = true
 
 const App = () => {
   // used to render the point cloud
-  const [dataName, setDataName] = useState("cow");
+  const [dataName, setDataName] = useState("eight");
   const [dsDisplayDepth, setDsDisplayDepth] = useState(1);
 
   const [points, setPoints] = useState(new PointDataStructure());

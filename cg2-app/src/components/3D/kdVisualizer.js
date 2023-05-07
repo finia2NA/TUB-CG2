@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from "react";
-import { KDTreePointDataStructure, kdTreeNode } from "../../model/pointDataStructures";
+import { useMemo } from "react";
+import { KDTreePointDataStructure } from "../../model/pointDataStructures";
 import Plane3D from "./Plane3D";
 
 
@@ -7,13 +7,12 @@ import Plane3D from "./Plane3D";
 
 const KDVisualizer = (props) => {
 
-
-
   const nodes = useMemo(() => {
     if (!props.points.root) return;
     if (!(props.points instanceof KDTreePointDataStructure)) return;
 
     const treeRoot = props.points.root;
+    console.log(treeRoot)
 
     const myNodes = [];
 
@@ -42,7 +41,6 @@ const KDVisualizer = (props) => {
     <>
       {nodes && nodes.map((node, index) => {
         return (
-          console.log(node),
           <Plane3D axis={node.axis} position={node.point.position.toArray()} key={index} />
         )
       }

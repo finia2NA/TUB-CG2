@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
-import { CheckBox } from "@mui/icons-material";
 
 const searchSliderModes = {
   knn: {
