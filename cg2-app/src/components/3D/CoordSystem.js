@@ -24,37 +24,33 @@ const CoordLine = ({ axis, len }) => {
 export default function CoordSystem({ size }) {
 
   const axis = [0, 1, 2];
-  const dataPoints = axis.map((ax) => {
-    const label = ax === 0 ? "X" : ax === 1 ? "Y" : "Z";
-        const positions = [[0, 0, 0], [0, 0, 0]];
-        positions[0][ax] = size / 2 + 1;
-        positions[1][ax] = -size / 2 + 1;
-        return {label, positions}
-  })
+  const datapoints = []
+
+  for (let i = 0; i < 3; i++) {
+    for (const sign of [-1, +1]) {
+      let label = i === 0 ? "X" : i === 1 ? "Y" : "Z";
+      if (sign === -1) label = "-" + label;
+      const position = [0, 0, 0];
+      position[i] = sign * (size / 2 + 1)
+      datapoints.push([position, label])
+    }
+  }
 
   return (
     <group>
-      {axis.map((ax, i) => {
-        const label = ax === 0 ? "X" : ax === 1 ? "Y" : "Z";
-        const positions = [[0, 0, 0], [0, 0, 0]];
-        positions[0][ax] = size / 2 + 1;
-        positions[1][ax] = -size / 2 + 1;
-        // TODO: fix key issue
-        return (
-          <>
-            {positions.map((position, j) => (
-              <Text
-                key={j}
-                color="white" // default
-                anchorX="center" // default
-                anchorY="middle" // default
-                position={position}
-                scale={[2, 2, 2]}
-              >{(j === 0 ? "+" : "-") + label}</Text>)
-            )}
-          </>
-        )
-      })}
+      {datapoints.map((datapoint, i) => (
+        <Text
+          key={i}
+          color="white" // default
+          anchorX="center" // default
+          anchorY="middle" // default
+          position={datapoint[0]}
+          scale={[2, 2, 2]}
+        >{datapoint[1]}</Text>
+      ))}
+
+
+
       {axis.map((ax) => (
         <CoordLine key={ax} axis={ax} len={size} />
       ))}

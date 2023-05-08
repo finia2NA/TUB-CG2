@@ -15,8 +15,8 @@ const logging = true
 
 const App = () => {
   // used to render the point cloud
-  const [dataName, setDataName] = useState("cube");
-  const [dsDisplayDepth, setDsDisplayDepth] = useState(1);
+  const [dataName, setDataName] = useState("cow");
+  const [dsDisplayDepth, setDsDisplayDepth] = useState(2);
 
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
@@ -113,9 +113,7 @@ const App = () => {
           ))}
 
           {/* Visualizing DataStructure */}
-          {/* <KDVisualizer points={points} displayDepth={dsDisplayDepth} /> */}
-
-          <Plane3D position={[1, 1, 1]} axis={1} limits={[[-1, 1], [-1, 1], [-1, 1]]} />
+          <KDVisualizer points={points} displayDepth={dsDisplayDepth} />
 
           {displayCoords && <CoordSystem size={10} />}
 

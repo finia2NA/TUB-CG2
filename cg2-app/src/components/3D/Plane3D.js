@@ -42,10 +42,10 @@ const Plane3D = (props) => {
 
 
   return (
-    <mesh position={position} scale={scaling}
+    <mesh position={position} scale={scaling} 
       rotation={rotation}>
       <planeGeometry />
-      <meshBasicMaterial color="black" transparent opacity={0.3} side={DoubleSide} />
+      <meshBasicMaterial color="black" transparent opacity={0.3} side={DoubleSide} depthTest={false} />
     </mesh>
   );
 }

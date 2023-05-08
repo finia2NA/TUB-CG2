@@ -11,7 +11,8 @@ const SubPointCloud = props => {
 
 
   const pointsPerSubSubCloud = 5000
-  const vertexSize = 0.005
+  // const vertexSize = 0.005
+  const vertexSize = 0.01
 
 
   const myColor = colors[props.coloring]
