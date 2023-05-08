@@ -6,7 +6,8 @@ const Plane3D = (props) => {
 
   // the position is 0 in 2 dimensions and the actual position in the axis direction
   let rotation = [0, 0, 0];
-  rotation[props.axis] = Math.PI / 2;
+  if (props.axis === 0) { rotation[1] = Math.PI / 2}
+  else if (props.axis === 1) { rotation[0] = Math.PI / 2}
   // let position = [0, 0, 0];
   // position[props.axis] = props.position[props.axis];
   // TODO: change this back to the above when issue of kdTree is fixed 
