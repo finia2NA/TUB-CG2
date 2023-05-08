@@ -42,7 +42,7 @@ const Sidemenu = (props) => {
 
 
   return (
-    <div style={{ overflow: "auto", height: "100%"}}>
+    <div style={{ overflow: "auto", height: "100%" }}>
       <h1>Side Menu</h1>
       <div>
         <h2>Gather Controls</h2>
@@ -77,6 +77,8 @@ const Sidemenu = (props) => {
         <FormControl>
           <FormControlLabel control={<Checkbox checked={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
           } />} label="Show Lines" />
+          <FormControlLabel control={<Checkbox checked={props.displayCoords} onChange={(e) => props.setDisplayCoords(e.target.checked)
+          } />} label="Show Coordinate System" />
           <FormLabel>Datastructure Display Depth</FormLabel>
           <Slider
             value={props.dsDisplayDepth}
@@ -84,7 +86,7 @@ const Sidemenu = (props) => {
             valueLabelDisplay="auto"
             step={1}
             min={0}
-            max={5}
+            max={8}
           />
         </FormControl>
 
