@@ -15,6 +15,7 @@ const SubPointCloud = props => {
 
 
   const myColor = colors[props.coloring]
+  
   const slices = useMemo(() => {
     // the <Points/> tag can only handle a limited number of points, so we need to split the point cloud into smaller sub clouds
     // this function splits the array into smaller arrays
@@ -26,12 +27,7 @@ const SubPointCloud = props => {
       if (logging) console.log(props.coloring + ": using " + result.length + " slices")
       return result;
     }
-
     return sliceArray(props.points, pointsPerSubSubCloud)
-
-
-
-
 
   }, [props.points, props.coloring])
 
