@@ -1,23 +1,26 @@
 import { Text } from "@react-three/drei";
 import { Vector3 } from "three";
+import Line3D from "./Line3D";
 
 
 const CoordLine = ({ axis, len }) => {
   const start = [0, 0, 0];
   start[axis] = -len / 2;
 
-  // TODO: fix this
   const end = [0, 0, 0];
   end[axis] = len / 2;
 
   const startVector = new Vector3(...start)
   const endVector = new Vector3(...end)
 
+  const myColor = (["red","green","blue"])[axis]
+
   return (
-    <line>
-      <bufferGeometry attach="geometry" setFromPoints={[startVector, endVector]} />
-      <lineBasicMaterial attach="material" color="white" />
-    </line>
+    // <line>
+    //   <bufferGeometry attach="geometry" setFromPoints={[startVector, endVector]} />
+    //   <lineBasicMaterial attach="material" color="white" />
+    // </line>
+    <Line3D start={startVector} end={endVector} color={myColor} />
   )
 };
 
