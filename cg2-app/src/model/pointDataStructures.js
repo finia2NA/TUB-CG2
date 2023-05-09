@@ -28,8 +28,8 @@ export class kdTreeNode {
 class PointDataStructure {
   getAllPoints() { };
   addPoint(point) { };
-  knnSearch(point, k) { };
-  radiusSearch(point, radius) { };
+  knnSearch(targetPoint, k) { };
+  radiusSearch(targetPoint, radius) { };
   includes(point) { };
 
   // this function should return a way to visualize the data structure.
@@ -121,47 +121,47 @@ export class KDTreePointDataStructure extends PointDataStructure {
   // This function performs a k-nearest neighbor search on a tree data structure
   // It takes a point and a number k as input and returns an array of the k nearest points to the input point
 
-  knnSearch(point, k) {
+  knnSearch(targetPoint, k) {
     // Initialize an empty array to hold the nearest points
     const nearest = [];
     // Define a recursive helper function to search the tree
-    const recur_search = (node, depth) => {
-      // If the current node is null, return
-      if (node === null) { return; }
+    const recur_search = (currentNode, depth) => {
+      // If the current node is null, we have found a leaf node and can return
+      if (currentNode === null) { return; }
 
       // Determine which axis to compare based on the current depth
       const axis = depth % 3
       // Check if the point is on the left or right side of the current node
-      const isLeft = point.position.toArray()[axis] < node.point.position.toArray()[axis];
+      const isLeft = targetPoint.position.toArray()[axis] < currentNode.point.position.toArray()[axis];
 
       // Define the left and right subtrees based on the point's position relative to the current node
-      let leftSubtree = isLeft ? node.leftChildren : node.rightChildren;
-      let rightSubtree = isLeft ? node.rightChildren : node.leftChildren;
+      let leftSubtree = isLeft ? currentNode.leftChildren : currentNode.rightChildren;
+      let rightSubtree = isLeft ? currentNode.rightChildren : currentNode.leftChildren;
 
       // Recursively search the left subtree
       recur_search(leftSubtree, depth + 1)
 
       // If the nearest array is not full, add the current node's point and sort the array by distance to the input point
       if (nearest.length < k) {
-        nearest.push(node.point)
-        nearest.sort((a, b) => a.distanceTo(point) - b.distanceTo(point))
+        nearest.push(currentNode.point)
+        nearest.sort((a, b) => a.distanceTo(targetPoint) - b.distanceTo(targetPoint))
       } else {
         // Otherwise, compare the distance between the input point and the current node to the distance between the input point and the farthest point in the nearest array
-        const dist1 = point.distanceTo(node.point)
-        const dist2 = point.distanceTo(nearest[nearest.length - 1])
+        const distToCurrentNode = targetPoint.distanceTo(currentNode.point)
+        const distToLastOfArray = targetPoint.distanceTo(nearest[nearest.length - 1])
         // If the current node is closer, replace the farthest point in the nearest array with the current node's point and sort the array by distance to the input point
-        if (dist1 < dist2) {
+        if (distToCurrentNode < distToLastOfArray) {
           nearest.pop();
-          nearest.push(node.point);
-          nearest.sort((a, b) => a.distanceTo(point) - b.distanceTo(point));
+          nearest.push(currentNode.point);
+          nearest.sort((a, b) => a.distanceTo(targetPoint) - b.distanceTo(targetPoint));
         }
       }
 
       // Calculate the distance between the input point and the current node along the axis being compared
-      const axisDist = Math.abs(point.position.toArray()[axis] - node.point.position.toArray()[axis])
+      const axisDist = Math.abs(targetPoint.position.toArray()[axis] - currentNode.point.position.toArray()[axis])
 
-      // If the nearest array is not full or the axis distance is less than the distance to the farthest point in the nearest array, recursively search the right subtree
-      if (nearest.length < k || axisDist <= point.distanceTo(nearest[nearest.length - 1])) {
+      // Only if the nearest array is not full or the axis distance is less than the distance to the farthest point in the nearest array, recursively search the right subtree
+      if (nearest.length < k || axisDist <= targetPoint.distanceTo(nearest[nearest.length - 1])) {
         recur_search(rightSubtree, depth + 1)
       }
     }
@@ -169,15 +169,15 @@ export class KDTreePointDataStructure extends PointDataStructure {
     // Call the recursive search function on the root node of the tree
     recur_search(this.root, 0)
 
-    // Return the k nearest points
-    return nearest.slice(0, k + 1);
+    // Return the nearest array
+    return nearest
 
   }
 
   // This function performs a radius search on a tree data structure
   // It takes a point and a radius as input and returns an array of all points within the given radius of the input point
 
-  radiusSearch(point, radius) {
+  radiusSearch(targetPoint, radius) {
     // Initialize an empty array to hold the nearest points
     const nearest = [];
     // Define a recursive helper function to search the tree
@@ -186,14 +186,14 @@ export class KDTreePointDataStructure extends PointDataStructure {
       if (node === null) { return };
 
       // If the distance between the input point and the current node is less than or equal to the radius, add the current node's point to the nearest array
-      if (point.distanceTo(node.point) <= radius) {
+      if (targetPoint.distanceTo(node.point) <= radius) {
         nearest.push(node.point)
       }
 
       // Determine which axis to compare based on the current depth
       const axis = depth % 3
       // Check if the point is on the left or right side of the current node
-      const isLeft = point.position.toArray()[axis] < node.point.position.toArray()[axis];
+      const isLeft = targetPoint.position.toArray()[axis] < node.point.position.toArray()[axis];
 
       // Define the left and right subtrees based on the point's position relative to the current node
       let leftSubtree = isLeft ? node.leftChildren : node.rightChildren;
@@ -203,9 +203,10 @@ export class KDTreePointDataStructure extends PointDataStructure {
       recur_search(leftSubtree, depth + 1)
 
       // Calculate the distance between the input point and the current node along the axis being compared
-      const axisDist = Math.abs(point.position.toArray()[axis] - node.point.position.toArray()[axis])
+      const axisDist = Math.abs(targetPoint.position.toArray()[axis] - node.point.position.toArray()[axis])
 
-      // If the axis distance is less than or equal to the radius, recursively search the right subtree
+      // If the axis distance is less than or equal to the radius, we overshot!
+      // Recursively search the right subtree too!
       if (axisDist <= radius) {
         recur_search(rightSubtree, depth + 1)
       }
