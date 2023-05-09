@@ -24,13 +24,18 @@ class DataReader {
     }
 
     // read vertices
+
+    // The first line afther the header contains the number of vertices, faces and edges.
+    // We will just be iterating over the vertices.
     const [vertexCount, faceCount, _] = lines.shift().split(" ").map(Number);
+
+    // an OFF is just a list of points, so we can simply read each line and add a representation of it to the array to be filled
     for (let i = 0; i < vertexCount; i++) {
       const positionArray = lines.shift().trim().split(" ").map(parseFloat);
       const vector = new THREE.Vector3(...positionArray);
       points.addPoint(new PointRep(vector));
     }
-    
+
     return points
 
     // read faces

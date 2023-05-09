@@ -89,7 +89,7 @@ const Sidemenu = (props) => {
         />
         <FormControl>
           <FormControlLabel control={<Checkbox checked={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
-          } />} label="Show Lines" />
+          } />} label="Show Connections" />
           <FormControlLabel control={<Checkbox checked={props.displayCoords} onChange={(e) => props.setDisplayCoords(e.target.checked)
           } />} label="Show Coordinate System" />
           <FormLabel>Datastructure Display Depth</FormLabel>

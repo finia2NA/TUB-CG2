@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Canvas } from 'react-three-fiber';
-import { GizmoHelper, OrbitControls, Stats } from '@react-three/drei';
+import { OrbitControls, Stats } from '@react-three/drei';
 import Sidemenu from './components/UI/Sidemenu';
 import Line3D from './components/3D/Line3D';
 import Card from './components/UI/Card';
@@ -8,33 +8,35 @@ import { KDTreePointDataStructure as PointDataStructure } from './model/pointDat
 import DataReader from './model/DataReader'; // change import here to switch between data structures
 import PointCloud from './components/3D/PointCloud';
 import KDVisualizer from './components/3D/kdVisualizer';
-import Plane3D from './components/3D/Plane3D';
 import CoordSystem from './components/3D/CoordSystem';
 
 const logging = true
 
 const App = () => {
-  // used to render the point cloud
-  const [dataName, setDataName] = useState("cow");
-  const [dsDisplayDepth, setDsDisplayDepth] = useState(2);
+  // STATE
 
+  // Model to load
+  const [dataName, setDataName] = useState("cow");
+
+  // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
   const [selectedPoints, setSelectedPoints] = useState([]);
-
-  // used to render query results
   const [highlightedPoints, setHighlightedPoints] = useState([]);
+
+  // Display Control State
   const [highlightedLines, setHighlightedLines] = useState([]);
-  const [displayLines, setDisplayLines] = useState(true);
-  const [displayCoords, setDisplayCoords] = useState(true);
+  const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
+  const [displayLines, setDisplayLines] = useState(false);
+  const [displayCoords, setDisplayCoords] = useState(false);
   const [vertexSize, setVertexSize] = useState(0.0125);
 
+  // Keyboard State
   const [shiftPressed, setShiftPressed] = useState(false);
   onkeydown = (e) => {
     if (e.key === "Shift") {
       setShiftPressed(true);
     }
   }
-
   onkeyup = (e) => {
     if (e.key === "Shift") {
       setShiftPressed(false);
@@ -42,6 +44,7 @@ const App = () => {
   }
 
 
+  // Load model on mount
   useEffect(() => {
     const reader = new DataReader(dataName)
     const readData = async () => {
@@ -56,6 +59,7 @@ const App = () => {
 
   }, [dataName])
 
+  // Function that is called when point is clicked 
   const handlePointClick = (position) => {
     const matchingPoints = points.getAllPoints().filter(p => p.distanceToPosition(position) < 0.0001)
 
@@ -87,7 +91,11 @@ const App = () => {
   const onPointQuery = (gatherMethod = "knn", gatherParameter = 10) => {
     const newHighlightedPoints = [];
     const newHighlightedLines = [];
-    const search = gatherMethod === "knn" ? points.knnSearch.bind(points) : points.radiusSearch.bind(points);
+
+    const search = gatherMethod === "knn" ?
+      points.knnSearch.bind(points) :
+      points.radiusSearch.bind(points);
+
     for (const p of selectedPoints) {
       const targets = search(p, gatherParameter)
       newHighlightedPoints.push(...targets);
@@ -104,6 +112,7 @@ const App = () => {
       <Card style={{ flex: 5 }}>
         <Canvas camera={{ position: [0, 0, 2], near: 0.001 }} style={{ background: "grey" }} >
 
+          {/* points */}
           {points.getAllPoints().length > 0 &&
             <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
           }
@@ -126,6 +135,7 @@ const App = () => {
 
       </Card>
 
+      {/* side menu */}
       <Card style={{ flex: 2 }} >
         <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} />
       </Card>

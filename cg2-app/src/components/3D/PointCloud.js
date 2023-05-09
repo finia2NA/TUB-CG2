@@ -13,6 +13,7 @@ const PointCloud = (props) => {
   const CircleImg = useLoader(THREE.TextureLoader, circleImg);
 
 
+  // Separate Points into which color they should be rendered in
   const { vanillaPoints, selectedPoints, highlightedPoints } = useMemo(() => {
     console.log("recomputing points in point cloud")
 
@@ -30,18 +31,15 @@ const PointCloud = (props) => {
         vanillaPoints.push(p);
       }
     }
-
     return { vanillaPoints, selectedPoints, highlightedPoints };
   }, [props.points, props.selectedPoints, props.highlightedPoints]);
 
-  const handlePointClick = (position) => { props.handlePointClick(position) }
-
-
   return (
+    // render each color as its own subcloud
     <>
-      <SubPointCloud points={vanillaPoints} coloring="vanilla" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
-      <SubPointCloud points={selectedPoints} coloring="selected" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
-      <SubPointCloud points={highlightedPoints} coloring="highlighted" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
+      <SubPointCloud points={vanillaPoints} coloring="vanilla" texture={CircleImg} handlePointClick={props.handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
+      <SubPointCloud points={selectedPoints} coloring="selected" texture={CircleImg} handlePointClick={props.handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
+      <SubPointCloud points={highlightedPoints} coloring="highlighted" texture={CircleImg} handlePointClick={props.handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
     </>
   )
 

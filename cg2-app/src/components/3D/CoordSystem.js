@@ -13,7 +13,7 @@ const CoordLine = ({ axis, len }) => {
   const startVector = new Vector3(...start)
   const endVector = new Vector3(...end)
 
-  const myColor = (["red","green","blue"])[axis]
+  const myColor = (["red", "green", "blue"])[axis]
 
   return (
     // <line>
@@ -31,8 +31,8 @@ export default function CoordSystem({ size }) {
 
   for (let i = 0; i < 3; i++) {
     for (const sign of [-1, +1]) {
-      let label = i === 0 ? "X" : i === 1 ? "Y" : "Z";
-      if (sign === -1) label = "-" + label;
+      const plusminus = sign === -1 ? "-" : "+";
+      const label = plusminus + (i === 0 ? "X" : i === 1 ? "Y" : "Z");
       const position = [0, 0, 0];
       position[i] = sign * (size / 2 + 1)
       datapoints.push([position, label])

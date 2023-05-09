@@ -4,18 +4,18 @@ import * as THREE from "three";
 import { Point, Points } from "@react-three/drei";
 import colors from "./Colors";
 
-const logging = true
+const logging = false
 
 const SubPointCloud = props => {
 
-
-
+  // Constants
   const pointsPerSubSubCloud = 5000
-  // const vertexSize = 0.005
   const vertexSize = props.vertexSize ? props.vertexSize : 0.01
 
-
   const myColor = colors[props.coloring]
+
+
+  // --
 
   const slices = useMemo(() => {
     // the <Points/> tag can only handle a limited number of points, so we need to split the point cloud into smaller sub clouds
@@ -32,6 +32,10 @@ const SubPointCloud = props => {
 
   }, [props.points, props.coloring])
 
+
+  // --
+
+  // The handler that is called when a point is clicked
   const handlePointClick = useCallback((event) => {
 
     if (!props.isSelectMode) {
@@ -54,6 +58,7 @@ const SubPointCloud = props => {
     props.handlePointClick(pointPosition)
   }, [props, vertexSize])
 
+  // --
 
   return <>
     {slices.map((slice, sliceIndex) =>
