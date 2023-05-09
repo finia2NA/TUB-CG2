@@ -39,9 +39,9 @@ const PointCloud = (props) => {
 
   return (
     <>
-      <SubPointCloud points={vanillaPoints} coloring="vanilla" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} />
-      <SubPointCloud points={selectedPoints} coloring="selected" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} />
-      <SubPointCloud points={highlightedPoints} coloring="highlighted" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} />
+      <SubPointCloud points={vanillaPoints} coloring="vanilla" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
+      <SubPointCloud points={selectedPoints} coloring="selected" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
+      <SubPointCloud points={highlightedPoints} coloring="highlighted" texture={CircleImg} handlePointClick={handlePointClick} isSelectMode={props.isSelectMode} vertexSize={props.vertexSize} />
     </>
   )
 

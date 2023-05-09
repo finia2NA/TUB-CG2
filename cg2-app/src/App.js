@@ -26,6 +26,7 @@ const App = () => {
   const [highlightedLines, setHighlightedLines] = useState([]);
   const [displayLines, setDisplayLines] = useState(true);
   const [displayCoords, setDisplayCoords] = useState(true);
+  const [vertexSize, setVertexSize] = useState(0.0125);
 
   const [shiftPressed, setShiftPressed] = useState(false);
   onkeydown = (e) => {
@@ -104,7 +105,7 @@ const App = () => {
         <Canvas camera={{ position: [0, 0, 2], near: 0.001 }} style={{ background: "grey" }} >
 
           {points.getAllPoints().length > 0 &&
-            <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} />
+            <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
           }
 
           {/* lines */}
@@ -113,7 +114,7 @@ const App = () => {
           ))}
 
           {/* Visualizing DataStructure */}
-          <KDVisualizer points={points} displayDepth={dsDisplayDepth} />
+          <KDVisualizer points={points} displayDepth={dsDisplayDepth} vertexSize={vertexSize} />
 
           {displayCoords && <CoordSystem size={10} />}
 
@@ -126,7 +127,7 @@ const App = () => {
       </Card>
 
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} />
       </Card>
 
     </div >

@@ -22,6 +22,8 @@ const searchSliderModes = {
   }
 }
 
+const vertexSizeSliderScale = x => (1 / (Math.pow(2, (x - 1)))).toFixed(3);
+
 const Sidemenu = (props) => {
 
   const [searchSliderMode, setSearchSliderMode] = useState(searchSliderModes.knn);
@@ -74,6 +76,17 @@ const Sidemenu = (props) => {
       </div>
       <div>
         <h2>Display Controls</h2>
+        <FormLabel>Vertex Size</FormLabel>
+        <Slider
+          // value={props.vertexSize}
+          onChange={(e) => props.setVertexSize((vertexSizeSliderScale(e.target.value)))}
+          valueLabelDisplay="auto"
+          defaultValue={4}
+          step={1}
+          min={1}
+          max={10}
+          scale={vertexSizeSliderScale}
+        />
         <FormControl>
           <FormControlLabel control={<Checkbox checked={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
           } />} label="Show Lines" />
