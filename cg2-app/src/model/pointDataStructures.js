@@ -76,6 +76,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
     super();
     this.points = [];
     this.root = null;
+    this.selfSelection = false;
   }
 
   getAllPoints() {
@@ -132,18 +133,20 @@ export class KDTreePointDataStructure extends PointDataStructure {
       // Determine which axis to compare based on the current depth
       const axis = depth % 3
       // Check if the point is on the left or right side of the current node
-      const isLeft = targetPoint.position.toArray()[axis] < currentNode.point.position.toArray()[axis];
+      const leftIsCloser = targetPoint.position.toArray()[axis] < currentNode.point.position.toArray()[axis];
 
       // Define the left and right subtrees based on the point's position relative to the current node
-      let closerSubtree = isLeft ? currentNode.leftChildren : currentNode.rightChildren;
-      let fartherSubtree = isLeft ? currentNode.rightChildren : currentNode.leftChildren;
+      let closerSubtree = leftIsCloser ? currentNode.leftChildren : currentNode.rightChildren;
+      let fartherSubtree = leftIsCloser ? currentNode.rightChildren : currentNode.leftChildren;
 
       // Recursively search the left subtree
       recur_search(closerSubtree, depth + 1)
 
       // If the nearest array is not full, add the current node's point and sort the array by distance to the input point
       if (nearest.length < k) {
-        nearest.push(currentNode.point)
+        if (this.selfSelection || currentNode.point !== targetPoint) {
+          nearest.push(currentNode.point);
+        }
         nearest.sort((a, b) => a.distanceTo(targetPoint) - b.distanceTo(targetPoint))
       } else {
         // Otherwise, compare the distance between the input point and the current node to the distance between the input point and the farthest point in the nearest array
@@ -152,7 +155,9 @@ export class KDTreePointDataStructure extends PointDataStructure {
         // If the current node is closer, replace the farthest point in the nearest array with the current node's point and sort the array by distance to the input point
         if (distToCurrentNode < distToLastOfArray) {
           nearest.pop();
-          nearest.push(currentNode.point);
+          if (this.selfSelection || currentNode.point !== targetPoint) {
+            nearest.push(currentNode.point);
+          }
           nearest.sort((a, b) => a.distanceTo(targetPoint) - b.distanceTo(targetPoint));
         }
       }
