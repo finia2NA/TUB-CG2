@@ -15,6 +15,7 @@ const Plane3D = (props) => {
   let scaling = [1, 1, 1];
 
 
+  // figure out proper scaling of the plane before it gets rotated:
   if (props.axis === 0) {
     const yScale = props.limits[1][1] - props.limits[1][0];
     const zScale = props.limits[2][1] - props.limits[2][0];
@@ -28,8 +29,6 @@ const Plane3D = (props) => {
     position[0] = props.limits[0][0] + xScale / 2;
     position[2] = props.limits[2][0] + zScale / 2;
     scaling = [xScale, zScale, 1]
-
-
   }
   else if (props.axis === 2) {
     const xScale = props.limits[0][1] - props.limits[0][0];
@@ -42,7 +41,7 @@ const Plane3D = (props) => {
 
 
   return (
-    <mesh position={position} scale={scaling} 
+    <mesh position={position} scale={scaling}
       rotation={rotation}>
       <planeGeometry />
       <meshBasicMaterial color="black" transparent opacity={0.3} side={DoubleSide} depthTest={false} />
