@@ -25,8 +25,6 @@ const KDVisualizer = (props) => {
       // guards: return if...
       //.. we have reachted the desired depth
       if (depthToGo === 0) return;
-      //.. we have reached a leaf node that does no slice through space
-      if (!node.leftChildren && !node.rightChildren) return;
 
       result.push(new LimitedNode(node, limits));
 
@@ -36,8 +34,10 @@ const KDVisualizer = (props) => {
       const leftLimits = limits.map(a => a.slice()) // this is a deep copy of the array
       leftLimits[node.axis][1] = node.point.position.toArray()[node.axis];
 
-      recursiveNodeFinder(node.leftChildren, depthToGo - 1, leftLimits);
-      recursiveNodeFinder(node.rightChildren, depthToGo - 1, rightLimits);
+      if (node.leftChildren)
+        recursiveNodeFinder(node.leftChildren, depthToGo - 1, leftLimits);
+      if (node.rightChildren)
+        recursiveNodeFinder(node.rightChildren, depthToGo - 1, rightLimits);
 
     }
 
