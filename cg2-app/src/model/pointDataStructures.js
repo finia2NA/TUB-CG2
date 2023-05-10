@@ -1,3 +1,5 @@
+import quickselect from "quickselect";
+
 // a class that represents a cube of an octree by specifying two opposite corners
 class octreeCube {
   constructor(position, dimensions) {
@@ -100,20 +102,21 @@ export class KDTreePointDataStructure extends PointDataStructure {
       // Determine which axis to split on based on the depth.
       const axis = depth % 3;
 
-      // Sort the points by their position along the current axis.
-      points.sort((a, b) => a.position.toArray()[axis] - b.position.toArray()[axis]);
 
-      // Find the median point and create a new node with it.
       const medianIndex = Math.floor(points.length / 2);
+      quickselect(points, medianIndex, 0, points.length - 1, (a, b) => (a, b) => a.position.toArray())
+      points.sort((a, b) => a.position.toArray()[axis] - b.position.toArray()[axis]);
+      // Find the median point and create a new node with it.
       const median = points[medianIndex];
-      const node = new kdTreeNode(median, axis);
+      const thisNode = new kdTreeNode(median, axis);
+
 
       // Recursively build the left and right subtrees.
-      node.leftChildren = recur_buildTree(points.slice(0, medianIndex), depth + 1);
-      node.rightChildren = recur_buildTree(points.slice(medianIndex + 1), depth + 1);
+      thisNode.leftChildren = recur_buildTree(points.slice(0, medianIndex), depth + 1);
+      thisNode.rightChildren = recur_buildTree(points.slice(medianIndex + 1), depth + 1);
 
       // Return the completed node.
-      return node;
+      return thisNode;
     }
 
     this.root = recur_buildTree(this.points, 0);
@@ -163,10 +166,10 @@ export class KDTreePointDataStructure extends PointDataStructure {
       }
 
       // Calculate the distance between the input point and the current node along the axis being compared
-      const axisDist = Math.abs(targetPoint.position.toArray()[axis] - currentNode.point.position.toArray()[axis])
+      const distAlongAxis = Math.abs(targetPoint.position.toArray()[axis] - currentNode.point.position.toArray()[axis])
 
       // Only if the nearest array is not full or the axis distance is less than the distance to the farthest point in the nearest array, recursively search the farther subtree
-      if (nearest.length < k || axisDist <= targetPoint.distanceTo(nearest[nearest.length - 1])) {
+      if (nearest.length < k || distAlongAxis <= targetPoint.distanceTo(nearest[nearest.length - 1])) {
         recur_search(fartherSubtree, depth + 1)
       }
     }

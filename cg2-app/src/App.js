@@ -129,7 +129,7 @@ const App = () => {
 
           {/* controls */}
           <OrbitControls />
-          <Stats />
+          {/* <Stats /> */}
 
         </Canvas>
 
