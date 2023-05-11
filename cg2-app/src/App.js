@@ -6,17 +6,21 @@ import Line3D from './components/3D/Line3D';
 import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import DataReader from './model/DataReader'; // change import here to switch between data structures
-import PointCloud from './components/3D/PointCloud';
 import KDVisualizer from './components/3D/kdVisualizer';
 import CoordSystem from './components/3D/CoordSystem';
+import PointCloud2 from './components/3D/PointCloud2';
 
 const logging = true
+const useOldPointCloud = false
 
 const App = () => {
+
+  const canvasRef = React.useRef(null);
+
   // STATE
 
   // Model to load
-  const [dataName, setDataName] = useState("cow");
+  const [dataName, setDataName] = useState("dragon");
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
@@ -28,7 +32,7 @@ const App = () => {
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
   const [displayLines, setDisplayLines] = useState(false);
   const [displayCoords, setDisplayCoords] = useState(false);
-  const [vertexSize, setVertexSize] = useState(0.0125);
+  const [vertexSize, setVertexSize] = useState(0.5);
 
   // Keyboard State
   const [shiftPressed, setShiftPressed] = useState(false);
@@ -110,11 +114,17 @@ const App = () => {
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
-        <Canvas camera={{ position: [0, 0, 2], near: 0.001 }} style={{ background: "grey" }} >
+        <Canvas
+          camera={{ position: [0, 0, 2], near: 0.001 }}
+          style={{ background: "grey" }}
+          ref={canvasRef}
+          id='canvas'>
 
           {/* points */}
-          {points.getAllPoints().length > 0 &&
-            <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
+          {!useOldPointCloud && points.getAllPoints().length > 0 &&
+            // <SubPointCloud2 points={points} coloring="highlighted" vertexSize={vertexSize} />
+            <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
+
           }
 
           {/* lines */}

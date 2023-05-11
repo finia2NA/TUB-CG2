@@ -84,7 +84,7 @@ const Sidemenu = (props) => {
           defaultValue={4}
           step={1}
           min={1}
-          max={10}
+          max={12}
           scale={vertexSizeSliderScale}
         />
         <FormControl>
