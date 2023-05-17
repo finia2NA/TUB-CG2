@@ -21,6 +21,7 @@ const Surface3D = ({ points = exampleData }) => {
     return null
   }
 
+  // TODO: useMemo like all of this
   const numU = points.length;
   const numV = points[0].length;
 
