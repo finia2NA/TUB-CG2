@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider, TextField } from "@mui/material";
+import { Collapsing } from "./Containers";
 
 const searchSliderModes = {
   knn: {
@@ -46,8 +47,7 @@ const Sidemenu = (props) => {
   return (
     <div style={{ overflow: "auto", height: "100%" }}>
       <h1>Side Menu</h1>
-      <div>
-        <h2>Gather Controls</h2>
+      <Collapsing title={<h2>Gather Controls</h2>}>
         <FormControl>
           <FormLabel>Slider Mode</FormLabel>
           <Select defaultValue={"knn"} onChange={handleDropdownChange}>
@@ -65,17 +65,14 @@ const Sidemenu = (props) => {
           />
           <Button variant="contained" color="primary" onClick={onPointQuery}>Gather</Button>
         </FormControl>
-      </div>
-      <div>
-        <h2>Selection Controls</h2>
-
+      </Collapsing>
+      <Collapsing title={<h2>Selection Controls</h2>}>
         <FormControl>
           <p style={{ margin: "-16px 0px 8px 0px", color: "grey" }}>Click on a point while holding shift to select it</p>
           <Button variant="contained" color="secondary" onClick={props.onClearSelection}>Clear Selection</Button>
         </FormControl>
-      </div>
-      <div>
-        <h2>Display Controls</h2>
+      </Collapsing>
+      <Collapsing title={<h2>Display Controls</h2>}>
         <FormLabel>Vertex Size</FormLabel>
         <Slider
           // value={props.vertexSize}
@@ -103,7 +100,7 @@ const Sidemenu = (props) => {
           />
         </FormControl>
 
-      </div>
+      </Collapsing>
     </div >
   );
 }

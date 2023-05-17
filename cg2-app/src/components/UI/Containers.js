@@ -6,19 +6,11 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 // This file countains various UI wrappers for components
 
 const LightContainer = styled.div`
-  border-top: 1px solid grey;
-  margin: 10px;
   padding: 4px;
 `;
 
 const Creme = styled.div`
   margin: 8px 12px 8px;
-`;
-
-const SectionHeading = styled.span`
-  font-family: "Roboto", sans-serif;
-  font-weight: 200;
-  font-size: 18px;
 `;
 
 const Collapsing = (props) => {
@@ -28,9 +20,9 @@ const Collapsing = (props) => {
     <LightContainer>
       <div
         style={{ display: "flex", alignItems: "center" }}
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpen(prev => !prev)}
       >
-        <SectionHeading>{props.name}</SectionHeading>
+        {props.title}
 
         {open && <ExpandLess />}
         {!open && <ExpandMore />}
