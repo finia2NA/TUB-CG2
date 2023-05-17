@@ -1,6 +1,8 @@
 import { useState } from "react";
-import Button from '@mui/material/Button';
-import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider, TextField } from "@mui/material";
+import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
+import { Collapsing, FullWidthFormControl, H3Wrapper } from "./Containers";
+import { Button } from "./Button";
+import { Hint, PadlessH1, PadlessH2, PadlessH3 } from "./Text";
 
 const searchSliderModes = {
   knn: {
@@ -45,65 +47,81 @@ const Sidemenu = (props) => {
 
   return (
     <div style={{ overflow: "auto", height: "100%" }}>
-      <h1>Side Menu</h1>
-      <div>
-        <h2>Gather Controls</h2>
-        <FormControl>
-          <FormLabel>Slider Mode</FormLabel>
-          <Select defaultValue={"knn"} onChange={handleDropdownChange}>
-            <MenuItem value={"knn"}>K-nearest-neighbour</MenuItem>
-            <MenuItem value={"radius"}>Radius</MenuItem>
-          </Select>
-          <FormLabel>{searchSliderMode.sliderText}</FormLabel>
-          <Slider
-            value={searchSliderValue}
-            onChange={handleSliderChange}
-            valueLabelDisplay="auto"
-            step={searchSliderMode.step}
-            min={searchSliderMode.min}
-            max={searchSliderMode.max}
-          />
-          <Button variant="contained" color="primary" onClick={onPointQuery}>Gather</Button>
-        </FormControl>
-      </div>
-      <div>
-        <h2>Selection Controls</h2>
-
-        <FormControl>
-          <p style={{ margin: "-16px 0px 8px 0px", color: "grey" }}>Click on a point while holding shift to select it</p>
-          <Button variant="contained" color="secondary" onClick={props.onClearSelection}>Clear Selection</Button>
-        </FormControl>
-      </div>
-      <div>
-        <h2>Display Controls</h2>
-        <FormLabel>Vertex Size</FormLabel>
-        <Slider
-          // value={props.vertexSize}
-          onChange={(e) => props.setVertexSize((vertexSizeSliderScale(e.target.value)))}
-          valueLabelDisplay="auto"
-          defaultValue={4}
-          step={1}
-          min={1}
-          max={10}
-          scale={vertexSizeSliderScale}
-        />
-        <FormControl>
+      <PadlessH1>Side Menu</PadlessH1>
+      <Collapsing title={<PadlessH2>Task 1: KDTree</PadlessH2>} style={{ display: "flex", flexDirection: "column" }}>
+        <H3Wrapper>
+          <PadlessH3>Gather Controls</PadlessH3>
+          <FullWidthFormControl>
+            <FormLabel>Slider Mode</FormLabel>
+            <Select defaultValue={"knn"} onChange={handleDropdownChange}>
+              <MenuItem value={"knn"}>K-nearest-neighbour</MenuItem>
+              <MenuItem value={"radius"}>Radius</MenuItem>
+            </Select>
+            <FormLabel>{searchSliderMode.sliderText}</FormLabel>
+            <Slider
+              value={searchSliderValue}
+              onChange={handleSliderChange}
+              valueLabelDisplay="auto"
+              step={searchSliderMode.step}
+              min={searchSliderMode.min}
+              max={searchSliderMode.max}
+            />
+            <Button variant="contained" color="primary" onClick={onPointQuery}>Gather</Button>
+          </FullWidthFormControl>
+        </H3Wrapper>
+        <H3Wrapper>
+          <PadlessH3>Selection Controls</PadlessH3>
+          <FormControl>
+            <Hint>Click on a point while holding shift to select it</Hint>
+            <Button variant="contained" color="warning" onClick={props.onClearSelection}>Clear Selection</Button>
+          </FormControl>
+        </H3Wrapper>
+        <H3Wrapper>
+          <PadlessH3>Display Controls</PadlessH3>
           <FormControlLabel control={<Checkbox checked={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
           } />} label="Show Connections" />
+
+          <FullWidthFormControl>
+            <FormLabel>Datastructure Display Depth</FormLabel>
+            <Slider
+              value={props.dsDisplayDepth}
+              onChange={(e) => props.setDsDisplayDepth(e.target.value)}
+              valueLabelDisplay="auto"
+              step={1}
+              min={0}
+              max={8}
+            />
+          </FullWidthFormControl>
+        </H3Wrapper>
+      </Collapsing>
+
+      <Collapsing title={<PadlessH2>Task 2: Surfaces</PadlessH2>} initiallyOpened>
+      </Collapsing>
+
+      <Collapsing title={<PadlessH2>Display Controls</PadlessH2>} initiallyOpened>
+        <FullWidthFormControl>
+          <FormLabel>Vertex Size</FormLabel>
+          <Slider
+            // value={props.vertexSize}
+            onChange={(e) => props.setVertexSize((vertexSizeSliderScale(e.target.value)))}
+            valueLabelDisplay="auto"
+            defaultValue={4}
+            step={1}
+            min={1}
+            max={12}
+            scale={vertexSizeSliderScale}
+          />
           <FormControlLabel control={<Checkbox checked={props.displayCoords} onChange={(e) => props.setDisplayCoords(e.target.checked)
           } />} label="Show Coordinate System" />
-          <FormLabel>Datastructure Display Depth</FormLabel>
-          <Slider
-            value={props.dsDisplayDepth}
-            onChange={(e) => props.setDsDisplayDepth(e.target.value)}
-            valueLabelDisplay="auto"
-            step={1}
-            min={0}
-            max={8}
-          />
-        </FormControl>
+          <FormLabel>PointCloud Implementation</FormLabel>
+          <Hint>Select Interactivity for proper point selection</Hint>
+          <Select value={props.pointCloudVersion} onChange={(e) => props.setPointCloudVersion(e.target.value)}>
+            <MenuItem value={1}>Interactivity (V1)</MenuItem>
+            <MenuItem value={2}>Performance (V2)</MenuItem>
+          </Select>
+        </FullWidthFormControl>
 
-      </div>
+      </Collapsing>
     </div >
   );
 }
