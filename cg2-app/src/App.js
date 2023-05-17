@@ -8,14 +8,14 @@ import Viewport from './components/3D/Viewport';
 const App = () => {
 
   // Model to load
-  const [dataName, setDataName] = useState("cube");
+  const [dataName, setDataName] = useState("eight");
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
-  const [pointCloudVersion, setPointCloudVersion] = useState(1)
+  const [pointCloudVersion, setPointCloudVersion] = useState(2)
   const [displayLines, setDisplayLines] = useState(false);
   const [displayCoords, setDisplayCoords] = useState(false);
   const [vertexSize, setVertexSize] = useState(0.5);
@@ -42,6 +42,7 @@ const App = () => {
     console.time("read data")
     readData()
     console.timeEnd("read data")
+    document.title = 'CG2-Tool: ' + dataName.toUpperCase();
 
   }, [dataName])
 
@@ -72,7 +73,7 @@ const App = () => {
 
       {/* side menu */}
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} PointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} pointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} />
       </Card>
 
     </div >

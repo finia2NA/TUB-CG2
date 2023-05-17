@@ -17,6 +17,8 @@ const getColorArray = (coloring, length) => {
 
 }
 
+const clickEnabled = false
+
 
 const SubPointCloud2 = (props) => {
 
@@ -34,7 +36,9 @@ const SubPointCloud2 = (props) => {
   document.addEventListener('click', onClick);
 
   function onClick(event) {
+    if (!clickEnabled) return
     // FIXME: deal with the too-large radius of points that are detected as hits
+
 
     // Calculate the mouse position in normalized device coordinates
     const mouse = new THREE.Vector2();
