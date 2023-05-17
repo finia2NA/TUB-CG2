@@ -47,7 +47,8 @@ const Sidemenu = (props) => {
   return (
     <div style={{ overflow: "auto", height: "100%" }}>
       <h1>Side Menu</h1>
-      <Collapsing title={<h2>Gather Controls</h2>}>
+      <Collapsing title={<h2>Task 1: DS</h2>}>
+        <h3>Gather Controls</h3>
         <FormControl>
           <FormLabel>Slider Mode</FormLabel>
           <Select defaultValue={"knn"} onChange={handleDropdownChange}>
@@ -63,16 +64,33 @@ const Sidemenu = (props) => {
             min={searchSliderMode.min}
             max={searchSliderMode.max}
           />
+
           <Button variant="contained" color="primary" onClick={onPointQuery}>Gather</Button>
         </FormControl>
-      </Collapsing>
-      <Collapsing title={<h2>Selection Controls</h2>}>
+
+        <h3>Selection Controls</h3>
         <FormControl>
           <p style={{ margin: "-16px 0px 8px 0px", color: "grey" }}>Click on a point while holding shift to select it</p>
           <Button variant="contained" color="secondary" onClick={props.onClearSelection}>Clear Selection</Button>
         </FormControl>
+
+
+        <h3>Display Controls</h3>
+        <FormControlLabel control={<Checkbox checked={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
+        } />} label="Show Connections" />
+
+        <FormLabel>Datastructure Display Depth</FormLabel>
+        <Slider
+          value={props.dsDisplayDepth}
+          onChange={(e) => props.setDsDisplayDepth(e.target.value)}
+          valueLabelDisplay="auto"
+          step={1}
+          min={0}
+          max={8}
+        />
       </Collapsing>
-      <Collapsing title={<h2>Display Controls</h2>}>
+
+      <Collapsing title={<h2>Display Controls</h2>} initiallyOpened>
         <FormLabel>Vertex Size</FormLabel>
         <Slider
           // value={props.vertexSize}
@@ -85,19 +103,8 @@ const Sidemenu = (props) => {
           scale={vertexSizeSliderScale}
         />
         <FormControl>
-          <FormControlLabel control={<Checkbox checked={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
-          } />} label="Show Connections" />
           <FormControlLabel control={<Checkbox checked={props.displayCoords} onChange={(e) => props.setDisplayCoords(e.target.checked)
           } />} label="Show Coordinate System" />
-          <FormLabel>Datastructure Display Depth</FormLabel>
-          <Slider
-            value={props.dsDisplayDepth}
-            onChange={(e) => props.setDsDisplayDepth(e.target.value)}
-            valueLabelDisplay="auto"
-            step={1}
-            min={0}
-            max={8}
-          />
         </FormControl>
 
       </Collapsing>

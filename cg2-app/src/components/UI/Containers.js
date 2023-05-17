@@ -13,8 +13,8 @@ const Creme = styled.div`
   margin: 8px 12px 8px;
 `;
 
-const Collapsing = (props) => {
-  const [open, setOpen] = useState(props.initiallyOpened);
+const Collapsing = ({ initiallyOpened, title, children }) => {
+  const [open, setOpen] = useState(initiallyOpened);
 
   return (
     <LightContainer>
@@ -22,14 +22,14 @@ const Collapsing = (props) => {
         style={{ display: "flex", alignItems: "center" }}
         onClick={() => setOpen(prev => !prev)}
       >
-        {props.title}
+        {title}
 
         {open && <ExpandLess />}
         {!open && <ExpandMore />}
       </div>
 
       <Collapse isOpened={open}>
-        <Creme>{props.children}</Creme>
+        <Creme>{children}</Creme>
       </Collapse>
     </LightContainer>
   );
