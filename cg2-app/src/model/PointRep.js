@@ -17,3 +17,18 @@ class PointRep {
 }
 
 export default PointRep;
+
+export class SampledPointRep extends PointRep {
+
+  constructor(position, u = null, v = null, surfaceNormal = null, exactNormal = null) {
+    super(position);
+    this.surfaceNormal = surfaceNormal;
+    this.exactNormal = exactNormal;
+
+    // I don't know if having the U and V values in the point rep. is necessary,
+    // but it might be useful for some things, so let's store them.
+    this.u = u;
+    this.v = v;
+  }
+
+}
