@@ -3,7 +3,7 @@ import Sidemenu from './components/UI/Sidemenu';
 import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import DataReader from './model/DataReader'; // change import here to switch between data structures
-import Viewport from './components/Viewport';
+import Viewport from './components/3D/Viewport';
 
 const App = () => {
 
@@ -15,6 +15,7 @@ const App = () => {
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
+  const [pointCloudVersion, setPointCloudVersion] = useState(1)
   const [displayLines, setDisplayLines] = useState(false);
   const [displayCoords, setDisplayCoords] = useState(false);
   const [vertexSize, setVertexSize] = useState(0.5);
@@ -66,12 +67,12 @@ const App = () => {
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
-        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} />
+        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} pointCloudVersion={pointCloudVersion} />
       </Card>
 
       {/* side menu */}
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} PointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} />
       </Card>
 
     </div >

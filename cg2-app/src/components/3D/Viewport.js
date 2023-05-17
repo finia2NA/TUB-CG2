@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { Canvas } from "react-three-fiber";
-import Line3D from "./3D/Line3D";
-import KDVisualizer from './3D/kdVisualizer';
-import CoordSystem from './3D/CoordSystem';
-import PointCloud2 from './3D/PointCloud2';
-import PointCloud from './3D/PointCloud';
+import Line3D from "./Line3D";
+import KDVisualizer from './kdVisualizer';
+import CoordSystem from './CoordSystem';
+import PointCloud2 from './PointCloud2';
+import PointCloud from './PointCloud';
 import { OrbitControls } from "@react-three/drei";
 
 const logging = true
-const useOldPointCloud = true
 
-const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines }) => {
+const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, pointCloudVersion }) => {
 
   // Keyboard State
   const [shiftPressed, setShiftPressed] = useState(false);
@@ -56,11 +55,11 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
 
       {/* points */}
 
-      {useOldPointCloud && points.getAllPoints().length > 0 &&
+      {pointCloudVersion === 1 && points.getAllPoints().length > 0 &&
         <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
       }
 
-      {!useOldPointCloud && points.getAllPoints().length > 0 &&
+      {pointCloudVersion === 2 && points.getAllPoints().length > 0 &&
         // <SubPointCloud2 points={points} coloring="highlighted" vertexSize={vertexSize} />
         <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
 
