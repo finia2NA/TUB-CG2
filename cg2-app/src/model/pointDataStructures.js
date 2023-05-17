@@ -104,7 +104,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
 
 
       const medianIndex = Math.floor(points.length / 2);
-      quickselect(points, medianIndex, 0, points.length - 1, (a, b) => (a, b) => a.position.toArray())
+      quickselect(points, medianIndex, 0, points.length - 1, (a, b) => a.position.toArray()[axis] - b.position.toArray()[axis]);
       // Find the median point and create a new node with it.
       const median = points[medianIndex];
       const thisNode = new kdTreeNode(median, axis);
