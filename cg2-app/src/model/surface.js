@@ -12,6 +12,7 @@ class Surface {
   }
 
   computeSurfaceFunction() {
+    // Task 1
     console.error("Not implemented");
   }
 
