@@ -3,6 +3,7 @@ import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, S
 import { Collapsing, FullWidthFormControl, H3Wrapper } from "./Containers";
 import { Button } from "./Button";
 import { Hint, PadlessH1, PadlessH2, PadlessH3 } from "./Text";
+import T1Controls from "./T1Controls";
 
 const searchSliderModes = {
   knn: {
@@ -48,52 +49,7 @@ const Sidemenu = (props) => {
   return (
     <div style={{ overflow: "auto", height: "100%" }}>
       <PadlessH1>Side Menu</PadlessH1>
-      <Collapsing title={<PadlessH2>Task 1: KDTree</PadlessH2>} style={{ display: "flex", flexDirection: "column" }}>
-        <H3Wrapper>
-          <PadlessH3>Gather Controls</PadlessH3>
-          <FullWidthFormControl>
-            <FormLabel>Slider Mode</FormLabel>
-            <Select defaultValue={"knn"} onChange={handleDropdownChange}>
-              <MenuItem value={"knn"}>K-nearest-neighbour</MenuItem>
-              <MenuItem value={"radius"}>Radius</MenuItem>
-            </Select>
-            <FormLabel>{searchSliderMode.sliderText}</FormLabel>
-            <Slider
-              value={searchSliderValue}
-              onChange={handleSliderChange}
-              valueLabelDisplay="auto"
-              step={searchSliderMode.step}
-              min={searchSliderMode.min}
-              max={searchSliderMode.max}
-            />
-            <Button variant="contained" color="primary" onClick={onPointQuery}>Gather</Button>
-          </FullWidthFormControl>
-        </H3Wrapper>
-        <H3Wrapper>
-          <PadlessH3>Selection Controls</PadlessH3>
-          <FormControl>
-            <Hint>Click on a point while holding shift to select it</Hint>
-            <Button variant="contained" color="warning" onClick={props.onClearSelection}>Clear Selection</Button>
-          </FormControl>
-        </H3Wrapper>
-        <H3Wrapper>
-          <PadlessH3>Display Controls</PadlessH3>
-          <FormControlLabel control={<Checkbox checked={props.displayLines} onChange={(e) => props.setDisplayLines(e.target.checked)
-          } />} label="Show Connections" />
-
-          <FullWidthFormControl>
-            <FormLabel>Datastructure Display Depth</FormLabel>
-            <Slider
-              value={props.dsDisplayDepth}
-              onChange={(e) => props.setDsDisplayDepth(e.target.value)}
-              valueLabelDisplay="auto"
-              step={1}
-              min={0}
-              max={8}
-            />
-          </FullWidthFormControl>
-        </H3Wrapper>
-      </Collapsing>
+      <T1Controls handleDropdownChange={handleDropdownChange} searchSliderMode={searchSliderMode} searchSliderValue={searchSliderValue} handleSliderChange={handleSliderChange} onPointQuery={onPointQuery} displayLines={props.displayLines} setDisplayLines={props.setDisplayLines} onClearSelection={props.onClearSelection} dsDisplayDepth={props.dsDisplayDepth} setDsDisplayDepth={props.setDsDisplayDepth} />
 
       <Collapsing title={<PadlessH2>Task 2: Surfaces</PadlessH2>} initiallyOpened>
       </Collapsing>
