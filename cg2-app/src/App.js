@@ -8,7 +8,7 @@ import Viewport from './components/3D/Viewport';
 const App = () => {
 
   // Model to load
-  const [dataName, setDataName] = useState("eight");
+  const [dataName, setDataName] = useState("franke4");
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
@@ -36,6 +36,7 @@ const App = () => {
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure())
       points.buildTree()
+      console.log(points)
 
       setPoints(points);
     }
