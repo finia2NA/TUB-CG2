@@ -4,6 +4,7 @@ import { Collapsing, FullWidthFormControl, H3Wrapper } from "./Containers";
 import { Button } from "./Button";
 import { Hint, PadlessH1, PadlessH2, PadlessH3 } from "./Text";
 import T1Controls from "./T1Controls";
+import T2Controls from "./T2Controls";
 
 const searchSliderModes = {
   knn: {
@@ -49,10 +50,11 @@ const Sidemenu = (props) => {
   return (
     <div style={{ overflow: "auto", height: "100%" }}>
       <PadlessH1>Side Menu</PadlessH1>
+
       <T1Controls handleDropdownChange={handleDropdownChange} searchSliderMode={searchSliderMode} searchSliderValue={searchSliderValue} handleSliderChange={handleSliderChange} onPointQuery={onPointQuery} displayLines={props.displayLines} setDisplayLines={props.setDisplayLines} onClearSelection={props.onClearSelection} dsDisplayDepth={props.dsDisplayDepth} setDsDisplayDepth={props.setDsDisplayDepth} />
 
-      <Collapsing title={<PadlessH2>Task 2: Surfaces</PadlessH2>} initiallyOpened>
-      </Collapsing>
+      <T2Controls uSubDiv={props.uSubDiv} setUSubDiv={props.setUSubDiv} vSubDiv={props.vSubDiv} setVSubDiv={props.setVSubDiv} multiplier={props.multiplier} setMultiplier={props.setMultiplier} onComputeSurface={props.onComputeSurface} initiallyOpened />
+
 
       <Collapsing title={<PadlessH2>Display Controls</PadlessH2>} initiallyOpened>
         <FullWidthFormControl>

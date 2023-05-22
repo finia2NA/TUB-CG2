@@ -28,7 +28,7 @@ export class kdTreeNode {
 }
 
 class PointDataStructure {
-  getAllPoints() { };
+  toArray() { };
   addPoint(point) { };
   knnSearch(targetPoint, k) { };
   radiusSearch(targetPoint, radius) { };
@@ -49,7 +49,7 @@ export class LinearPointDataStructure extends PointDataStructure {
     this.points = points;
   }
 
-  getAllPoints() {
+  toArray() {
     return this.points;
   }
 
@@ -81,7 +81,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
     this.selfSelection = false;
   }
 
-  getAllPoints() {
+  toArray() {
     return this.points;
   }
 

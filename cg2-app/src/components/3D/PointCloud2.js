@@ -9,7 +9,7 @@ const PointCloud2 = (props) => {
   const { vanillaPoints, selectedPoints, highlightedPoints } = useMemo(() => {
     console.log("recomputing points in point cloud")
 
-    const points = props.points.getAllPoints();
+    const points = props.points.toArray();
 
     const vanillaPoints = [];
     const selectedPoints = [];

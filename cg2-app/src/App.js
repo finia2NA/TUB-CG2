@@ -4,6 +4,7 @@ import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import DataReader from './model/DataReader'; // change import here to switch between data structures
 import Viewport from './components/3D/Viewport';
+import Surface from './model/surface';
 
 const App = () => {
 
@@ -23,6 +24,42 @@ const App = () => {
   const [selectedPoints, setSelectedPoints] = useState([]);
   const [highlightedPoints, setHighlightedPoints] = useState([]);
   const [highlightedLines, setHighlightedLines] = useState([]);
+
+  // task 2
+  const [surface, setSurface] = useState(null);
+  const [uSubDiv, setUSubDiv] = useState(10);
+  const [vSubDiv, setVSubDiv] = useState(10);
+  const [multiplier, setMultiplier] = useState(1);
+
+  const [surfacePoints, setSurfacePoints] = useState([]);
+
+  useEffect(() => {
+    setSurface(new Surface(points))
+    // surface.computeSurfaceFunction()
+  }, [points])
+
+
+  const onComputeSurface = () => {
+    console.log("hi")
+
+
+    const uValues = Array.from({ length: uSubDiv + 1 }, (_, i) => i / uSubDiv);
+    const vValues = Array.from({ length: vSubDiv + 1 }, (_, i) => i / vSubDiv);
+
+    const surfacePoints = [];
+    for (let u of uValues) {
+      const row = [];
+      for (let v of vValues) {
+        const point = surface.surfaceFunction(u, v);
+        row.push(point);
+      }
+      surfacePoints.push(row);
+    }
+    setSurfacePoints(surfacePoints);
+  }
+
+
+
 
   const onClearSelection = () => {
     setSelectedPoints([]);
@@ -69,12 +106,12 @@ const App = () => {
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
-        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} pointCloudVersion={pointCloudVersion} />
+        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} pointCloudVersion={pointCloudVersion} surfacePoints={surfacePoints} />
       </Card>
 
       {/* side menu */}
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} pointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} pointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} uSubDiv={uSubDiv} setUSubDiv={setUSubDiv} vSubDiv={vSubDiv} setVSubDiv={setVSubDiv} multiplier={multiplier} setMultiplier={setMultiplier} onComputeSurface={onComputeSurface} />
       </Card>
 
     </div >
