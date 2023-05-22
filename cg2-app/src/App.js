@@ -42,9 +42,8 @@ const App = () => {
   const onComputeSurface = () => {
     console.log("hi")
 
-
-    const uValues = Array.from({ length: uSubDiv + 1 }, (_, i) => i / uSubDiv);
-    const vValues = Array.from({ length: vSubDiv + 1 }, (_, i) => i / vSubDiv);
+    const uValues = Array.from({ length: uSubDiv }, (_, i) => i / (uSubDiv - 1));
+    const vValues = Array.from({ length: vSubDiv }, (_, i) => i / (vSubDiv - 1));
 
     const surfacePoints = [];
     for (let u of uValues) {
