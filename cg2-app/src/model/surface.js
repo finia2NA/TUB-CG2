@@ -5,6 +5,7 @@
 
 import { Vector2 } from "three";
 import { SampledPointRep } from "./PointRep";
+import * as math from "mathjs";
 
 class Surface {
   constructor(basePoints) {
@@ -14,6 +15,7 @@ class Surface {
 
   computeSurfaceFunction(x, y) {
     // Task 1
+    // TODO: I believe this function should not take x,y as arguments, but rather compute the polynomial and store a O(1) function in this.surfaceFunction
 
     let pointArray = null
     if (this.basePoints instanceof Array) pointArray = this.basePoints;
@@ -45,13 +47,15 @@ class Surface {
     for (let i = 0; i < X.length; i++) {
       P.push([1, X[i], Y[i], X[i] * Y[i], X[i] ** 2, Y[i] ** 2])
     }
+    debugger;
 
-    const PT = Math.transpose(P);
-    const PW = Math.multiply(Math.diag(W), P);
-    const PT_P_inv = Math.inv(Math.multiply(PT, PW));
-    const PT_Z = Math.multiply(PT, Math.multiply(Math.diag(W), Z));
-    const coef = Math.multiply(PT_P_inv, PT_Z);
+    const PT = math.transpose(P);
+    const PW = math.multiply(math.diag(W), P);
+    const PT_P_inv = math.inv(math.multiply(PT, PW));
+    const PT_Z = math.multiply(PT, math.multiply(math.diag(W), Z));
+    const coef = math.multiply(PT_P_inv, PT_Z);
 
+    // FIXME: coef turns out not to be a 2D array, but a 1D array of length 6
     return coef[0][0] + coef[1][0] * x + coef[2][0] * y + coef[3][0] * x * y + coef[4][0] * (x ** 2) + coef[5][0] * (y ** 2);
 
   }
