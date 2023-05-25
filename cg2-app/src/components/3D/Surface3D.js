@@ -14,7 +14,7 @@ const exampleData = [
   new SampledPointRep(new Vector3(1, 1, 0), 1, 1)]
 ]
 
-const Surface3D = ({ points = exampleData }) => {
+const Surface3D = ({ points = exampleData, wireFrameMode = false }) => {
 
   if (!Array.isArray(points)) {
     console.error("points must be an array")
@@ -62,7 +62,7 @@ const Surface3D = ({ points = exampleData }) => {
 
   return (
     <mesh geometry={geometry}>
-      <meshBasicMaterial color="violet" transparent opacity={0.5} side={DoubleSide} depthTest={false} />
+      <meshBasicMaterial color="violet" transparent opacity={0.5} side={DoubleSide} depthTest={false} wireframe={wireFrameMode} />
     </mesh>
   )
 }

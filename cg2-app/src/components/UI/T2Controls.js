@@ -1,4 +1,4 @@
-import { Button, FormLabel, MenuItem, Select, Slider } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
 import { Collapsing, FullWidthFormControl } from "./Containers"
 import { PadlessH2, PadlessH3 } from "./Text"
 
@@ -23,6 +23,8 @@ const T2Controls = (props) => {
     if (e.target.value < sliders.min || e.target.value > sliders.max) return;
     setSliderValues[i](e.target.value);
   };
+
+  console.log(props)
 
 
   return (
@@ -72,7 +74,12 @@ const T2Controls = (props) => {
 
       <FullWidthFormControl>
         <Button variant="contained" color="primary" onClick={props.onComputeSurface}>Compute Surface</Button>
+
       </FullWidthFormControl>
+
+
+      <FormControlLabel control={<Checkbox checked={props.wireFrameMode} onClick={() => props.setWireFrameMode(!props.wireFrameMode)} />} label="Wireframe Mode" />
+      {/* <Checkbox checked={props.wireFrameMode} onClick={() => props.setWireFrameMode(!props.wireFrameMode)} /> */}
     </Collapsing>
 
   );

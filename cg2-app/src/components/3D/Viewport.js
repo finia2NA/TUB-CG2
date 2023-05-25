@@ -11,7 +11,7 @@ import Surface3D from "./Surface3D";
 
 const logging = true
 
-const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, pointCloudVersion, surfacePoints }) => {
+const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, pointCloudVersion, surfacePoints, wireFrameMode }) => {
 
   // Keyboard State
   const [shiftPressed, setShiftPressed] = useState(false);
@@ -77,7 +77,7 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
       {displayCoords && <CoordSystem size={10} />}
 
       <Surface3D
-        points={surfacePoints}
+        points={surfacePoints} wireFrameMode={wireFrameMode}
       />
 
       {/* Controls */}
