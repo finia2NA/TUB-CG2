@@ -6,10 +6,12 @@ import CoordSystem from './CoordSystem';
 import PointCloud2 from './PointCloud2';
 import PointCloud from './PointCloud';
 import { OrbitControls } from "@react-three/drei";
+import Plane3D from "./Plane3D";
+import Surface3D from "./Surface3D";
 
 const logging = true
 
-const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, pointCloudVersion }) => {
+const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, pointCloudVersion, surfacePoints }) => {
 
   // Keyboard State
   const [shiftPressed, setShiftPressed] = useState(false);
@@ -26,7 +28,7 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
 
   // Function that is called when point is clicked 
   const handlePointClick = (position) => {
-    const matchingPoints = points.getAllPoints().filter(p => p.distanceToPosition(position) < 0.0001)
+    const matchingPoints = points.toArray().filter(p => p.distanceToPosition(position) < 0.0001)
 
     if (logging) {
       console.log("clicked point at " + position.x + ", " + position.y + ", " + position.z)
@@ -54,28 +56,31 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
       id='canvas'>
 
       {/* points */}
-
-      {pointCloudVersion === 1 && points.getAllPoints().length > 0 &&
+      {pointCloudVersion === 1 && points.toArray().length > 0 &&
         <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
       }
-
-      {pointCloudVersion === 2 && points.getAllPoints().length > 0 &&
+      {pointCloudVersion === 2 && points.toArray().length > 0 &&
         // <SubPointCloud2 points={points} coloring="highlighted" vertexSize={vertexSize} />
         <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
 
       }
 
-      {/* lines */}
+      {/* Lines */}
       {displayLines && highlightedLines.map((line, index) => (
         <Line3D key={index} start={line.start} end={line.end} />
       ))}
 
-      {/* Visualizing DataStructure */}
+      {/* DataStructure */}
       <KDVisualizer points={points} displayDepth={dsDisplayDepth} vertexSize={vertexSize} />
 
+      {/* Coordinate system */}
       {displayCoords && <CoordSystem size={10} />}
 
-      {/* controls */}
+      <Surface3D
+        points={surfacePoints}
+      />
+
+      {/* Controls */}
       <OrbitControls />
       {/* <Stats /> */}
 

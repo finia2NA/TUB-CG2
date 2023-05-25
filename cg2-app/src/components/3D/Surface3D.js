@@ -15,8 +15,16 @@ const exampleData = [
 ]
 
 const Surface3D = ({ points = exampleData }) => {
+
+  if (!Array.isArray(points)) {
+    console.error("points must be an array")
+  }
+
+  // notthing to render if there are no points
+  if (points.length === 0) return;
+
   // check if points is a 2D array
-  if (!Array.isArray(points) || !Array.isArray(points[0])) {
+  if (!Array.isArray(points[0])) {
     console.error("points must be a 2D array indexed by [u][v]")
     return null
   }
