@@ -1,31 +1,6 @@
 import quickselect from "quickselect";
+import * as THREE from "three";
 
-// a class that represents a cube of an octree by specifying two opposite corners
-class octreeCube {
-  constructor(position, dimensions) {
-    this.position = position;
-    this.dimensions = dimensions;
-    this.children = []
-  }
-
-  getVolume() {
-    return this.dimensions[0] * this.dimensions[1] * this.dimensions[2];
-  }
-}
-
-// a class that represents a plane of a kdtree by specifying a point and an axis.
-// Axis is the # of the dimension that the plane is on.
-export class kdTreeNode {
-  constructor(point, axis) {
-
-    // construct internal vars
-    this.point = point;
-    this.axis = axis;
-
-    this.leftChildren = []
-    this.rightChildren = []
-  }
-}
 
 class PointDataStructure {
   toArray() { };
@@ -33,6 +8,7 @@ class PointDataStructure {
   knnSearch(targetPoint, k) { };
   radiusSearch(targetPoint, radius) { };
   includes(point) { };
+  getBoundingBox() { };
 
   // this function should return a way to visualize the data structure.
   // my idea right now would be to return an array of objects representing
@@ -70,6 +46,30 @@ export class LinearPointDataStructure extends PointDataStructure {
   includes(point) {
     return this.points.includes(point);
   }
+
+  getBoundingBox() {
+    const min = new THREE.Vector3(Infinity, Infinity, Infinity);
+    const max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+    for (const point of this.points) {
+      min.min(point.position);
+      max.max(point.position);
+    }
+    return { min, max };
+  }
+}
+
+// a class that represents a plane of a kdtree by specifying a point and an axis.
+// Axis is the # of the dimension that the plane is on.
+export class kdTreeNode {
+  constructor(point, axis) {
+
+    // construct internal vars
+    this.point = point;
+    this.axis = axis;
+
+    this.leftChildren = []
+    this.rightChildren = []
+  }
 }
 
 export class KDTreePointDataStructure extends PointDataStructure {
@@ -79,6 +79,16 @@ export class KDTreePointDataStructure extends PointDataStructure {
     this.points = [];
     this.root = null;
     this.selfSelection = false;
+  }
+
+  getBoundingBox() {
+    const min = new THREE.Vector3(Infinity, Infinity, Infinity);
+    const max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+    for (const point of this.points) {
+      min.min(point.position);
+      max.max(point.position);
+    }
+    return { min, max };
   }
 
   toArray() {

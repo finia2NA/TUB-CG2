@@ -4,6 +4,9 @@ import { Vector2, Vector3 } from "three";
 class PointRep {
 
   constructor(position) {
+    if (!(position instanceof Vector3))
+      throw new Error("PointRep constructor expects a Vector3 as parameter");
+
     this.position = position;
   }
 

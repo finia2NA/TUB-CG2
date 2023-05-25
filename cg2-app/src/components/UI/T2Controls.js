@@ -1,4 +1,4 @@
-import { Button, FormLabel, Slider } from "@mui/material";
+import { Button, FormLabel, MenuItem, Select, Slider } from "@mui/material";
 import { Collapsing, FullWidthFormControl } from "./Containers"
 import { PadlessH2, PadlessH3 } from "./Text"
 
@@ -27,6 +27,18 @@ const T2Controls = (props) => {
 
   return (
     <Collapsing title={<PadlessH2>Task 2: Surfaces</PadlessH2>} initiallyOpened={props.initiallyOpened}>
+
+      <FullWidthFormControl>
+        <FormLabel>Approximation Method</FormLabel>
+        <Select
+          value={props.approximationMethod}
+          onChange={(e) => props.setApproximationMethod(e.target.value)}
+        >
+          <MenuItem value="ls">Least Squares</MenuItem>
+          <MenuItem value="wls">Weighted Least Squares</MenuItem>
+        </Select>
+      </FullWidthFormControl>
+
       <FullWidthFormControl>
         <PadlessH3>Surface Detail</PadlessH3>
         {sliders.labels.map((label, i) => {

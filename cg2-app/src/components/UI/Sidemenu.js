@@ -53,7 +53,7 @@ const Sidemenu = (props) => {
 
       <T1Controls handleDropdownChange={handleDropdownChange} searchSliderMode={searchSliderMode} searchSliderValue={searchSliderValue} handleSliderChange={handleSliderChange} onPointQuery={onPointQuery} displayLines={props.displayLines} setDisplayLines={props.setDisplayLines} onClearSelection={props.onClearSelection} dsDisplayDepth={props.dsDisplayDepth} setDsDisplayDepth={props.setDsDisplayDepth} />
 
-      <T2Controls uSubDiv={props.uSubDiv} setUSubDiv={props.setUSubDiv} vSubDiv={props.vSubDiv} setVSubDiv={props.setVSubDiv} multiplier={props.multiplier} setMultiplier={props.setMultiplier} onComputeSurface={props.onComputeSurface} initiallyOpened />
+      <T2Controls uSubDiv={props.uSubDiv} setUSubDiv={props.setUSubDiv} vSubDiv={props.vSubDiv} setVSubDiv={props.setVSubDiv} multiplier={props.multiplier} setMultiplier={props.setMultiplier} onComputeSurface={props.onComputeSurface} approximationMethod={props.approximationMethod} setApproximationMethod={props.setApproximationMethod} initiallyOpened />
 
 
       <Collapsing title={<PadlessH2>Display Controls</PadlessH2>} initiallyOpened>
