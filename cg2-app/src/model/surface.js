@@ -82,7 +82,11 @@ class Surface {
     // apply the weights to the polybases
     const weightedPolyBases = math.multiply(math.diag(weightVector), polyBases)
 
-    // left side and right side refer to the equation in the paper.
+
+    // Q: Why are the things that are not transposed in the paper transposed here and vice versa?
+    // A: Because the paper is written for row vectors, but the library is column vectors.
+
+    // leftSide and rightSide refer to the equation in the paper.
     const leftSide = math.multiply(math.transpose(polyBases), weightedPolyBases);
     const rightSide = math.multiply(math.transpose(weightedPolyBases), Z);
     const coefficients = math.multiply(math.inv(leftSide), rightSide);
