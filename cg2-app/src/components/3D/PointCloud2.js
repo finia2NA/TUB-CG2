@@ -3,11 +3,14 @@
 import { useMemo } from "react";
 import SubPointCloud2 from "./SubPointCloud2";
 
+const logging = false
+
 const PointCloud2 = (props) => {
 
   // Separate Points into which color they should be rendered in
   const { vanillaPoints, selectedPoints, highlightedPoints } = useMemo(() => {
-    console.log("recomputing points in point cloud")
+    if (logging) console.log("recomputing points in point cloud")
+
 
     const points = props.points.toArray();
 

@@ -6,7 +6,7 @@ import circleImg from "../../asset/circle.png";
 import { useLoader } from "react-three-fiber";
 import * as THREE from "three";
 
-
+const logging = false
 
 const PointCloud = (props) => {
 
@@ -15,7 +15,7 @@ const PointCloud = (props) => {
 
   // Separate Points into which color they should be rendered in
   const { vanillaPoints, selectedPoints, highlightedPoints } = useMemo(() => {
-    console.log("recomputing points in point cloud")
+    if (logging) console.log("recomputing points in point cloud")
 
     const points = props.points.toArray();
 

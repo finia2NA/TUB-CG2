@@ -47,7 +47,6 @@ const App = () => {
 
 
   const onComputeSurface = () => {
-    console.log("hi")
 
     const bb = points.getBoundingBox();
 
@@ -97,7 +96,6 @@ const App = () => {
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure())
       points.buildTree()
-      console.log(points)
 
       setPoints(points);
     }

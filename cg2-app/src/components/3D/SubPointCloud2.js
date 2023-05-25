@@ -18,6 +18,7 @@ const getColorArray = (coloring, length) => {
 }
 
 const clickEnabled = false
+const logging = false
 
 
 const SubPointCloud2 = (props) => {
@@ -109,7 +110,7 @@ const SubPointCloud2 = (props) => {
     fragmentShader,
   });
 
-  console.log("rendering subcloud " + props.coloring)
+  if (logging) console.log("rendering subcloud " + props.coloring)
 
   return (
     <Points

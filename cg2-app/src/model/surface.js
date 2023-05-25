@@ -10,17 +10,16 @@ import numeric from "numeric";
 
 class Surface {
   constructor(basePoints) {
-    this.basePoints = basePoints;
-    this.surfaceFunction = this.wls3.bind(this);
+    this._basePoints = basePoints;
+    this._storedCoefficients = null;
   }
 
   getPointArray() {
-    console.log("ho")
     let pointArray = null;
-    if (this.basePoints instanceof Array)
-      pointArray = this.basePoints;
+    if (this._basePoints instanceof Array)
+      pointArray = this._basePoints;
     else {
-      pointArray = this.basePoints.toArray();
+      pointArray = this._basePoints.toArray();
     }
     return pointArray;
   }
@@ -30,25 +29,28 @@ class Surface {
   }
 
   ls(x, y) {
-    const pointArray = this.getPointArray()
-    const positions = pointArray.map(point => point.position.toArray());
-    const X = positions.map(row => row[0]);
-    const Y = positions.map(row => row[1]);
-    const Z = positions.map(row => row[2])
+    if (!this._storedCoefficients) {
+      const pointArray = this.getPointArray()
+      const positions = pointArray.map(point => point.position.toArray());
+      const X = positions.map(row => row[0]);
+      const Y = positions.map(row => row[1]);
+      const Z = positions.map(row => row[2])
 
-    const polyBase = []
+      const polyBase = []
 
 
-    for (let i = 0; i < X.length; i++) {
-      polyBase.push([1, X[i], Y[i], X[i] * Y[i], X[i] ** 2, Y[i] ** 2])
+      for (let i = 0; i < X.length; i++) {
+        polyBase.push([1, X[i], Y[i], X[i] * Y[i], X[i] ** 2, Y[i] ** 2])
+      }
+
+      const squarePolyBase = math.multiply(math.transpose(polyBase), polyBase);
+      const squarePolyBaseInv = math.inv(squarePolyBase);
+      // debugger;
+
+      this._storedCoefficients = math.multiply(math.multiply(squarePolyBaseInv, math.transpose(polyBase)), Z);
     }
 
-    const squarePolyBase = math.multiply(math.transpose(polyBase), polyBase);
-    const squarePolyBaseInv = math.inv(squarePolyBase);
-    // debugger;
-
-    const coefficients = math.multiply(math.multiply(squarePolyBaseInv, math.transpose(polyBase)), Z);
-
+    const coefficients = this._storedCoefficients;
     const result = coefficients[0] + coefficients[1] * x + coefficients[2] * y + coefficients[3] * x * y + coefficients[4] * x ** 2 + coefficients[5] * y ** 2;
 
     return new PointRep(new Vector3(x, y, result))
@@ -106,7 +108,7 @@ class Surface {
     let pointArray = this.getPointArray();
 
     const weights = [];
-    for (let i = 0; i < this.basePoints.length; i++) {
+    for (let i = 0; i < this._basePoints.length; i++) {
       const weight = weighting_f(pointArray.distance2DToPosition(new Vector2(x, y)));
       weights.push(weight);
     }

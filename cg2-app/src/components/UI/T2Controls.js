@@ -24,9 +24,6 @@ const T2Controls = (props) => {
     setSliderValues[i](e.target.value);
   };
 
-  console.log(props)
-
-
   return (
     <Collapsing title={<PadlessH2>Task 2: Surfaces</PadlessH2>} initiallyOpened={props.initiallyOpened}>
 
