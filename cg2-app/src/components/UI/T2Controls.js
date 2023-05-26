@@ -12,7 +12,7 @@ const T2Controls = (props) => {
     defaultValue: 10,
     kMin: 1,
     kMax: 10,
-    labels: ["m (u-dimension)", "n (v-dimension)"],
+    labels: ["m (x-dimension)", "n (y-dimension)"],
   }
 
   const sliderValues = [props.uSubDiv, props.vSubDiv];
@@ -34,7 +34,8 @@ const T2Controls = (props) => {
           onChange={(e) => props.setApproximationMethod(e.target.value)}
         >
           <MenuItem value="ls">Least Squares</MenuItem>
-          <MenuItem value="wls">Weighted Least Squares</MenuItem>
+          <MenuItem value="wls">MLS-Wendland (Task 1)</MenuItem>
+          <MenuItem value="mls">MLS-Epsilon (Task 2)</MenuItem>
         </Select>
       </FullWidthFormControl>
 

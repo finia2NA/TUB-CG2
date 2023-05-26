@@ -1,6 +1,7 @@
 import { DoubleSide, Vector3 } from "three";
 import * as THREE from "three";
 import { SampledPointRep } from "../../model/PointRep";
+import { useMemo } from "react";
 
 const exampleData = [
   [new SampledPointRep(new Vector3(0, 0, 0), 0, 0),
@@ -16,49 +17,51 @@ const exampleData = [
 
 const Surface3D = ({ points = exampleData, wireFrameMode = false }) => {
 
-  if (!Array.isArray(points)) {
-    console.error("points must be an array")
-  }
-
-  // notthing to render if there are no points
-  if (points.length === 0) return;
-
-  // check if points is a 2D array
-  if (!Array.isArray(points[0])) {
-    console.error("points must be a 2D array indexed by [u][v]")
-    return null
-  }
-
-  // TODO: useMemo like all of this
-  const numU = points.length;
-  const numV = points[0].length;
-
-  const uvToIndex = (u, v) => {
-    return u * numV + v;
-  }
-
-  const geometry = new THREE.BufferGeometry();
-
-  const vertices = new Float32Array(numU * numV * 3);
-  for (let u = 0; u < numU; u++) {
-    for (let v = 0; v < numV; v++) {
-      const index = uvToIndex(u, v);
-      vertices[index * 3] = points[u][v].position.x;
-      vertices[index * 3 + 1] = points[u][v].position.y;
-      vertices[index * 3 + 2] = points[u][v].position.z;
+  const geometry = useMemo(() => {
+    if (!Array.isArray(points)) {
+      console.error("points must be an array")
     }
-  }
 
-  const indices = [];
-  for (let u = 0; u < numU - 1; u++) {
-    for (let v = 0; v < numV - 1; v++) {
-      indices.push(uvToIndex(u, v), uvToIndex(u + 1, v), uvToIndex(u + 1, v + 1));
-      indices.push(uvToIndex(u, v), uvToIndex(u + 1, v + 1), uvToIndex(u, v + 1));
+    // notthing to render if there are no points
+    if (points.length === 0) return;
+
+    // check if points is a 2D array
+    if (!Array.isArray(points[0])) {
+      console.error("points must be a 2D array indexed by [u][v]")
+      return null
     }
-  }
 
-  geometry.setIndex(indices);
-  geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    const numU = points.length;
+    const numV = points[0].length;
+
+    const uvToIndex = (u, v) => {
+      return u * numV + v;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+
+    const vertices = new Float32Array(numU * numV * 3);
+    for (let u = 0; u < numU; u++) {
+      for (let v = 0; v < numV; v++) {
+        const index = uvToIndex(u, v);
+        vertices[index * 3] = points[u][v].position.x;
+        vertices[index * 3 + 1] = points[u][v].position.y;
+        vertices[index * 3 + 2] = points[u][v].position.z;
+      }
+    }
+
+    const indices = [];
+    for (let u = 0; u < numU - 1; u++) {
+      for (let v = 0; v < numV - 1; v++) {
+        indices.push(uvToIndex(u, v), uvToIndex(u + 1, v), uvToIndex(u + 1, v + 1));
+        indices.push(uvToIndex(u, v), uvToIndex(u + 1, v + 1), uvToIndex(u, v + 1));
+      }
+    }
+
+    geometry.setIndex(indices);
+    geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    return geometry;
+  }, [points])
 
   return (
     <mesh geometry={geometry}>
