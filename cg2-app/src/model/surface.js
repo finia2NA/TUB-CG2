@@ -94,7 +94,16 @@ class Surface {
     const coefficients = math.multiply(math.inv(leftSide), rightSide);
     const result = coefficients[0] + coefficients[1] * x + coefficients[2] * y + coefficients[3] * x * y + coefficients[4] * x ** 2 + coefficients[5] * y ** 2;
 
-    return new PointRep(new Vector3(x, y, result))
+
+    // COMPUTE NORMALS
+    const xDerivative = coefficients[1] + coefficients[3] * y + 2 * coefficients[4] * x;
+    const yDerivative = coefficients[2] + coefficients[3] * x + 2 * coefficients[5] * y;
+
+    const normal = new Vector3(-xDerivative, -yDerivative, 1).normalize();
+
+
+
+    return new SampledPointRep(new Vector3(x, y, result), normal)
   }
 
   getMovingSampling(xCount, yCount, multiplier = 1, approximationMethod) {

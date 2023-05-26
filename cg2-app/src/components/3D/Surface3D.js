@@ -2,17 +2,19 @@ import { DoubleSide, Vector3 } from "three";
 import * as THREE from "three";
 import { SampledPointRep } from "../../model/PointRep";
 import { useMemo } from "react";
+import Line3D from "./Line3D";
 
+const exNormal = new Vector3(0, 1, 0);
 const exampleData = [
-  [new SampledPointRep(new Vector3(0, 0, 0), 0, 0),
-  new SampledPointRep(new Vector3(0, 0.5, 0), 0, 0.5),
-  new SampledPointRep(new Vector3(0, 1, 0), 0, 1)],
-  [new SampledPointRep(new Vector3(0.5, 0, 1), 0.5, 0),
-  new SampledPointRep(new Vector3(0.5, 0.5, 1), 0.5, 0.5),
-  new SampledPointRep(new Vector3(0.5, 1, 1), 0.5, 1)],
-  [new SampledPointRep(new Vector3(1, 0, 0), 1, 0),
-  new SampledPointRep(new Vector3(1, 0.5, 0), 1, 0.5),
-  new SampledPointRep(new Vector3(1, 1, 0), 1, 1)]
+  [new SampledPointRep(new Vector3(0, 0, 0), exNormal, null, 0, 0),
+  new SampledPointRep(new Vector3(0, 0.5, 0), exNormal, null, 0, 0.5),
+  new SampledPointRep(new Vector3(0, 1, 0), exNormal, null, 0, 1)],
+  [new SampledPointRep(new Vector3(0.5, 0, 1), exNormal, null, 0.5, 0),
+  new SampledPointRep(new Vector3(0.5, 0.5, 1), exNormal, null, 0.5, 0.5),
+  new SampledPointRep(new Vector3(0.5, 1, 1), exNormal, null, 0.5, 1)],
+  [new SampledPointRep(new Vector3(1, 0, 0), exNormal, null, 1, 0),
+  new SampledPointRep(new Vector3(1, 0.5, 0), exNormal, null, 1, 0.5),
+  new SampledPointRep(new Vector3(1, 1, 0), exNormal, null, 1, 1)]
 ]
 
 const Surface3D = ({ points = exampleData, wireFrameMode = false }) => {
@@ -60,13 +62,44 @@ const Surface3D = ({ points = exampleData, wireFrameMode = false }) => {
 
     geometry.setIndex(indices);
     geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    return geometry;
+
+    return geometry
   }, [points])
 
+  const normalCoords = useMemo(() => {
+    const normalCoords = []
+    if (points.length !== 0 && points[0][0].surfaceNormal) {
+
+      for (let u = 0; u < points.length; u++) {
+        for (let v = 0; v < points[0].length; v++) {
+          const point = points[u][v];
+          const start = point.position;
+          const end = point.position.clone().add(point.surfaceNormal.clone().multiplyScalar(0.1));
+          normalCoords.push({ start, end })
+        }
+      }
+    }
+    return normalCoords;
+  }, [points])
+
+
+  if (points.length === 0) return null;
+
+
   return (
-    <mesh geometry={geometry}>
-      <meshBasicMaterial color="violet" transparent opacity={0.5} side={DoubleSide} depthTest={false} wireframe={wireFrameMode} />
-    </mesh>
+    <>
+      <mesh geometry={geometry}>
+        <meshBasicMaterial color="violet" transparent opacity={0.5} side={DoubleSide} depthTest={false} wireframe={wireFrameMode} />
+      </mesh>
+
+      {normalCoords.length !== 0 && normalCoords.map((normalCoord, i) => {
+        return (
+          <Line3D key={i} start={normalCoord.start} end={normalCoord.end} color="red" />
+        )
+      }
+      )}
+    </>
+
   )
 }
 

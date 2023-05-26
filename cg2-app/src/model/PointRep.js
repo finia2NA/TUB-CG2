@@ -41,7 +41,7 @@ export default PointRep;
 
 export class SampledPointRep extends PointRep {
 
-  constructor(position, u = null, v = null, surfaceNormal = null, exactNormal = null) {
+  constructor(position, surfaceNormal = null, exactNormal = null, u = null, v = null,) {
     super(position);
     this.surfaceNormal = surfaceNormal;
     this.exactNormal = exactNormal;
