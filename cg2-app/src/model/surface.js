@@ -25,10 +25,6 @@ class Surface {
     return pointArray;
   }
 
-  weighting_f(r) {
-    return ((1 - r) ** 4) * (4 * r + 1);
-  }
-
   ls(x, y) {
     if (!this._storedLSCoefficients) {
       const pointArray = this.getPointArray()
