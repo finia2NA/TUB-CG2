@@ -6,13 +6,11 @@
 import { Vector2, Vector3 } from "three";
 import PointRep, { SampledPointRep } from "./PointRep";
 import * as math from "mathjs";
-// import numeric from "numeric";
 
 class Surface {
   constructor(basePoints) {
     this._basePoints = basePoints;
     this._storedLSCoefficients = null;
-    this._storedWLSCoefficients= null;
   }
 
   getPointArray() {
@@ -56,45 +54,42 @@ class Surface {
   }
 
   wls(x, y, weightVector) {
-    if (!this._storedWLSCoefficients){
-      const pointArray = this.getPointArray();
-      const positions = pointArray.map(point => point.position.toArray());
-      const X = positions.map(row => row[0]);
-      const Y = positions.map(row => row[1]);
-      const Z = positions.map(row => row[2])
-  
-      const polyBases = []
-      // polybases will be a matrix of n rows and 6 columns
-      for (let i = 0; i < X.length; i++) {
-        polyBases.push([1, X[i], Y[i], X[i] * Y[i], X[i] ** 2, Y[i] ** 2])
-      }
-  
-      // compute weight vector if not given
-      if (!weightVector) {
-        const D = pointArray.map(point => point.distance2DToPosition(new Vector2(x, y)));
-        const weighting_f = (r, h = 0.1) => {
-          return (((1 - r) / h) ** 4) * (4 * r / (h + 1));
-        }
-        weightVector = []; // weight value
-        for (let i = 0; i < D.length; i++) {
-          const weight = weighting_f(D[i]);
-          weightVector[i] = weight;
-        }
-      }
-  
-      // apply the weights to the polybases
-      const weightedPolyBases = math.multiply(math.diag(weightVector), polyBases)
+    const pointArray = this.getPointArray();
+    const positions = pointArray.map(point => point.position.toArray());
+    const X = positions.map(row => row[0]);
+    const Y = positions.map(row => row[1]);
+    const Z = positions.map(row => row[2])
 
-      // Q: Why are the things that are not transposed in the paper transposed here and vice versa?
-      // A: Because the paper is written for col vectors, but the library is row vectors.
-  
-      // leftSide and rightSide refer to the equation in the paper.
-      const leftSide = math.multiply(math.transpose(polyBases), weightedPolyBases);
-      const rightSide = math.multiply(math.transpose(weightedPolyBases), Z);
-      this._storedWLSCoefficients = math.multiply(math.inv(leftSide), rightSide);
+    const polyBases = []
+    // polybases will be a matrix of n rows and 6 columns
+    for (let i = 0; i < X.length; i++) {
+      polyBases.push([1, X[i], Y[i], X[i] * Y[i], X[i] ** 2, Y[i] ** 2])
     }
-    
-    const coefficients = this._storedWLSCoefficients
+
+    // compute weight vector if not given
+    if (!weightVector) {
+      const D = pointArray.map(point => point.distance2DToPosition(new Vector2(x, y)));
+      const weighting_f = (r, h = 0.1) => {
+        return (((1 - r) / h) ** 4) * (4 * r / (h + 1));
+      }
+      weightVector = []; // weight value
+      for (let i = 0; i < D.length; i++) {
+        const weight = weighting_f(D[i]);
+        weightVector[i] = weight;
+      }
+    }
+
+
+    // apply the weights to the polybases
+    const weightedPolyBases = math.multiply(math.diag(weightVector), polyBases)
+
+    // Q: Why are the things that are not transposed in the paper transposed here and vice versa?
+    // A: Because the paper is written for col vectors, but the library is row vectors.
+
+    // leftSide and rightSide refer to the equation in the paper.
+    const leftSide = math.multiply(math.transpose(polyBases), weightedPolyBases);
+    const rightSide = math.multiply(math.transpose(weightedPolyBases), Z);
+    const coefficients = math.multiply(math.inv(leftSide), rightSide);
     const result = coefficients[0] + coefficients[1] * x + coefficients[2] * y + coefficients[3] * x * y + coefficients[4] * x ** 2 + coefficients[5] * y ** 2;
 
     // COMPUTE NORMALS
@@ -105,7 +100,7 @@ class Surface {
     return new SampledPointRep(new Vector3(x, y, result), normal)
   }
 
-  getMovingSampling(xCount, yCount, multiplier, approximationMethod) {
+  getMovingSampling(xCount, yCount, multiplier = 1, approximationMethod) {
     const bb = this._basePoints.getBoundingBox();
     const xIntervals = Array.from({ length: xCount }, (_, i) => i / (xCount - 1));
     const yIntervals = Array.from({ length: yCount }, (_, i) => i / (yCount - 1));
@@ -122,10 +117,10 @@ class Surface {
           case "ls":
             surfaceFunction = this.ls.bind(this)
             break;
-          case "btps":
           case "wls":
             surfaceFunction = this.wls.bind(this)
             break;
+          case "btps":
           case 'mls':
             // this is MLS!
             const pointArray = this.getPointArray();
@@ -154,10 +149,9 @@ class Surface {
       sampledPoints.push(row);
     }
 
-    if (approximationMethod==="btps"){
+    if (approximationMethod === "btps") {
       sampledPoints = this.getDecasteljauSampling(sampledPoints, multiplier)
     }
-    this._storedWLSCoefficients = null //reset
 
     return sampledPoints;
   }
@@ -174,7 +168,7 @@ class Surface {
     for (let i = 0; i < k * m; i++) {
       const row = [];
       for (let j = 0; j < k * n; j++) {
-        const point = this.evaluateDeCasteljau(points, i/km, j/kn);
+        const point = this.evaluateDeCasteljau(points, i / km, j / kn);
         row.push(point);
       }
       sampledPoints.push(row);
@@ -188,7 +182,7 @@ class Surface {
     const m = points.length;
     const n = points[0].length;
     const controlPoints = math.clone(points);
-  
+
     // loop over control points
     for (let r = 1; r < m; r++) {
       for (let s = 1; s < n; s++) {
@@ -196,12 +190,12 @@ class Surface {
         const p1 = controlPoints[r][s - 1].position
         const p2 = controlPoints[r - 1][s].position
         const p3 = controlPoints[r][s].position
-  
+
         // Interpolate
         const q0 = p0.clone().lerp(p1, u);
         const q1 = p2.clone().lerp(p3, u);
         const point = q0.clone().lerp(q1, v);
-  
+
         // Compute normal
         const tangentU = p1.clone().sub(p0).multiplyScalar(u);
         const tangentV = q1.clone().sub(q0).multiplyScalar(v);
@@ -214,7 +208,7 @@ class Surface {
     }
     return controlPoints[m - 1][n - 1];
   }
-  
+
 }
 
 export default Surface;
