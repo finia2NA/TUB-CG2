@@ -12,7 +12,7 @@ const App = () => {
   // executing the algorithms. TODO: that when we have time
 
   // Model to load
-  const [dataName, setDataName] = useState("franke4");
+  const [dataName, ] = useState("franke4");
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
