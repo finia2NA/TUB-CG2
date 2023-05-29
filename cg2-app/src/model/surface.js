@@ -160,15 +160,13 @@ class Surface {
     // init
     const m = points.length;
     const n = points[0].length;
-    const km = k * m;
-    const kn = k * n;
     const sampledPoints = [];
 
     // loop over km x kn array
-    for (let i = 0; i < k * m; i++) {
+    for (let i = 0; i < k*m; i++) {
       const row = [];
-      for (let j = 0; j < k * n; j++) {
-        const point = this.evaluateDeCasteljau(points, i / km, j / kn);
+      for (let j = 0; j < k*n; j++) {
+        const point = this.deCasteljau(points, i / (k*m), j / (k*n));
         row.push(point);
       }
       sampledPoints.push(row);
@@ -176,39 +174,41 @@ class Surface {
     return sampledPoints;
   }
 
-  // De Casteljau (non-recursive)
-  evaluateDeCasteljau(points, u, v) {
-    // init
-    const m = points.length;
-    const n = points[0].length;
-    const controlPoints = math.clone(points);
+  deCasteljau(controlPoints, u, v){
+    let m = controlPoints.length;
+    let n = controlPoints[0].length;
+    let newPoints = [];
 
-    // loop over control points
-    for (let r = 1; r < m; r++) {
-      for (let s = 1; s < n; s++) {
-        const p0 = controlPoints[r - 1][s - 1].position
-        const p1 = controlPoints[r][s - 1].position
-        const p2 = controlPoints[r - 1][s].position
-        const p3 = controlPoints[r][s].position
+    // base case
+    if (m === 1 && n === 1) {
+      return controlPoints[0][0];
+    }
 
-        // Interpolate
+    //loop over control points
+    for (let i = 1; i < m; i++) {
+      let row = [];
+      for (let j = 1; j < n; j++) {
+        // get neighboring points
+        const p0 = controlPoints[i - 1][j - 1].position
+        const p1 = controlPoints[i][j - 1].position
+        const p2 = controlPoints[i - 1][j].position
+        const p3 = controlPoints[i][j].position
+
+        // interpolate
         const q0 = p0.clone().lerp(p1, u);
         const q1 = p2.clone().lerp(p3, u);
         const point = q0.clone().lerp(q1, v);
 
-        // Compute normal
+        // compute normal
         const tangentU = p1.clone().sub(p0).multiplyScalar(u);
         const tangentV = q1.clone().sub(q0).multiplyScalar(v);
         const normal = new Vector3().crossVectors(tangentU, tangentV).normalize();
-
-        // last point = casteljau point
-        const pointRep = new SampledPointRep(point, normal)
-        controlPoints[r][s] = pointRep;
+        row.push(new SampledPointRep(point,normal));
       }
+      newPoints.push(row);
     }
-    return controlPoints[m - 1][n - 1];
+    return this.deCasteljau(newPoints, u, v);
   }
-
 }
 
 export default Surface;
