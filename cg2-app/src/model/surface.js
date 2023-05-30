@@ -100,7 +100,7 @@ class Surface {
     return new SampledPointRep(new Vector3(x, y, result), normal)
   }
 
-  getMovingSampling(xCount, yCount, multiplier = 1, approximationMethod) {
+  getMovingSampling(xCount, yCount, multiplier , approximationMethod) {
     const bb = this._basePoints.getBoundingBox();
     const xIntervals = Array.from({ length: xCount }, (_, i) => i / (xCount - 1));
     const yIntervals = Array.from({ length: yCount }, (_, i) => i / (yCount - 1));
