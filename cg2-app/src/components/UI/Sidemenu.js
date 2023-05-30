@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
-import { Collapsing, FullWidthFormControl, H3Wrapper } from "./Containers";
-import { Button } from "./Button";
-import { Hint, PadlessH1, PadlessH2, PadlessH3 } from "./Text";
+import { Checkbox, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
+import { Collapsing, FullWidthFormControl } from "./Containers";
+import { Hint, PadlessH1, PadlessH2 } from "./Text";
 import T1Controls from "./T1Controls";
 import T2Controls from "./T2Controls";
 
@@ -46,6 +45,8 @@ const Sidemenu = (props) => {
     props.onPointQuery(searchSliderMode.mode, searchSliderValue);
   }
 
+  const dataNames = ["bunny", "cow","cube","cube2","dragon","eight","franke0","franke4",
+  "franke5","franke6","franke7","golfball","golfball2","kdtest","sphere","teapot","torus"]
 
   return (
     <div style={{ overflow: "auto", height: "100%" }}>
@@ -57,6 +58,12 @@ const Sidemenu = (props) => {
 
 
       <Collapsing title={<PadlessH2>Display Controls</PadlessH2>} initiallyOpened>
+        <FullWidthFormControl>
+            <FormLabel>Data</FormLabel>
+            <Select  value={props.dataName} onChange={(e) => props.setDataName(e.target.value)}>
+              {dataNames.map(val => <MenuItem key={val} value={val}>{val}</MenuItem>)}
+            </Select>
+        </FullWidthFormControl>
         <FullWidthFormControl>
           <FormLabel>Vertex Size</FormLabel>
           <Slider
@@ -78,7 +85,6 @@ const Sidemenu = (props) => {
             <MenuItem value={2}>Performance (V2)</MenuItem>
           </Select>
         </FullWidthFormControl>
-
       </Collapsing>
     </div >
   );
