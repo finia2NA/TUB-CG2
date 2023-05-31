@@ -58,12 +58,13 @@ const Sidemenu = (props) => {
 
 
       <Collapsing title={<PadlessH2>Display Controls</PadlessH2>} initiallyOpened>
-        <FullWidthFormControl>
+        {/* FIXME: this is not working 100% */}
+        {/* <FullWidthFormControl>
             <FormLabel>Data</FormLabel>
             <Select  value={props.dataName} onChange={(e) => props.setDataName(e.target.value)}>
               {dataNames.map(val => <MenuItem key={val} value={val}>{val}</MenuItem>)}
             </Select>
-        </FullWidthFormControl>
+        </FullWidthFormControl> */}
         <FullWidthFormControl>
           <FormLabel>Vertex Size</FormLabel>
           <Slider
