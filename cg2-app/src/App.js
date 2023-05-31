@@ -22,7 +22,7 @@ const App = () => {
   const [pointCloudVersion, setPointCloudVersion] = useState(2)
   const [displayLines, setDisplayLines] = useState(false);
   const [displayCoords, setDisplayCoords] = useState(false);
-  const [vertexSize, setVertexSize] = useState(0.5);
+  const [vertexSize, setVertexSize] = useState(0.03);
 
   const [selectedPoints, setSelectedPoints] = useState([]);
   const [highlightedPoints, setHighlightedPoints] = useState([]);
@@ -33,10 +33,10 @@ const App = () => {
   // task 2
   const [surface, setSurface] = useState(null);
 
-  const [approximationMethod, setApproximationMethod] = useState("ls");
+  const [approximationMethod, setApproximationMethod] = useState("btps");
   const [uSubDiv, setUSubDiv] = useState(10);
   const [vSubDiv, setVSubDiv] = useState(10);
-  const [subDivMultiplier, setMultiplier] = useState(1);
+  const [subDivMultiplier, setMultiplier] = useState(3);
 
   const [surfacePoints, setSurfacePoints] = useState([]);
 
@@ -104,7 +104,7 @@ const App = () => {
 
       {/* side menu */}
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} pointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} uSubDiv={uSubDiv} setUSubDiv={setUSubDiv} vSubDiv={vSubDiv} setVSubDiv={setVSubDiv} multiplier={subDivMultiplier} setMultiplier={setMultiplier} onComputeSurface={onComputeSurface} approximationMethod={approximationMethod} setApproximationMethod={setApproximationMethod} wireFrameMode={wireFrameMode} setWireFrameMode={setWireframeMode} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} pointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} uSubDiv={uSubDiv} setUSubDiv={setUSubDiv} vSubDiv={vSubDiv} setVSubDiv={setVSubDiv} multiplier={subDivMultiplier} setMultiplier={setMultiplier} onComputeSurface={onComputeSurface} approximationMethod={approximationMethod} setApproximationMethod={setApproximationMethod} wireFrameMode={wireFrameMode} setWireFrameMode={setWireframeMode} dataName={dataName} setDataName={setDataName}/>
       </Card>
 
     </div >

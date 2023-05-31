@@ -36,6 +36,8 @@ const T2Controls = (props) => {
           <MenuItem value="ls">Least Squares</MenuItem>
           <MenuItem value="wls">MLS-Wendland (Task 1)</MenuItem>
           <MenuItem value="mls">MLS-Epsilon (Task 2)</MenuItem>
+          <MenuItem value="btps">Bézier tensor product surface (Task 3)</MenuItem>
+
         </Select>
       </FullWidthFormControl>
 
