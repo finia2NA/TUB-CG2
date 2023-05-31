@@ -25,7 +25,7 @@ def deCasteljau(points, t):
     b = points.copy()
     for step in range(n):
         for i in range(n - step):
-            b[i] = (1 - t) \cdot b[i] + t \cdot b[i + 1]
+            b[i] = (1 - t) * b[i] + t * b[i + 1]
     return b[0]
 ```
 As can be seen, for every iteration of the outer loop, 2 multiplications and one addition is performed for every point in the inner loop. The outer loop is run `n=length(points)-1` times. Thus, in total
