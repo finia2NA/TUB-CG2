@@ -12,10 +12,6 @@ const App = () => {
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
-  // const [state, setState] = useState({
-  //   points: new PointDataStructure(),
-  //   normals: new PointDataStructure()
-  // });
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
@@ -34,39 +30,14 @@ const App = () => {
     setHighlightedLines([]);
   }
 
-  // const updatePoints = (newPoints) => {
-  //   setState(prevState => ({
-  //     ...prevState,
-  //     points: newPoints
-  //   }));
-  // };
-  // const updateNormals = (newNormals) => {
-  //   setState(prevState => ({
-  //     ...prevState,
-  //     normals: newNormals
-  //   }));
-  // };
-
   // Load model on mount
   useEffect(() => {
     const reader = new NormalDataReader(dataName)
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure())
-<<<<<<< Updated upstream
       points.buildTree()
-      console.log(points)
-=======
-      // console.log(typeof(data))
-      // const points = data[0];
-      // const normals = data[1]
-      // points.buildTree();
->>>>>>> Stashed changes
 
-      // updatePoints(points);
-      // updateNormals(normals);
       setPoints(points);
-      console.log(Object.keys(points.normals).length)
-      console.log(points.points.length)
     }
     console.time("read data")
     readData()
