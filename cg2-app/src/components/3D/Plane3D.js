@@ -1,4 +1,5 @@
 import { DoubleSide } from "three";
+import React from 'react';
 
 const Plane3D = (props) => {
   // the position is 0 in 2 dimensions and the actual position in the axis direction

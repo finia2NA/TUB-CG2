@@ -1,6 +1,7 @@
 import { Text } from "@react-three/drei";
 import { Vector3 } from "three";
 import Line3D from "./Line3D";
+import React from 'react';
 
 
 const CoordLine = ({ axis, len }) => {

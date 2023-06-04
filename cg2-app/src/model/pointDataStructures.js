@@ -77,6 +77,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
   constructor() {
     super();
     this.points = [];
+    this. normals = [];
     this.root = null;
     this.selfSelection = false;
   }
@@ -87,6 +88,10 @@ export class KDTreePointDataStructure extends PointDataStructure {
 
   addPoint(point) {
     this.points.push(point);
+  }
+
+  addNormal(pair) {
+    this.normals.push(pair);
   }
 
   // This function builds a 3-dimensional kd-tree recursively.
@@ -237,6 +242,30 @@ export class KDTreePointDataStructure extends PointDataStructure {
 
   includes(point) {
     return this.points.includes(point);
+  }
+
+  findNearest(point) {
+    const recur_search = (node, point, depth = 0, best = null) => {
+      const axis = depth % 3
+      const next = point.position.toArray()[axis] < node.point.position.toArray()[axis] ? node.leftChildren : node.rightChildren;
+      const other = point.position.toArray()[axis] < node.point.position.toArray()[axis] ? node.rightChildren : node.leftChildren;
+
+      const currentDistance = point.distanceTo(node.point);
+      const shortest = best ? point.distanceTo(node.point) : Infinity;
+      if (currentDistance < shortest) {
+        best = node;
+      }
+
+      best = this.findNearest(next, point, depth+1, best);
+
+      if (Math.abs(point.position.toArray()[axis] - node.point.position.toArray()[axis]) < shortest) {
+        best = this.findNearest(other, point, depth+1, best);
+      }
+
+      return best;
+    }
+
+    return recur_search(this.root, point);
   }
 
 }

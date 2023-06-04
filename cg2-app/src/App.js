@@ -2,16 +2,20 @@ import React, { useState, useEffect } from 'react';
 import Sidemenu from './components/UI/Sidemenu';
 import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
-import DataReader from './model/DataReader'; // change import here to switch between data structures
+import {NormalDataReader} from './model/DataReader'; // change import here to switch between data structures
 import Viewport from './components/3D/Viewport';
 
 const App = () => {
 
   // Model to load
-  const [dataName, setDataName] = useState("franke4");
+  const [dataName, setDataName] = useState("cat");
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
+  // const [state, setState] = useState({
+  //   points: new PointDataStructure(),
+  //   normals: new PointDataStructure()
+  // });
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
@@ -30,15 +34,39 @@ const App = () => {
     setHighlightedLines([]);
   }
 
+  // const updatePoints = (newPoints) => {
+  //   setState(prevState => ({
+  //     ...prevState,
+  //     points: newPoints
+  //   }));
+  // };
+  // const updateNormals = (newNormals) => {
+  //   setState(prevState => ({
+  //     ...prevState,
+  //     normals: newNormals
+  //   }));
+  // };
+
   // Load model on mount
   useEffect(() => {
-    const reader = new DataReader(dataName)
+    const reader = new NormalDataReader(dataName)
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure())
+<<<<<<< Updated upstream
       points.buildTree()
       console.log(points)
+=======
+      // console.log(typeof(data))
+      // const points = data[0];
+      // const normals = data[1]
+      // points.buildTree();
+>>>>>>> Stashed changes
 
+      // updatePoints(points);
+      // updateNormals(normals);
       setPoints(points);
+      console.log(Object.keys(points.normals).length)
+      console.log(points.points.length)
     }
     console.time("read data")
     readData()

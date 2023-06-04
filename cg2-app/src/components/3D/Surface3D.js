@@ -1,6 +1,11 @@
 import { DoubleSide, Vector3 } from "three";
 import * as THREE from "three";
 import { SampledPointRep } from "../../model/PointRep";
+<<<<<<< Updated upstream
+=======
+import React, { useMemo } from "react";
+import Line3D from "./Line3D";
+>>>>>>> Stashed changes
 
 const exampleData = [
   [new SampledPointRep(new Vector3(0, 0, 0), 0, 0),

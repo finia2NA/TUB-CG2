@@ -1,8 +1,17 @@
+<<<<<<< Updated upstream
 import { useState } from "react";
 import { Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
 import { Collapsing, FullWidthFormControl, H3Wrapper } from "./Containers";
 import { Button } from "./Button";
 import { Hint, PadlessH1, PadlessH2, PadlessH3 } from "./Text";
+=======
+import React, { useState } from "react";
+import { Checkbox, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
+import { Collapsing, FullWidthFormControl } from "./Containers";
+import { Hint, PadlessH1, PadlessH2 } from "./Text";
+import T1Controls from "./T1Controls";
+import T2Controls from "./T2Controls";
+>>>>>>> Stashed changes
 
 const searchSliderModes = {
   knn: {

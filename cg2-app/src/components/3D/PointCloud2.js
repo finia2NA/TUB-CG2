@@ -1,6 +1,6 @@
 // https://threejs.org/docs/#api/en/objects/Points
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import SubPointCloud2 from "./SubPointCloud2";
 
 const PointCloud2 = (props) => {

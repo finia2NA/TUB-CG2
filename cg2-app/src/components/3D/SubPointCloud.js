@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import * as THREE from "three";
 
 import { Point, Points } from "@react-three/drei";

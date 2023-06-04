@@ -5,6 +5,7 @@ import SubPointCloud from "./SubPointCloud";
 import circleImg from "../../asset/circle.png";
 import { useLoader } from "react-three-fiber";
 import * as THREE from "three";
+import React from 'react';
 
 
 

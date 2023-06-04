@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Canvas } from "react-three-fiber";
 import Line3D from "./Line3D";
 import KDVisualizer from './kdVisualizer';
@@ -6,6 +6,12 @@ import CoordSystem from './CoordSystem';
 import PointCloud2 from './PointCloud2';
 import PointCloud from './PointCloud';
 import { OrbitControls } from "@react-three/drei";
+<<<<<<< Updated upstream
+=======
+import Plane3D from "./Plane3D";
+import Surface3D from "./Surface3D";
+import Normal from "./Normal";
+>>>>>>> Stashed changes
 
 const logging = true
 
@@ -65,12 +71,23 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
 
       }
 
+<<<<<<< Updated upstream
       {/* lines */}
       {displayLines && highlightedLines.map((line, index) => (
         <Line3D key={index} start={line.start} end={line.end} />
       ))}
 
       {/* Visualizing DataStructure */}
+=======
+      <Normal points = {points} />
+
+      {/* Lines */}
+      {displayLines && highlightedLines.map((line, index) => (
+        <Line3D key={index} start={line.start} end={line.end} />
+      ))}
+2
+      {/* DataStructure */}
+>>>>>>> Stashed changes
       <KDVisualizer points={points} displayDepth={dsDisplayDepth} vertexSize={vertexSize} />
 
       {displayCoords && <CoordSystem size={10} />}
