@@ -1,4 +1,5 @@
 import quickselect from "quickselect";
+import * as THREE from 'three';
 
 // a class that represents a cube of an octree by specifying two opposite corners
 class octreeCube {
@@ -77,7 +78,8 @@ export class KDTreePointDataStructure extends PointDataStructure {
   constructor() {
     super();
     this.points = [];
-    this. normals = [];
+    this.functionValue = {};
+    this.normals = [];
     this.root = null;
     this.selfSelection = false;
   }
@@ -88,10 +90,29 @@ export class KDTreePointDataStructure extends PointDataStructure {
 
   addPoint(point) {
     this.points.push(point);
+    this.functionValue[point.position.toArray()] = 0;
   }
 
   addNormal(pair) {
     this.normals.push(pair);
+  }
+
+  clear() {
+    this.points = [];
+    this.functionValue = {};
+    this.normals = [];
+    this.root = null;
+    this.selfSelection = false;
+  }
+
+  getBoundingBox() {
+    const min = new THREE.Vector3(Infinity, Infinity, Infinity);
+    const max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+    for (const point of this.points) {
+      min.min(point.position);
+      max.max(point.position);
+    }
+    return { min, max };
   }
 
   // This function builds a 3-dimensional kd-tree recursively.
@@ -246,25 +267,27 @@ export class KDTreePointDataStructure extends PointDataStructure {
 
   findNearest(point) {
     const recur_search = (node, point, depth = 0, best = null) => {
+      if (node === null) { return best };
+
       const axis = depth % 3
       const next = point.position.toArray()[axis] < node.point.position.toArray()[axis] ? node.leftChildren : node.rightChildren;
       const other = point.position.toArray()[axis] < node.point.position.toArray()[axis] ? node.rightChildren : node.leftChildren;
 
       const currentDistance = point.distanceTo(node.point);
-      const shortest = best ? point.distanceTo(node.point) : Infinity;
+      const shortest = best ? point.distanceTo(best.point) : Infinity;
       if (currentDistance < shortest) {
         best = node;
       }
 
-      best = this.findNearest(next, point, depth+1, best);
+      best = recur_search(next, point, depth+1, best);
 
       if (Math.abs(point.position.toArray()[axis] - node.point.position.toArray()[axis]) < shortest) {
-        best = this.findNearest(other, point, depth+1, best);
+        best = recur_search(other, point, depth+1, best);
       }
 
       return best;
     }
-
+    
     return recur_search(this.root, point);
   }
 

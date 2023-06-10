@@ -4,6 +4,7 @@ import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import {NormalDataReader} from './model/DataReader'; // change import here to switch between data structures
 import Viewport from './components/3D/Viewport';
+import Implicit from './model/Implicit';
 
 const App = () => {
 
@@ -12,6 +13,8 @@ const App = () => {
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
+  const [addNormPoints, setAddNormPoints] = useState(new PointDataStructure());
+  const [subNormPoints, setSubNormPoints] = useState(new PointDataStructure());
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
@@ -34,11 +37,15 @@ const App = () => {
   useEffect(() => {
     const reader = new NormalDataReader(dataName)
     const readData = async () => {
-      const points = await reader.read_file(new PointDataStructure())
-      points.buildTree()
+      const points = await reader.read_file(new PointDataStructure());
+      points.buildTree();
+      const NormPoints = new Implicit(points);
 
       setPoints(points);
+      setAddNormPoints(NormPoints.getOffsetPoints().addNormal);
+      setSubNormPoints(NormPoints.getOffsetPoints().subNormal);
     }
+    
     console.time("read data")
     readData()
     console.timeEnd("read data")
