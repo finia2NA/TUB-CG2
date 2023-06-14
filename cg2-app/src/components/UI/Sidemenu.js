@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Checkbox, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
 import { Collapsing, FullWidthFormControl } from "./Containers";
 import { Hint, PadlessH1, PadlessH2 } from "./Text";
@@ -65,6 +65,12 @@ const Sidemenu = (props) => {
               {dataNames.map(val => <MenuItem key={val} value={val}>{val}</MenuItem>)}
             </Select>
         </FullWidthFormControl> */}
+        <FullWidthFormControl>
+            <FormLabel>Data</FormLabel>
+            <Select  value={props.dataName} onChange={(e) => props.setDataName(e.target.value)}>
+              {dataNames.map(val => <MenuItem key={val} value={val}>{val}</MenuItem>)}
+            </Select>
+        </FullWidthFormControl>
         <FullWidthFormControl>
             <FormLabel>Data</FormLabel>
             <Select  value={props.dataName} onChange={(e) => props.setDataName(e.target.value)}>

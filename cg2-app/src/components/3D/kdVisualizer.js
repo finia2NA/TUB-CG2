@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { KDTreePointDataStructure } from "../../model/pointDataStructures";
 import Plane3D from "./Plane3D";
 

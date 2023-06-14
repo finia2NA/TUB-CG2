@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Canvas } from "react-three-fiber";
 import Line3D from "./Line3D";
 import KDVisualizer from './kdVisualizer';
@@ -8,6 +8,7 @@ import PointCloud from './PointCloud';
 import { OrbitControls } from "@react-three/drei";
 import Plane3D from "./Plane3D";
 import Surface3D from "./Surface3D";
+import Normal from "./Normal";
 
 const logging = true
 
@@ -64,6 +65,8 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
         <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
 
       }
+
+      <Normal points = {points} />
 
       {/* Lines */}
       {displayLines && highlightedLines.map((line, index) => (

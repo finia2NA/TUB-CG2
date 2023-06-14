@@ -1,8 +1,8 @@
 import { DoubleSide, Vector3 } from "three";
 import * as THREE from "three";
 import { SampledPointRep } from "../../model/PointRep";
-import { useMemo } from "react";
 import Line3D from "./Line3D";
+import React, { useMemo } from "react";
 
 const exNormal = new Vector3(0, 1, 0);
 const exampleData = [
