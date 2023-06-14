@@ -3,11 +3,17 @@ import { Vector2, Vector3 } from "three";
 // PointRep is a class that represents a 3D point in space.
 class PointRep {
 
-  constructor(position) {
+  constructor(position, normal=null, u=null, v=null) {
     if (!(position instanceof Vector3))
       throw new Error("PointRep constructor expects a Vector3 as parameter");
-
+    
     this.position = position;
+    this.normal = normal;
+
+    // I don't know if having the U and V values in the point rep. is necessary,
+    // but it might be useful for some things, so let's store them.
+    this.u = u;
+    this.v = v;
   }
 
   distanceTo(point) {
@@ -39,6 +45,9 @@ class PointRep {
 
 export default PointRep;
 
+/**
+ * @deprecated, use the optional parameters of the PointRep constructor instead
+ */
 export class SampledPointRep extends PointRep {
 
   constructor(position, surfaceNormal = null, exactNormal = null, u = null, v = null,) {

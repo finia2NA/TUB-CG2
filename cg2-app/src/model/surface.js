@@ -4,7 +4,7 @@
 // math.js https://mathjs.org/docs/reference/functions/usolve.html
 
 import { Vector2, Vector3 } from "three";
-import PointRep, { SampledPointRep } from "./PointRep";
+import PointRep from "./PointRep";
 import * as math from "mathjs";
 
 class Surface {
@@ -93,7 +93,7 @@ class Surface {
     const yDerivative = coefficients[2] + coefficients[3] * x + 2 * coefficients[5] * y;
     const normal = new Vector3(-xDerivative, -yDerivative, 1).normalize();
 
-    return new SampledPointRep(new Vector3(x, y, result), normal)
+    return new PointRep(new Vector3(x, y, result), normal)
   }
 
   getMovingSampling(xCount, yCount, multiplier , approximationMethod) {
@@ -199,7 +199,7 @@ class Surface {
         const tangentU = p1.clone().sub(p0).multiplyScalar(u);
         const tangentV = q1.clone().sub(q0).multiplyScalar(v);
         const normal = new Vector3().crossVectors(tangentU, tangentV).normalize();
-        row.push(new SampledPointRep(point,normal));
+        row.push(new PointRep(point,normal));
       }
       newPoints.push(row);
     }

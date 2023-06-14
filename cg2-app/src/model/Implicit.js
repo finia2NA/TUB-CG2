@@ -13,50 +13,55 @@ class Implicit {
     const y = (bb.max.y - bb.min.y) + 0.1;
     const z = (bb.max.z - bb.min.z) + 0.1;
 
-    const diagonal = Math.sqrt(x**2 + y**2 + z**2);
+    const diagonal = Math.sqrt(x ** 2 + y ** 2 + z ** 2);
 
-    const alpha = 0.01*diagonal;
-    
+    const alpha = 0.01 * diagonal;
+
     return alpha;
   }
 
   getOffsetPoints() {
-    const N = this._basePoints.normals;
+    // Type N: vector3
+    // Note to self: use typeScript next time
     var alpha = this.computeInitialAlpha();
-    var addNormal = new PointDataStructure();
-    var subNormal = new PointDataStructure();
+    var posNormal = new PointDataStructure();
+    var negNormal = new PointDataStructure();
     var idx = 0
 
-    while (idx < N.length) {
-      const original = N[idx][0].position;
-      const Normal = N[idx][1].position.multiplyScalar(alpha);
+    // debug code
+    const N = this._basePoints.points.map(p=>p.normal);
+    console.log(N);
 
-      const addVector = new PointRep(original.clone().add(Normal));
-      const subVector = new PointRep(original.clone().sub(Normal));
+    while (idx < this._basePoints.points.length) {
+      const position = this._basePoints.points[idx].position;
+      const normal = this._basePoints.points[idx].normal;
 
-      const nearestNeighbor = this._basePoints.findNearest(addVector).point.position;
+      const positionPlusNormal = new PointRep(position.clone().add(normal));
+      const positionMinusNormal = new PointRep(position.clone().sub(normal));
 
-      if (nearestNeighbor.clone().equals(N[idx][0].position) && nearestNeighbor.clone().equals(N[idx][0].position)) {
-        addNormal.addPoint(addVector);
-        subNormal.addPoint(subVector);
+      const nearestNeighbor = this._basePoints.findNearest(positionPlusNormal).point.position;
 
-        addNormal.functionValue[addVector.position.toArray()] = alpha;
-        subNormal.functionValue[subVector.position.toArray()] = (-1)*alpha;
-        
-        idx+=1
+      if (nearestNeighbor.equals(position)) {
+        posNormal.addPoint(positionPlusNormal);
+        negNormal.addPoint(positionMinusNormal);
+
+        posNormal.functionValue[positionPlusNormal.position.toArray()] = alpha;
+        negNormal.functionValue[positionMinusNormal.position.toArray()] = (-1) * alpha;
+
+        idx += 1
       }
 
       else {
-        addNormal = new PointDataStructure();
-        subNormal = new PointDataStructure();
-        idx=0;
-        alpha = alpha/2;
-      } 
+        posNormal = new PointDataStructure();
+        negNormal = new PointDataStructure();
+        idx = 0;
+        alpha = alpha / 2;
+      }
     }
 
-    return {addNormal, subNormal}
+    return { posNormal: posNormal, negNormal: negNormal }
   }
-    
+
 }
 
 export default Implicit

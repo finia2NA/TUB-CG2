@@ -8,7 +8,7 @@ import PointCloud from './PointCloud';
 import { OrbitControls } from "@react-three/drei";
 import Plane3D from "./Plane3D";
 import Surface3D from "./Surface3D";
-import Normal from "./Normal";
+import Normals3D from "./Normals3D";
 
 const logging = true
 
@@ -66,7 +66,7 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
 
       }
 
-      <Normal points = {points} />
+      {points.hasNormals() && <Normals3D points={points.points} />}
 
       {/* Lines */}
       {displayLines && highlightedLines.map((line, index) => (

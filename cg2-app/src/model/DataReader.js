@@ -16,7 +16,7 @@ class DataReader {
       "data/" + this.baseName.replace(/\s+/g, "").toLowerCase() + ".off";
     const content = await fetch(fileName).then((x) => x.text());
     const lines = content.split("\n");
-    
+
 
 
     // check header
@@ -35,8 +35,7 @@ class DataReader {
           const positionArray = lines.shift().trim().split(" ").map(parseFloat);
           const vector = new THREE.Vector3(...positionArray.slice(0, 3));
           const normalVector = new THREE.Vector3(...positionArray.slice(3));
-          points.addPoint(new PointRep(vector));
-          points.addNormal([new PointRep(vector), new PointRep(normalVector)]);
+          points.addPoint(new PointRep(vector, normalVector));
         }
         break;
       default:

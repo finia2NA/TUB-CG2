@@ -17,8 +17,8 @@ const App = () => {
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
-  const [addNormPoints, setAddNormPoints] = useState(new PointDataStructure());
-  const [subNormPoints, setSubNormPoints] = useState(new PointDataStructure());
+  const [positiveBBPoints, setPositiveBBPoints] = useState(new PointDataStructure());
+  const [negativeBBPoints, setNegativeBBPoints] = useState(new PointDataStructure());
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
@@ -70,13 +70,17 @@ const App = () => {
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure());
       points.buildTree();
-      const NormPoints = new Implicit(points);
-
       setPoints(points);
-      setAddNormPoints(NormPoints.getOffsetPoints().addNormal);
-      setSubNormPoints(NormPoints.getOffsetPoints().subNormal);
+
+      if (points.hasNormals()) {
+        const NormPoints = new Implicit(points);
+        setPositiveBBPoints(NormPoints.getOffsetPoints().addNormal);
+        negativeBBPoints.buildTree();
+        setNegativeBBPoints(NormPoints.getOffsetPoints().subNormal);
+        positiveBBPoints.buildTree();
+      }
     }
-    
+
     console.time("read data")
     readData()
     console.timeEnd("read data")
@@ -111,7 +115,7 @@ const App = () => {
 
       {/* side menu */}
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} pointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} uSubDiv={uSubDiv} setUSubDiv={setUSubDiv} vSubDiv={vSubDiv} setVSubDiv={setVSubDiv} multiplier={subDivMultiplier} setMultiplier={setMultiplier} onComputeSurface={onComputeSurface} approximationMethod={approximationMethod} setApproximationMethod={setApproximationMethod} wireFrameMode={wireFrameMode} setWireFrameMode={setWireframeMode} dataName={dataName} setDataName={setDataName}/>
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} pointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} uSubDiv={uSubDiv} setUSubDiv={setUSubDiv} vSubDiv={vSubDiv} setVSubDiv={setVSubDiv} multiplier={subDivMultiplier} setMultiplier={setMultiplier} onComputeSurface={onComputeSurface} approximationMethod={approximationMethod} setApproximationMethod={setApproximationMethod} wireFrameMode={wireFrameMode} setWireFrameMode={setWireframeMode} dataName={dataName} setDataName={setDataName} />
       </Card>
 
     </div >

@@ -66,18 +66,6 @@ const Sidemenu = (props) => {
             </Select>
         </FullWidthFormControl> */}
         <FullWidthFormControl>
-            <FormLabel>Data</FormLabel>
-            <Select  value={props.dataName} onChange={(e) => props.setDataName(e.target.value)}>
-              {dataNames.map(val => <MenuItem key={val} value={val}>{val}</MenuItem>)}
-            </Select>
-        </FullWidthFormControl>
-        <FullWidthFormControl>
-            <FormLabel>Data</FormLabel>
-            <Select  value={props.dataName} onChange={(e) => props.setDataName(e.target.value)}>
-              {dataNames.map(val => <MenuItem key={val} value={val}>{val}</MenuItem>)}
-            </Select>
-        </FullWidthFormControl>
-        <FullWidthFormControl>
           <FormLabel>Vertex Size</FormLabel>
           <Slider
             // value={props.vertexSize}

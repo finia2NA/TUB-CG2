@@ -17,6 +17,9 @@ class PointDataStructure {
   getRepresentation(depth) { };
 }
 
+/**
+ * @deprecated because it is not guaranteed to have all features of the KDTree implemented
+ */
 export class LinearPointDataStructure extends PointDataStructure {
   // example very bad implementation
 
@@ -76,11 +79,16 @@ export class KDTreePointDataStructure extends PointDataStructure {
 
   constructor() {
     super();
-    this.points = [];
-    this.functionValue = {};
-    this.normals = [];
-    this.root = null;
-    this.selfSelection = false;
+    this.points = []; // list of points
+    this.functionValue = {}; //FIXME: please explain what this is for
+    this.root = null; // the root of the tree
+    this.selfSelection = false; // wether the radius and kn search should include the point itself
+    this.treeIsBuilt = false;
+  }
+
+  hasNormals() {
+    debugger;
+    return this.points && this.points.length !== 0 && this.points[0].normal !== undefined;
   }
 
   getBoundingBox() {
@@ -102,26 +110,12 @@ export class KDTreePointDataStructure extends PointDataStructure {
     this.functionValue[point.position.toArray()] = 0;
   }
 
-  addNormal(pair) {
-    this.normals.push(pair);
-  }
-
   clear() {
     this.points = [];
     this.functionValue = {};
     this.normals = [];
     this.root = null;
     this.selfSelection = false;
-  }
-
-  getBoundingBox() {
-    const min = new THREE.Vector3(Infinity, Infinity, Infinity);
-    const max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
-    for (const point of this.points) {
-      min.min(point.position);
-      max.max(point.position);
-    }
-    return { min, max };
   }
 
   // This function builds a 3-dimensional kd-tree recursively.
@@ -160,6 +154,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
   // It takes a point and a number k as input and returns an array of the k nearest points to the input point
 
   knnSearch(targetPoint, k) {
+    if (!this.treeIsBuilt) throw new Error("Tree is not built yet!");
     // Initialize an empty array to hold the nearest points
     const nearest = [];
     // Define a recursive helper function to search the tree
@@ -228,6 +223,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
   // It takes a point and a radius as input and returns an array of all points within the given radius of the input point
 
   radiusSearch(targetPoint, radius) {
+    if (!this.treeIsBuilt) throw new Error("Tree is not built yet!");
     // Initialize an empty array to hold the nearest points
     const nearest = [];
 
@@ -274,6 +270,8 @@ export class KDTreePointDataStructure extends PointDataStructure {
     return this.points.includes(point);
   }
 
+  // TODO: isn't this just a KNN search with k = 1?
+  // if so, this could be drastically simplified
   findNearest(point) {
     const recur_search = (node, point, depth = 0, best = null) => {
       if (node === null) { return best };
@@ -288,15 +286,15 @@ export class KDTreePointDataStructure extends PointDataStructure {
         best = node;
       }
 
-      best = recur_search(next, point, depth+1, best);
+      best = recur_search(next, point, depth + 1, best);
 
       if (Math.abs(point.position.toArray()[axis] - node.point.position.toArray()[axis]) < shortest) {
-        best = recur_search(other, point, depth+1, best);
+        best = recur_search(other, point, depth + 1, best);
       }
 
       return best;
     }
-    
+
     return recur_search(this.root, point);
   }
 

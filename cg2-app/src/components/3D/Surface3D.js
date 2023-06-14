@@ -1,20 +1,20 @@
 import { DoubleSide, Vector3 } from "three";
 import * as THREE from "three";
-import { SampledPointRep } from "../../model/PointRep";
+import PointRep from "../../model/PointRep";
 import Line3D from "./Line3D";
 import React, { useMemo } from "react";
 
 const exNormal = new Vector3(0, 1, 0);
 const exampleData = [
-  [new SampledPointRep(new Vector3(0, 0, 0), exNormal, null, 0, 0),
-  new SampledPointRep(new Vector3(0, 0.5, 0), exNormal, null, 0, 0.5),
-  new SampledPointRep(new Vector3(0, 1, 0), exNormal, null, 0, 1)],
-  [new SampledPointRep(new Vector3(0.5, 0, 1), exNormal, null, 0.5, 0),
-  new SampledPointRep(new Vector3(0.5, 0.5, 1), exNormal, null, 0.5, 0.5),
-  new SampledPointRep(new Vector3(0.5, 1, 1), exNormal, null, 0.5, 1)],
-  [new SampledPointRep(new Vector3(1, 0, 0), exNormal, null, 1, 0),
-  new SampledPointRep(new Vector3(1, 0.5, 0), exNormal, null, 1, 0.5),
-  new SampledPointRep(new Vector3(1, 1, 0), exNormal, null, 1, 1)]
+  [new PointRep(new Vector3(0, 0, 0), exNormal, null, 0, 0),
+  new PointRep(new Vector3(0, 0.5, 0), exNormal, null, 0, 0.5),
+  new PointRep(new Vector3(0, 1, 0), exNormal, null, 0, 1)],
+  [new PointRep(new Vector3(0.5, 0, 1), exNormal, null, 0.5, 0),
+  new PointRep(new Vector3(0.5, 0.5, 1), exNormal, null, 0.5, 0.5),
+  new PointRep(new Vector3(0.5, 1, 1), exNormal, null, 0.5, 1)],
+  [new PointRep(new Vector3(1, 0, 0), exNormal, null, 1, 0),
+  new PointRep(new Vector3(1, 0.5, 0), exNormal, null, 1, 0.5),
+  new PointRep(new Vector3(1, 1, 0), exNormal, null, 1, 1)]
 ]
 
 const Surface3D = ({ points = exampleData, wireFrameMode = false }) => {
@@ -68,13 +68,13 @@ const Surface3D = ({ points = exampleData, wireFrameMode = false }) => {
 
   const normalCoords = useMemo(() => {
     const normalCoords = []
-    if (points.length !== 0 && points[0][0].surfaceNormal) {
+    if (points.length !== 0 && points[0][0].normal) {
 
       for (let u = 0; u < points.length; u++) {
         for (let v = 0; v < points[0].length; v++) {
           const point = points[u][v];
           const start = point.position;
-          const end = point.position.clone().add(point.surfaceNormal.clone().multiplyScalar(0.1));
+          const end = point.position.clone().add(point.normal.clone().multiplyScalar(0.1));
           normalCoords.push({ start, end })
         }
       }
