@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidemenu from './components/UI/Sidemenu';
 import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
-import {NormalDataReader} from './model/DataReader'; // change import here to switch between data structures
+import DataReader from './model/DataReader'; // change import here to switch between data structures
 import Viewport from './components/3D/Viewport';
 import Surface from './model/surface';
 import Implicit from './model/Implicit';
@@ -66,7 +66,7 @@ const App = () => {
 
   // Load model on mount
   useEffect(() => {
-    const reader = new NormalDataReader(dataName)
+    const reader = new DataReader(dataName)
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure());
       points.buildTree();
