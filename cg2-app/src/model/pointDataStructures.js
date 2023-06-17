@@ -80,14 +80,12 @@ export class KDTreePointDataStructure extends PointDataStructure {
   constructor() {
     super();
     this.points = []; // list of points
-    this.functionValue = {}; //FIXME: please explain what this is for
     this.root = null; // the root of the tree
     this.selfSelection = false; // wether the radius and kn search should include the point itself
     this.treeIsBuilt = false;
   }
 
   hasNormals() {
-    debugger;
     return this.points && this.points.length !== 0 && this.points[0].normal !== undefined;
   }
 
@@ -107,12 +105,10 @@ export class KDTreePointDataStructure extends PointDataStructure {
 
   addPoint(point) {
     this.points.push(point);
-    this.functionValue[point.position.toArray()] = 0;
   }
 
   clear() {
     this.points = [];
-    this.functionValue = {};
     this.normals = [];
     this.root = null;
     this.selfSelection = false;

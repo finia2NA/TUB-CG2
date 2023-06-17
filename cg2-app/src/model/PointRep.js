@@ -3,10 +3,10 @@ import { Vector2, Vector3 } from "three";
 // PointRep is a class that represents a 3D point in space.
 class PointRep {
 
-  constructor(position, normal=null, u=null, v=null) {
+  constructor(position, normal = null, u = null, v = null) {
     if (!(position instanceof Vector3))
       throw new Error("PointRep constructor expects a Vector3 as parameter");
-    
+
     this.position = position;
     this.normal = normal;
 
@@ -14,6 +14,10 @@ class PointRep {
     // but it might be useful for some things, so let's store them.
     this.u = u;
     this.v = v;
+
+    // This is used for Poisson Surface Reconstruction.
+    // Default value is 0, for the original (non-offset) point set
+    this.functionValue = 0
   }
 
   distanceTo(point) {

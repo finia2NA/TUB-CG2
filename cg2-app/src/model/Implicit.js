@@ -29,7 +29,7 @@ class Implicit {
     var idx = 0
 
     // debug code
-    const N = this._basePoints.points.map(p=>p.normal);
+    const N = this._basePoints.points.map(p => p.normal);
     console.log(N);
 
     while (idx < this._basePoints.points.length) {
@@ -45,8 +45,8 @@ class Implicit {
         posNormal.addPoint(positionPlusNormal);
         negNormal.addPoint(positionMinusNormal);
 
-        posNormal.functionValue[positionPlusNormal.position.toArray()] = alpha;
-        negNormal.functionValue[positionMinusNormal.position.toArray()] = (-1) * alpha;
+        positionPlusNormal.functionValue = alpha;
+        positionMinusNormal.functionValue = (-1) * alpha;
 
         idx += 1
       }
