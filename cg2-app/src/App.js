@@ -17,8 +17,8 @@ const App = () => {
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
-  const [positiveBBPoints, setPositiveBBPoints] = useState(new PointDataStructure());
-  const [negativeBBPoints, setNegativeBBPoints] = useState(new PointDataStructure());
+  //TODO: add button to do implicit computation to UI
+  const [implicit, setImplicit] = useState(null);
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
@@ -73,11 +73,9 @@ const App = () => {
       setPoints(points);
 
       if (points.hasNormals()) {
-        const NormPoints = new Implicit(points);
-        setPositiveBBPoints(NormPoints.getOffsetPoints().addNormal);
-        negativeBBPoints.buildTree();
-        setNegativeBBPoints(NormPoints.getOffsetPoints().subNormal);
-        positiveBBPoints.buildTree();
+        const implicit = new Implicit(points);
+        implicit.calculateOffsetPoints();
+        setImplicit(implicit);
       }
     }
 

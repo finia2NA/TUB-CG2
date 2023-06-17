@@ -5,6 +5,7 @@ import PointRep from './PointRep';
 class Implicit {
   constructor(basePoints) {
     this._basePoints = basePoints;
+    this._3NPoints = null;
   }
 
   computeInitialAlpha() {
@@ -20,12 +21,12 @@ class Implicit {
     return alpha;
   }
 
-  getOffsetPoints() {
+  calculateOffsetPoints() {
     // Type N: vector3
     // Note to self: use typeScript next time
     var alpha = this.computeInitialAlpha();
-    var posNormal = new PointDataStructure();
-    var negNormal = new PointDataStructure();
+    var posOffsetPoints = []
+    var negOffsetPoints = []
     var idx = 0
 
     // debug code
@@ -43,8 +44,8 @@ class Implicit {
 
       // FIXME: this check should be wether the posPlusNormal is closer to position than nearestneighbour, not if nearestneighbour is equals to position I think (reading the assignment!)
       if (nearestNeighbor.equals(position)) {
-        posNormal.addPoint(positionPlusNormal);
-        negNormal.addPoint(positionMinusNormal);
+        posOffsetPoints.push(positionPlusNormal);
+        negOffsetPoints.push(positionMinusNormal);
 
         positionPlusNormal.functionValue = alpha;
         positionMinusNormal.functionValue = (-1) * alpha;
@@ -55,14 +56,15 @@ class Implicit {
       else {
         // FIXME:  I don't know if assigning posnormal and negnormal to be a new ds here is good!
         // since it resets everything, even for points that have already been processed!!!
-        posNormal = new PointDataStructure();
-        negNormal = new PointDataStructure();
+        posOffsetPoints = []
+        negOffsetPoints = []
         idx = 0;
         alpha = alpha / 2;
       }
     }
 
-    return { posNormal: posNormal, negNormal: negNormal }
+    this._3NPoints = new PointDataStructure(this._basePoints.points.concat(posOffsetPoints).concat(negOffsetPoints));
+    this._3NPoints.buildTree();
   }
 
 }
