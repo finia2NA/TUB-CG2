@@ -67,6 +67,37 @@ class Implicit {
     this._3NPoints.buildTree();
   }
 
+  calculateGridValues(nx, ny, nz) {
+    const bb = this.getBoundingBox();
+
+    // set up from where to where and in what steps to iterate
+    const xRange = bb.max.x - bb.min.x;
+    const yRange = bb.max.y - bb.min.y;
+    const zRange = bb.max.z - bb.min.z;
+    const xStep = xRange / nx;
+    const yStep = yRange / ny;
+    const zStep = zRange / nz;
+
+    // create grid 3d array
+    const grid = new Array(nx).fill().map(() => new Array(ny).fill().map(() => new Array(nz)));
+
+    // fill grid with points
+    for (let i = 0; i < nx; i++) {
+      for (let j = 0; j < ny; j++) {
+        for (let k = 0; k < nz; k++) {
+          const x = bb.xMin + i * xStep;
+          const y = bb.yMin + j * yStep;
+          const z = bb.zMin + k * zStep;
+
+          grid[i][j][k] = new PointRep(new Vector3(x, y, z));
+        }
+      }
+    }
+
+    return grid;
+  }
+
+
 }
 
 export default Implicit
