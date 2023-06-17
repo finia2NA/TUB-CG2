@@ -41,6 +41,7 @@ class Implicit {
 
       const nearestNeighbor = this._basePoints.findNearest(positionPlusNormal).point.position;
 
+      // FIXME: this check should be wether the posPlusNormal is closer to position than nearestneighbour, not if nearestneighbour is equals to position I think (reading the assignment!)
       if (nearestNeighbor.equals(position)) {
         posNormal.addPoint(positionPlusNormal);
         negNormal.addPoint(positionMinusNormal);
@@ -52,6 +53,8 @@ class Implicit {
       }
 
       else {
+        // FIXME:  I don't know if assigning posnormal and negnormal to be a new ds here is good!
+        // since it resets everything, even for points that have already been processed!!!
         posNormal = new PointDataStructure();
         negNormal = new PointDataStructure();
         idx = 0;
