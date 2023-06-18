@@ -18,7 +18,6 @@ const App = () => {
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
   //TODO: add button to do implicit computation to UI
-  const [implicit, setImplicit] = useState(null);
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
@@ -56,7 +55,16 @@ const App = () => {
     setSurfacePoints(newSurfacePoints);
   }
 
+  const onComputeImplicitSurface = () => {
+    if (!points.hasNormals()) return;
 
+    const implicit = new Implicit(points);
+    implicit.calculateOffsetPoints();
+    // ... (add further logic to calculate grid a)
+    // implicit.calculateGrid() (Task 3, WIP on corresponding branch)
+    // const isf = implicit.calculateSurface();
+    // setImplicitSurface(isf)
+  }
 
   const onClearSelection = () => {
     setSelectedPoints([]);
@@ -72,11 +80,9 @@ const App = () => {
       points.buildTree();
       setPoints(points);
 
-      if (points.hasNormals()) {
-        const implicit = new Implicit(points);
-        implicit.calculateOffsetPoints();
-        setImplicit(implicit);
-      }
+      // usually this would be run by pressing a button, but for testing it's more convenient to have it run on load
+      onComputeImplicitSurface();
+
     }
 
     console.time("read data")
