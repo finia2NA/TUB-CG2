@@ -57,7 +57,7 @@ const App = () => {
     setSurfacePoints(newSurfacePoints);
   }
 
-  const onComputeImplicitSurface = useCallback(() => {
+  const onComputeImplicitSurface = () => {
     if (!points.hasNormals()) return;
 
     const implicit = new Implicit(points);
@@ -72,7 +72,7 @@ const App = () => {
     // ... (add further logic to calculate grid a)
     // const isf = implicit.calculateSurface();
     // setImplicitSurface(isf)
-  }, [points]);
+  };
 
   const onClearSelection = () => {
     setSelectedPoints([]);
@@ -84,18 +84,18 @@ const App = () => {
   useEffect(() => {
     const reader = new DataReader(dataName, rotateModel)
     const readData = async () => {
-      const points = await reader.read_file(new PointDataStructure());
-      points.buildTree();
-      setPoints(points);
+      const lpoints = await reader.read_file(new PointDataStructure());
+      lpoints.buildTree();
+      setPoints(lpoints);
 
-      // usually this would be run by pressing a button, but for testing it's more convenient to have it run on load
+
+      const implicit = new Implicit(lpoints);
+      implicit.calculateOffsetPoints();
     }
 
-    console.time("read data")
     readData()
-    console.timeEnd("read data")
     document.title = 'CG2-Tool: ' + dataName.toUpperCase();
-    onComputeImplicitSurface();
+
 
     // TODO: onComputeImplicitSurface should be added to dep. array, but it causes an infinite loop
   }, [dataName, rotateModel])

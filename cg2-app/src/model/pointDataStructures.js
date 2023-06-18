@@ -288,11 +288,10 @@ export class KDTreePointDataStructure extends PointDataStructure {
         best = recur_search(other, point, depth + 1, best);
       }
 
-      debugger; // TODO: check if this is node or point
-      return best.point;
+      return best;
     }
 
-    return recur_search(this.root, point);
+    return recur_search(this.root, point).point;
   }
 
 }

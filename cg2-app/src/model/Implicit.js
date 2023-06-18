@@ -21,35 +21,34 @@ class Implicit {
     // Type N: vector3
     // Note to self: use typeScript next time
 
-    let alpha = this.computeInitialAlpha();
-    let posOffsetPoints = new PointDataStructure();
-    let negOffsetPoints = new PointDataStructure();
-    let idx = 0
+    const baseAlpha = this.computeInitialAlpha();
+    const posOffsetPoints = []
+    const negOffsetPoints = []
 
-    while (idx < this._basePoints.points.length) {
-      const position = this._basePoints.points[idx].position;
-      const normal = this._basePoints.points[idx].normal;
+    for (const sign of [-1, 1]) {
+      // do this whole thing twice, once for positive and once for negative offset
+      const offsetList = sign === 1 ? posOffsetPoints : negOffsetPoints;
 
-      const plusNormalPoint = new PointRep(position.clone().add(normal));
-      const minusNormalPoint = new PointRep(position.clone().sub(normal));
+      for (const point of this._basePoints.points) {
+        let currentAlpha = baseAlpha
 
-      const nearestNeighbor = this._basePoints.findNearest(plusNormalPoint).point
+        while (true) {
+          // compute points
+          const offsetVector = point.normal.clone().multiplyScalar(sign * currentAlpha);
+          const offsetPoint = new PointRep(point.position.clone().add(offsetVector), point.normal.clone());
+          offsetPoint.functionValue = sign * currentAlpha;
 
-      if (nearestNeighbor.position.equals(position)) {
-        posOffsetPoints.push(plusNormalPoint);
-        negOffsetPoints.push(minusNormalPoint);
-
-        plusNormalPoint.functionValue = alpha;
-        minusNormalPoint.functionValue = -alpha;
-
-        idx += 1
-      }
-
-      else {
-        posOffsetPoints = new PointDataStructure();
-        negOffsetPoints = new PointDataStructure();
-        idx = 0;
-        alpha = alpha / 2;
+          // check taht the original point is the closest point to the offset point
+          const closestPoint = this._basePoints.findNearest(offsetPoint);
+          if (closestPoint === point) {
+            // if check was positive, add points to offsetPoint to DS and break
+            offsetList.push(offsetPoint);
+            break;
+          } else {
+            // if check was negative, halve currentAlpha and try again
+            currentAlpha = currentAlpha / 2;
+          }
+        }
       }
     }
 
