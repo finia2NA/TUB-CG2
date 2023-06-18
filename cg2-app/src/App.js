@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Sidemenu from './components/UI/Sidemenu';
 import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
@@ -14,12 +14,12 @@ const App = () => {
 
   // Model to load
   const [dataName, setDataName] = useState("cat");
+  const [rotateModel, setrotateModel] = useState(false); // WIP
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
-  const [gridPoints, setGridPoints] = useState([]);
+  const [pointGrid, setPointGrid] = useState([]);
 
-  //TODO: add button to do implicit computation to UI
 
   // Display Control State
   const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
@@ -57,16 +57,22 @@ const App = () => {
     setSurfacePoints(newSurfacePoints);
   }
 
-  const onComputeImplicitSurface = () => {
+  const onComputeImplicitSurface = useCallback(() => {
     if (!points.hasNormals()) return;
 
     const implicit = new Implicit(points);
     implicit.calculateOffsetPoints();
+    return
+    implicit.calculateGrid();
+    setPointGrid(implicit.pointGrid);
+
+
+
+
     // ... (add further logic to calculate grid a)
-    // implicit.calculateGrid() (Task 3, WIP on corresponding branch)
     // const isf = implicit.calculateSurface();
     // setImplicitSurface(isf)
-  }
+  }, [points]);
 
   const onClearSelection = () => {
     setSelectedPoints([]);
@@ -76,23 +82,23 @@ const App = () => {
 
   // Load model on mount
   useEffect(() => {
-    const reader = new DataReader(dataName)
+    const reader = new DataReader(dataName, rotateModel)
     const readData = async () => {
       const points = await reader.read_file(new PointDataStructure());
       points.buildTree();
       setPoints(points);
 
       // usually this would be run by pressing a button, but for testing it's more convenient to have it run on load
-      onComputeImplicitSurface();
-
     }
 
     console.time("read data")
     readData()
     console.timeEnd("read data")
     document.title = 'CG2-Tool: ' + dataName.toUpperCase();
+    onComputeImplicitSurface();
 
-  }, [dataName])
+    // TODO: onComputeImplicitSurface should be added to dep. array, but it causes an infinite loop
+  }, [dataName, rotateModel])
 
   // function that is called when the user clicks the "Gather" button
   const onPointQuery = (gatherMethod = "knn", gatherParameter = 10) => {
@@ -116,7 +122,7 @@ const App = () => {
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
-        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} pointCloudVersion={pointCloudVersion} surfacePoints={surfacePoints} wireFrameMode={wireFrameMode} grid={gridPoints} />
+        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} pointCloudVersion={pointCloudVersion} surfacePoints={surfacePoints} wireFrameMode={wireFrameMode} grid={pointGrid} />
       </Card>
 
       {/* side menu */}

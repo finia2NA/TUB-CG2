@@ -1,13 +1,25 @@
 import PointRep from "./PointRep";
 import * as THREE from "three";
 
+function rotate(arr) {
+  if (arr.length < 3) {
+    return 'Array should have at least three elements';
+  } else {
+    const oldY = arr[1];
+    const oldZ = arr[2];
+    arr[1] = oldZ;
+    arr[2] = -oldY;
+
+  }
+}
+
 /**
  * Reads .off data from local files
  */
 class DataReader {
-  constructor(baseName) {
+  constructor(baseName, switchAxis) {
     this.baseName = baseName;
-
+    this.switchAxis = switchAxis;
   }
 
   async read_file(points) {
@@ -25,17 +37,27 @@ class DataReader {
     switch (header) {
       case "OFF":
         for (let i = 0; i < vertexCount; i++) {
-          const positionArray = lines.shift().trim().split(" ").map(parseFloat);
-          const vector = new THREE.Vector3(...positionArray);
-          points.addPoint(new PointRep(vector));
+          let positionArray = lines.shift().trim().split(" ").map(parseFloat);
+          if (this.switchAxis) {
+            positionArray = rotate(positionArray);
+          }
+          const position = new THREE.Vector3(...positionArray);
+
+          points.addPoint(new PointRep(position));
         }
         break;
       case "NOFF":
         for (let i = 0; i < vertexCount; i++) {
-          const positionArray = lines.shift().trim().split(" ").map(parseFloat);
-          const vector = new THREE.Vector3(...positionArray.slice(0, 3));
-          const normalVector = new THREE.Vector3(...positionArray.slice(3));
-          points.addPoint(new PointRep(vector, normalVector));
+          const pointDataArray = lines.shift().trim().split(" ").map(parseFloat);
+          let positionArray = pointDataArray.slice(0, 3);
+          let normalArray = pointDataArray.slice(3);
+          if (this.switchAxis) {
+            positionArray = rotate(positionArray);
+            normalArray = rotate(normalArray);
+          }
+          const position = new THREE.Vector3(...pointDataArray.slice(0, 3));
+          const normal = new THREE.Vector3(...pointDataArray.slice(3));
+          points.addPoint(new PointRep(position, normal));
         }
         break;
       default:

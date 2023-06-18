@@ -9,6 +9,9 @@ import { OrbitControls } from "@react-three/drei";
 import Plane3D from "./Plane3D";
 import Surface3D from "./Surface3D";
 import Normals3D from "./Normals3D";
+import { Vector3 } from "three";
+import ValueBasedPoints from "./ValueBasedPoints";
+import PointRep from "../../model/PointRep";
 
 const logging = true
 
@@ -49,20 +52,34 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
 
   }
 
+  const exampleFunctionPoints = () => {
+    const points = []
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        const curr = new PointRep(new Vector3(i, j, 0))
+        curr.functionValue = (i + j - 10) / 10
+        points.push(curr)
+      }
+    }
+    return points
+  }
+
+
+
 
   return (
     <Canvas
-      camera={{ position: [0, 0, 2], near: 0.001 }}
+      camera={{ position: [0, 0, 2], near: 0.01, far: 10000 }}
       style={{ background: "grey" }}
       id='canvas'>
 
       {/* points */}
       {pointCloudVersion === 1 && points.toArray().length > 0 &&
-        <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
+        <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize*20} />
       }
       {pointCloudVersion === 2 && points.toArray().length > 0 &&
         // <SubPointCloud2 points={points} coloring="highlighted" vertexSize={vertexSize} />
-        <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize} />
+        <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize*20} />
 
       }
 
@@ -82,6 +99,8 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
       <Surface3D
         points={surfacePoints} wireFrameMode={wireFrameMode}
       />
+
+      {/* <ValueBasedPoints points={exampleFunctionPoints()} /> */}
 
       {/* Controls */}
       <OrbitControls />
