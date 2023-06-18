@@ -1,6 +1,8 @@
 import { KDTreePointDataStructure as PointDataStructure } from './pointDataStructures';
 import { Vector3 } from "three";
 import PointRep from './PointRep';
+import * as math from "mathjs";
+import { BasisFunction } from './BasisFunction';
 
 class Implicit {
   constructor(basePoints) {
@@ -67,6 +69,66 @@ class Implicit {
     this._3NPoints.buildTree();
   }
 
+  _wls(x, y, z, h, degree = 0, computeNormals = false) {
+    // adapted from surface.js with help from my dear friend, Chad G. Peté
+    // https://chat.openai.com/share/7e6aeaf8-d5a6-43a7-85e5-8ac1271c1151
+
+    // get relevant values
+    const pointArray = this._3NPoints.points;
+    const positions = pointArray.map(point => point.position.toArray());
+    const X = positions.map(row => row[0]);
+    const Y = positions.map(row => row[1]);
+    const Z = positions.map(row => row[2]);
+    const F = pointArray.map(point => point.functionValue); // interpolated function value
+
+    // choose and compute polybase
+    const basisFunction = new BasisFunction(degree);
+    let polyBases = [];
+    for (let i = 0; i < X.length; i++) {
+      polyBases.push(basisFunction.getBasisFunctionArray(X[i], Y[i], Z[i]))
+    }
+
+    // compute weight vector
+    const D = pointArray.map(point => point.distance3DToPosition(new Vector3(x, y, z)));
+    // TODO: we had problems with wendland in surface.js, so check if this is correct before submission
+    const weighting_f = (r) => {
+      return (((1 - r) / h) ** 4) * (4 * r / h + 1);
+    }
+    let weightVector = []; // weight value
+    for (let i = 0; i < D.length; i++) {
+      const weight = weighting_f(D[i]);
+      weightVector[i] = weight;
+    }
+
+    // apply the weights to the polybases
+    const weightedPolyBases = math.multiply(math.diag(weightVector), polyBases)
+
+    // leftSide and rightSide refer to the equation in the paper.
+    const leftSide = math.multiply(math.transpose(polyBases), weightedPolyBases);
+    const rightSide = math.multiply(math.transpose(weightedPolyBases), F);
+    const coefficients = math.multiply(math.inv(leftSide), rightSide);
+
+    // compute the result
+    const result1 = math.multiply(polyBases, coefficients); // this is what copilot says, TODO: check if this is correct
+    const result = basisFunction.evaluate(x, y, z, coefficients);
+
+    // RETURN CASE: NO NORMALS
+    if (!computeNormals) {
+      const re = new PointRep(new Vector3(x, y, z));
+      re.functionValue = result;
+      return re;
+    }
+
+    // ------------------
+    // NORMAL COMPUTATION
+    const normal = basisFunction.evaluateGradient(x, y, z, coefficients);
+    // RETURN
+    const re = new PointRep(new Vector3(x, y, z, normal));
+    re.functionValue = result;
+    return re;
+  }
+
+
   calculateGridValues(nx, ny, nz) {
     const bb = this.getBoundingBox();
 
@@ -89,7 +151,9 @@ class Implicit {
           const y = bb.yMin + j * yStep;
           const z = bb.zMin + k * zStep;
 
-          grid[i][j][k] = new PointRep(new Vector3(x, y, z));
+          const thePoint = new PointRep(new Vector3(x, y, z))
+          thePoint.functionValue = this._wls(x, y, z, 0.1).functionValue;
+          grid[i][j][k] = thePoint
         }
       }
     }

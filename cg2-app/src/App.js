@@ -17,6 +17,8 @@ const App = () => {
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
+  const [gridPoints, setGridPoints] = useState([]);
+
   //TODO: add button to do implicit computation to UI
   const [implicit, setImplicit] = useState(null);
 
