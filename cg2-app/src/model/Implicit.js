@@ -8,6 +8,7 @@ class Implicit {
   constructor(basePoints) {
     this._basePoints = basePoints;
     this._3NPoints = null;
+    this.pointGrid = null;
   }
 
   computeInitialAlpha() {
@@ -158,7 +159,7 @@ class Implicit {
       }
     }
 
-    return grid;
+    this.pointGrid = grid;
   }
 
 

@@ -110,7 +110,7 @@ const App = () => {
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
-        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} pointCloudVersion={pointCloudVersion} surfacePoints={surfacePoints} wireFrameMode={wireFrameMode} />
+        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} pointCloudVersion={pointCloudVersion} surfacePoints={surfacePoints} wireFrameMode={wireFrameMode} grid={gridPoints} />
       </Card>
 
       {/* side menu */}
