@@ -19,10 +19,11 @@ const flattenArray = data => {
 }
 
 const ValueBasedPoints = (props) => {
+  // debugger;
   const points = flattenArray(props.points)
 
   return (
-    <SubPointCloud2 points={points} vertexSize={1} valueBasedColoring />
+    <SubPointCloud2 points={points} vertexSize={100} valueBasedColoring />
   )
 
 }

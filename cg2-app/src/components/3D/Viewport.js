@@ -15,7 +15,19 @@ import PointRep from "../../model/PointRep";
 
 const logging = true
 
-const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, pointCloudVersion, surfacePoints, wireFrameMode }) => {
+const exampleFunctionPoints = () => {
+  const points = []
+  for (let i = 0; i < 10; i++) {
+    for (let j = 0; j < 10; j++) {
+      const curr = new PointRep(new Vector3(i, j, 0))
+      curr.functionValue = (i + j - 10) / 10
+      points.push(curr)
+    }
+  }
+  return points
+}
+
+const Viewport = ({ points,grid, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, pointCloudVersion, surfacePoints, wireFrameMode }) => {
 
   // Keyboard State
   const [shiftPressed, setShiftPressed] = useState(false);
@@ -52,19 +64,7 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
 
   }
 
-  const exampleFunctionPoints = () => {
-    const points = []
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
-        const curr = new PointRep(new Vector3(i, j, 0))
-        curr.functionValue = (i + j - 10) / 10
-        points.push(curr)
-      }
-    }
-    return points
-  }
-
-
+  console.log(grid)
 
 
   return (
@@ -100,7 +100,7 @@ const Viewport = ({ points, vertexSize, displayLines, displayCoords, dsDisplayDe
         points={surfacePoints} wireFrameMode={wireFrameMode}
       />
 
-      {/* <ValueBasedPoints points={exampleFunctionPoints()} /> */}
+      <ValueBasedPoints points={grid} />
 
       {/* Controls */}
       <OrbitControls />

@@ -52,8 +52,13 @@ class Implicit {
       }
     }
 
-    this._3NPoints = new PointDataStructure(this._basePoints.points.concat(posOffsetPoints).concat(negOffsetPoints));
+
+    this._3NPoints = new PointDataStructure()
+    this._3NPoints.points = [...this._basePoints.points, ...posOffsetPoints, ...negOffsetPoints];
     this._3NPoints.buildTree();
+    console.log(this._3NPoints.points)
+    console.log(this._3NPoints.points.map(point => point.functionValue))
+    debugger;
   }
 
   _wls(x, y, z, h, degree = 0, computeNormals = false) {
@@ -76,7 +81,7 @@ class Implicit {
     }
 
     // compute weight vector
-    const D = pointArray.map(point => point.distance3DToPosition(new Vector3(x, y, z)));
+    const D = pointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
     // TODO: we had problems with wendland in surface.js, so check if this is correct before submission
     const weighting_f = (r) => {
       return (((1 - r) / h) ** 4) * (4 * r / h + 1);
@@ -96,7 +101,6 @@ class Implicit {
     const coefficients = math.multiply(math.inv(leftSide), rightSide);
 
     // compute the result
-    const result1 = math.multiply(polyBases, coefficients); // this is what copilot says, TODO: check if this is correct
     const result = basisFunction.evaluate(x, y, z, coefficients);
 
     // RETURN CASE: NO NORMALS
@@ -117,7 +121,8 @@ class Implicit {
 
 
   calculateGridValues(nx, ny, nz) {
-    const bb = this.getBoundingBox();
+    this.calculateOffsetPoints();
+    const bb = this._basePoints.getBoundingBox();
 
     // set up from where to where and in what steps to iterate
     const xRange = bb.max.x - bb.min.x;
@@ -127,6 +132,8 @@ class Implicit {
     const yStep = yRange / ny;
     const zStep = zRange / nz;
 
+    const totalSteps = nx * ny * nz;
+
     // create grid 3d array
     const grid = new Array(nx).fill().map(() => new Array(ny).fill().map(() => new Array(nz)));
 
@@ -134,18 +141,26 @@ class Implicit {
     for (let i = 0; i < nx; i++) {
       for (let j = 0; j < ny; j++) {
         for (let k = 0; k < nz; k++) {
-          const x = bb.xMin + i * xStep;
-          const y = bb.yMin + j * yStep;
-          const z = bb.zMin + k * zStep;
+          const x = bb.min.x + i * xStep;
+          const y = bb.min.y + j * yStep;
+          const z = bb.min.z + k * zStep;
 
           const thePoint = new PointRep(new Vector3(x, y, z))
           thePoint.functionValue = this._wls(x, y, z, 0.1).functionValue;
           grid[i][j][k] = thePoint
+
+          // print progress
+          const currentStep = i * ny * nz + j * nz + k;
+          if ((currentStep / totalSteps) % 0.1 < 0.001) {
+            const progress = (currentStep / totalSteps).toFixed(2);
+            console.log(`${progress * 100}%`)
+          }
         }
       }
     }
 
     this.pointGrid = grid;
+    return grid;
   }
 
 
