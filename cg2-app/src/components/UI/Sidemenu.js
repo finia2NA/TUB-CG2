@@ -26,6 +26,8 @@ const searchSliderModes = {
 }
 
 const vertexSizeSliderScale = x => (1 / (Math.pow(2, (x - 1)))).toFixed(3);
+const vertexSizeDefaultValue = 0;
+export const defaultVertexSize = vertexSizeSliderScale(vertexSizeDefaultValue);
 
 const Sidemenu = (props) => {
 
@@ -71,7 +73,7 @@ const Sidemenu = (props) => {
             // value={props.vertexSize}
             onChange={(e) => props.setVertexSize((vertexSizeSliderScale(e.target.value)))}
             valueLabelDisplay="auto"
-            defaultValue={0}
+            defaultValue={vertexSizeDefaultValue}
             step={1}
             min={1}
             max={12}

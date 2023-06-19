@@ -79,13 +79,18 @@ class Implicit {
 
     // compute weight vector
     const D = pointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
-    // TODO: we had problems with wendland in surface.js, so check if this is correct before submission
-    const weighting_f = (r) => {
+    // FIXME: wendland is not working rn, using epsilon instead so Task 4 can be implemented.
+    // Figure out what is going wrong with wendland, then replace epsilon.
+    const wf_wendland = (r) => {
       return (((1 - r) / h) ** 4) * (4 * r / h + 1);
     }
+    const wf_epsilon = (d, epsilon = 0.1) => {
+      return 1 / (d ** 2 + epsilon ** 2)
+    }
+
     let weightVector = []; // weight value
     for (let i = 0; i < D.length; i++) {
-      const weight = weighting_f(D[i]);
+      const weight = wf_epsilon(D[i]);
       weightVector[i] = weight;
     }
 
@@ -125,6 +130,7 @@ class Implicit {
   async calculateGridValues(nx, ny, nz) {
     // TODO: use worker threads to speed this up
     // https://chat.openai.com/share/bf388ef3-a0d6-42ed-a483-496290c7a406
+
     this.calculateOffsetPoints();
     const bb = this._3NPoints.getBoundingBox();
 
@@ -132,9 +138,9 @@ class Implicit {
     const xRange = bb.max.x - bb.min.x;
     const yRange = bb.max.y - bb.min.y;
     const zRange = bb.max.z - bb.min.z;
-    const xStep = xRange / nx;
-    const yStep = yRange / ny;
-    const zStep = zRange / nz;
+    const xStep = xRange / (nx - 1);
+    const yStep = yRange / (ny - 1);
+    const zStep = zRange / (nz - 1);
 
     const totalSteps = nx * ny * nz;
 
@@ -173,10 +179,10 @@ class Implicit {
     await Promise.all(promises);
     console.log("done computing grid values")
 
-
     this.pointGrid = grid;
     return grid;
   }
 }
+
 
 export default Implicit

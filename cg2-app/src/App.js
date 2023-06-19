@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Sidemenu from './components/UI/Sidemenu';
+import Sidemenu, { defaultVertexSize } from './components/UI/Sidemenu';
 import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import DataReader from './model/DataReader'; // change import here to switch between data structures
@@ -26,7 +26,7 @@ const App = () => {
   const [pointCloudVersion, setPointCloudVersion] = useState(2)
   const [displayLines, setDisplayLines] = useState(false);
   const [displayCoords, setDisplayCoords] = useState(false);
-  const [vertexSize, setVertexSize] = useState(0.03);
+  const [vertexSize, setVertexSize] = useState(defaultVertexSize);
 
   const [selectedPoints, setSelectedPoints] = useState([]);
   const [highlightedPoints, setHighlightedPoints] = useState([]);
@@ -90,7 +90,7 @@ const App = () => {
 
 
       const implicit = new Implicit(lpoints);
-      const grid = await implicit.calculateGridValues(10, 10, 10);
+      const grid = await implicit.calculateGridValues(20,20,20);
       setPointGrid(grid)
     }
 
