@@ -58,7 +58,7 @@ class Implicit {
     this._3NPoints.buildTree();
   }
 
-  _wls(x, y, z, h, degree = 0, computeNormals = false) {
+  _wls(x, y, z, degree = 0, computeNormals = false) {
     // adapted from surface.js with help from my dear friend, Chad G. Peté
     // https://chat.openai.com/share/7e6aeaf8-d5a6-43a7-85e5-8ac1271c1151
 
@@ -121,8 +121,8 @@ class Implicit {
     return re;
   }
 
-  _asyncWLS(x, y, z, h, degree = this._degree, computeNormals = false) {
-    return Promise.resolve(this._wls(x, y, z, h, degree, computeNormals));
+  _asyncWLS(x, y, z, degree = this._degree, computeNormals = false) {
+    return Promise.resolve(this._wls(x, y, z, degree, computeNormals));
   }
 
 
@@ -142,14 +142,11 @@ class Implicit {
     const yStep = yRange / (ny - 1);
     const zStep = zRange / (nz - 1);
 
-    const totalSteps = nx * ny * nz;
-
     // create grid 3d array
     const grid = new Array(nx).fill().map(() => new Array(ny).fill().map(() => new Array(nz)));
 
     // fill grid with points
     console.log("computing grid values...")
-    let progressIndex = 0
     const promises = [];
     for (let i = 0; i < nx; i++) {
       for (let j = 0; j < ny; j++) {
@@ -160,7 +157,7 @@ class Implicit {
 
           // Push the promises into the promises array
           promises.push(
-            this._asyncWLS(x, y, z, 0.1).then(wlsPoint => {
+            this._asyncWLS(x, y, z).then(wlsPoint => {
               grid[i][j][k] = wlsPoint
 
               // print progress
