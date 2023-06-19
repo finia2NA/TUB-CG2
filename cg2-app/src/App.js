@@ -6,49 +6,41 @@ import DataReader from './model/DataReader'; // change import here to switch bet
 import Viewport from './components/3D/Viewport';
 import Surface from './model/surface';
 import Implicit from './model/Implicit';
+import { AppContext } from './context/AppContext';
 
 const App = () => {
-
-  // I realize that a lot of this data could live in the UI elements and be pased to the functions
-  // executing the algorithms. TODO: that when we have time
-
-  // Model to load
-  const [dataName, setDataName] = useState("cat");
-  const [rotateModel, setrotateModel] = useState(false); // WIP
+  const {
+    dataName,
+    rotateModel,
+    dsDisplayDepth,
+    pointCloudVersion,
+    displayLines, setDisplayLines,
+    displayCoords,
+    vertexSize,
+    wireFrameMode,
+    approximationMethod,
+    uSubDiv,
+    vSubDiv,
+    subDivMultiplier,
+  } = React.useContext(AppContext);
 
   // Point Storing DSs
   const [points, setPoints] = useState(new PointDataStructure());
   const [pointGrid, setPointGrid] = useState([]);
-
-
-  // Display Control State
-  const [dsDisplayDepth, setDsDisplayDepth] = useState(0);
-  const [pointCloudVersion, setPointCloudVersion] = useState(2)
-  const [displayLines, setDisplayLines] = useState(false);
-  const [displayCoords, setDisplayCoords] = useState(false);
-  const [vertexSize, setVertexSize] = useState(defaultVertexSize);
-
   const [selectedPoints, setSelectedPoints] = useState([]);
   const [highlightedPoints, setHighlightedPoints] = useState([]);
-  const [highlightedLines, setHighlightedLines] = useState([]);
 
-  const [wireFrameMode, setWireframeMode] = useState(false);
+
+  const [highlightedLines, setHighlightedLines] = useState([]);
 
   // task 2
   const [surface, setSurface] = useState(null);
-
-  const [approximationMethod, setApproximationMethod] = useState("btps");
-  const [uSubDiv, setUSubDiv] = useState(10);
-  const [vSubDiv, setVSubDiv] = useState(10);
-  const [subDivMultiplier, setMultiplier] = useState(3);
-
   const [surfacePoints, setSurfacePoints] = useState([]);
 
   useEffect(() => {
     setSurface(new Surface(points))
     // surface.computeSurfaceFunction()
   }, [points])
-
 
   const onComputeSurface = () => {
 
@@ -57,22 +49,6 @@ const App = () => {
     setSurfacePoints(newSurfacePoints);
   }
 
-  const onComputeImplicitSurface = () => {
-    if (!points.hasNormals()) return;
-
-    const implicit = new Implicit(points);
-    implicit.calculateOffsetPoints();
-    return
-    implicit.calculateGrid();
-    setPointGrid(implicit.pointGrid);
-
-
-
-
-    // ... (add further logic to calculate grid a)
-    // const isf = implicit.calculateSurface();
-    // setImplicitSurface(isf)
-  };
 
   const onClearSelection = () => {
     setSelectedPoints([]);
@@ -90,7 +66,7 @@ const App = () => {
 
 
       const implicit = new Implicit(lpoints);
-      const grid = await implicit.calculateGridValues(20,20,20);
+      const grid = await implicit.calculateGridValues(5, 5, 5);
       setPointGrid(grid)
     }
 
@@ -123,12 +99,12 @@ const App = () => {
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
-        <Viewport points={points} vertexSize={vertexSize} displayLines={displayLines} displayCoords={displayCoords} dsDisplayDepth={dsDisplayDepth} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} pointCloudVersion={pointCloudVersion} surfacePoints={surfacePoints} wireFrameMode={wireFrameMode} grid={pointGrid} />
+        <Viewport points={points} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} surfacePoints={surfacePoints} grid={pointGrid} />
       </Card>
 
       {/* side menu */}
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} displayLines={displayLines} setDisplayLines={setDisplayLines} dsDisplayDepth={dsDisplayDepth} setDsDisplayDepth={setDsDisplayDepth} displayCoords={displayCoords} setDisplayCoords={setDisplayCoords} vertexSize={vertexSize} setVertexSize={setVertexSize} pointCloudVersion={pointCloudVersion} setPointCloudVersion={setPointCloudVersion} uSubDiv={uSubDiv} setUSubDiv={setUSubDiv} vSubDiv={vSubDiv} setVSubDiv={setVSubDiv} multiplier={subDivMultiplier} setMultiplier={setMultiplier} onComputeSurface={onComputeSurface} approximationMethod={approximationMethod} setApproximationMethod={setApproximationMethod} wireFrameMode={wireFrameMode} setWireFrameMode={setWireframeMode} dataName={dataName} setDataName={setDataName} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} onComputeSurface={onComputeSurface} />
       </Card>
 
     </div >

@@ -1,8 +1,16 @@
 import { Button, Checkbox, FormControl, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material"
 import { Collapsing, FullWidthFormControl, H3Wrapper } from "./Containers"
+import React from "react"
 import { Hint, PadlessH2, PadlessH3 } from "./Text"
+import { AppContext } from "../../context/AppContext"
 
-const T1Controls = ({ handleDropdownChange, searchSliderMode, searchSliderValue, handleSliderChange, onPointQuery, displayLines, setDisplayLines, onClearSelection, dsDisplayDepth, setDsDisplayDepth }) => {
+const T1Controls = ({ handleDropdownChange, searchSliderMode, searchSliderValue, handleSliderChange, onPointQuery, onClearSelection }) => {
+  const {
+    dsDisplayDepth, setDsDisplayDepth,
+    displayLines, setDisplayLines,
+  } = React.useContext(AppContext);
+
+
   return (
     <Collapsing title={<PadlessH2>Task 1: KDTree</PadlessH2>} style={{ display: "flex", flexDirection: "column" }}>
       <H3Wrapper>

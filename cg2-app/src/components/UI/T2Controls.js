@@ -1,9 +1,23 @@
 import { Button, Checkbox, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
 import { Collapsing, FullWidthFormControl } from "./Containers"
 import { PadlessH2, PadlessH3 } from "./Text"
+import React from "react"
+import { AppContext } from "../../context/AppContext";
 
 
 const T2Controls = (props) => {
+  const {
+    dataName, setDataName,
+    rotateModel, setRotateModel,
+    pointCloudVersion, setPointCloudVersion,
+    displayCoords, setDisplayCoords,
+    vertexSize, setVertexSize,
+    wireFrameMode, setWireFrameMode,
+    approximationMethod, setApproximationMethod,
+    uSubDiv, setUSubDiv,
+    vSubDiv, setVSubDiv,
+    subDivMultiplier, setMultiplier,
+  } = React.useContext(AppContext);
 
   const sliders = {
     min: 3,
@@ -15,8 +29,8 @@ const T2Controls = (props) => {
     labels: ["m (x-dimension)", "n (y-dimension)"],
   }
 
-  const sliderValues = [props.uSubDiv, props.vSubDiv];
-  const setSliderValues = [props.setUSubDiv, props.setVSubDiv];
+  const sliderValues = [uSubDiv, vSubDiv];
+  const setSliderValues = [setUSubDiv, setVSubDiv];
 
 
   const handleSliderChange = (e, i) => {
@@ -30,8 +44,8 @@ const T2Controls = (props) => {
       <FullWidthFormControl>
         <FormLabel>Approximation Method</FormLabel>
         <Select
-          value={props.approximationMethod}
-          onChange={(e) => props.setApproximationMethod(e.target.value)}
+          value={approximationMethod}
+          onChange={(e) => setApproximationMethod(e.target.value)}
         >
           <MenuItem value="ls">Least Squares</MenuItem>
           <MenuItem value="wls">MLS-Wendland (Task 1)</MenuItem>
@@ -62,8 +76,8 @@ const T2Controls = (props) => {
         <div>
           <FormLabel>Multiplier</FormLabel>
           <Slider
-            value={props.multiplier}
-            onChange={(e) => props.setMultiplier(e.target.value)}
+            value={subDivMultiplier}
+            onChange={(e) => setMultiplier(e.target.value)}
             valueLabelDisplay="auto"
             step={sliders.step}
             min={sliders.kMin}
@@ -78,8 +92,8 @@ const T2Controls = (props) => {
       </FullWidthFormControl>
 
 
-      <FormControlLabel control={<Checkbox checked={props.wireFrameMode} onClick={() => props.setWireFrameMode(!props.wireFrameMode)} />} label="Wireframe Mode" />
-      {/* <Checkbox checked={props.wireFrameMode} onClick={() => props.setWireFrameMode(!props.wireFrameMode)} /> */}
+      <FormControlLabel control={<Checkbox checked={wireFrameMode} onClick={() => setWireFrameMode(!wireFrameMode)} />} label="Wireframe Mode" />
+      {/* <Checkbox checked={wireFrameMode} onClick={() => setWireFrameMode(!wireFrameMode)} /> */}
     </Collapsing>
 
   );

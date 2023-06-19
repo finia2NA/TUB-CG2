@@ -6,28 +6,25 @@ import CoordSystem from './CoordSystem';
 import PointCloud2 from './PointCloud2';
 import PointCloud from './PointCloud';
 import { OrbitControls } from "@react-three/drei";
-import Plane3D from "./Plane3D";
 import Surface3D from "./Surface3D";
 import Normals3D from "./Normals3D";
 import { Vector3 } from "three";
 import ValueBasedPoints from "./ValueBasedPoints";
 import PointRep from "../../model/PointRep";
+import { AppContext } from "../../context/AppContext";
 
 const logging = true
 
-const exampleFunctionPoints = () => {
-  const points = []
-  for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      const curr = new PointRep(new Vector3(i, j, 0))
-      curr.functionValue = (i + j - 10) / 10
-      points.push(curr)
-    }
-  }
-  return points
-}
+const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, surfacePoints }) => {
 
-const Viewport = ({ points,grid, vertexSize, displayLines, displayCoords, dsDisplayDepth, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, pointCloudVersion, surfacePoints, wireFrameMode }) => {
+  const {
+    dsDisplayDepth,
+    pointCloudVersion,
+    displayLines,
+    displayCoords,
+    vertexSize,
+    wireFrameMode
+  } = React.useContext(AppContext);
 
   // Keyboard State
   const [shiftPressed, setShiftPressed] = useState(false);
@@ -75,11 +72,11 @@ const Viewport = ({ points,grid, vertexSize, displayLines, displayCoords, dsDisp
 
       {/* points */}
       {pointCloudVersion === 1 && points.toArray().length > 0 &&
-        <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize*20} />
+        <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
       }
       {pointCloudVersion === 2 && points.toArray().length > 0 &&
         // <SubPointCloud2 points={points} coloring="highlighted" vertexSize={vertexSize} />
-        <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize*20} />
+        <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
 
       }
 
