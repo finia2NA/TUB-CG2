@@ -23,7 +23,8 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
     displayLines,
     displayCoords,
     vertexSize,
-    wireFrameMode
+    wireFrameMode,
+    hasNormals
   } = React.useContext(AppContext);
 
   // Keyboard State
@@ -38,6 +39,8 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
       setShiftPressed(false);
     }
   }
+
+  console.log(points)
 
   // Function that is called when point is clicked 
   const handlePointClick = (position) => {
@@ -61,9 +64,6 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
 
   }
 
-  console.log(grid)
-
-
   return (
     <Canvas
       camera={{ position: [0, 0, 2], near: 0.01, far: 10000 }}
@@ -80,7 +80,7 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
 
       }
 
-      {points.hasNormals() && <Normals3D points={points.points} />}
+      {hasNormals && <Normals3D points={points.points} />}
 
       {/* Lines */}
       {displayLines && highlightedLines.map((line, index) => (

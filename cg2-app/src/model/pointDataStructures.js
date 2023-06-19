@@ -86,7 +86,8 @@ export class KDTreePointDataStructure extends PointDataStructure {
   }
 
   hasNormals() {
-    return this.points && this.points.length !== 0 && this.points[0].normal !== undefined;
+
+    return !!this.points && this.points.length !== 0 && !!this.points[0].normal
   }
 
   getBoundingBox() {
@@ -144,6 +145,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
     }
 
     this.root = recur_buildTree(this.points, 0);
+    this.treeIsBuilt = true;
   }
 
   // This function performs a k-nearest neighbor search on a tree data structure
@@ -269,6 +271,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
   // TODO: isn't this just a KNN search with k = 1?
   // if so, this could be drastically simplified
   findNearest(point) {
+    if (!this.treeIsBuilt) throw new Error("Tree is not built yet!");
     const recur_search = (node, point, depth = 0, best = null) => {
       if (node === null) { return best };
 

@@ -5,16 +5,19 @@ import * as math from "mathjs";
 import { BasisFunction } from './BasisFunction';
 
 class Implicit {
-  constructor(basePoints) {
+  constructor(basePoints, degree, wendlandRadius, baseAlpha) {
     this._basePoints = basePoints;
     this._3NPoints = null;
     this.pointGrid = null;
+    this._degree = degree;
+    this._wendlandRadius = wendlandRadius;
+    this._baseAlpha = baseAlpha;
   }
 
   computeInitialAlpha() {
     const bb = this._basePoints.getBoundingBox();
     const bbDiagonal = bb.max.distanceTo(bb.min)
-    return bbDiagonal * 0.01
+    return bbDiagonal * this.baseAlpha;
   }
 
   calculateOffsetPoints() {
@@ -81,7 +84,7 @@ class Implicit {
     const D = pointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
     // FIXME: wendland is not working rn, using epsilon instead so Task 4 can be implemented.
     // Figure out what is going wrong with wendland, then replace epsilon.
-    const wf_wendland = (r) => {
+    const wf_wendland = (r, h = this._wendlandRadius) => {
       return (((1 - r) / h) ** 4) * (4 * r / h + 1);
     }
     const wf_epsilon = (d, epsilon = 0.1) => {
@@ -121,7 +124,7 @@ class Implicit {
     return re;
   }
 
-  _asyncWLS(x, y, z, h, degree = 0, computeNormals = false) {
+  _asyncWLS(x, y, z, h, degree = this._degree, computeNormals = false) {
     return Promise.resolve(this._wls(x, y, z, h, degree, computeNormals));
   }
 

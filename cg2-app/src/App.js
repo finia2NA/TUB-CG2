@@ -12,16 +12,11 @@ const App = () => {
   const {
     dataName,
     rotateModel,
-    dsDisplayDepth,
-    pointCloudVersion,
-    displayLines, setDisplayLines,
-    displayCoords,
-    vertexSize,
-    wireFrameMode,
     approximationMethod,
     uSubDiv,
     vSubDiv,
     subDivMultiplier,
+    setHasNormals,
   } = React.useContext(AppContext);
 
   // Point Storing DSs
@@ -60,22 +55,17 @@ const App = () => {
   useEffect(() => {
     const reader = new DataReader(dataName, rotateModel)
     const readData = async () => {
-      const lpoints = await reader.read_file(new PointDataStructure());
-      lpoints.buildTree();
-      setPoints(lpoints);
-
-
-      const implicit = new Implicit(lpoints);
-      const grid = await implicit.calculateGridValues(5, 5, 5);
-      setPointGrid(grid)
+      const readPoints = await reader.read_file(new PointDataStructure());
+      readPoints.buildTree();
+      setHasNormals(readPoints.hasNormals());
+      setPoints(readPoints);
     }
 
     readData()
     document.title = 'CG2-Tool: ' + dataName.toUpperCase();
 
 
-    // TODO: onComputeImplicitSurface should be added to dep. array, but it causes an infinite loop
-  }, [dataName, rotateModel])
+  }, [dataName, rotateModel, setHasNormals])
 
   // function that is called when the user clicks the "Gather" button
   const onPointQuery = (gatherMethod = "knn", gatherParameter = 10) => {
@@ -95,6 +85,16 @@ const App = () => {
     setHighlightedLines(newHighlightedLines);
   }
 
+  const onComputeImplicit = async (nx, ny, nz, degree, wendlandRadius, alpha) => {
+    console.log("compute implicit")
+    const compute = async () => {
+      const implicit = new Implicit(points, degree, wendlandRadius, alpha);
+      const grid = await implicit.calculateGridValues(nx, ny, nz);
+      setPointGrid(grid)
+    }
+    compute()
+  }
+
   return (
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
@@ -104,7 +104,7 @@ const App = () => {
 
       {/* side menu */}
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} onComputeSurface={onComputeSurface} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} onComputeSurface={onComputeSurface} onComputeImplicit={onComputeImplicit} />
       </Card>
 
     </div >

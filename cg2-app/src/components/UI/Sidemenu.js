@@ -5,6 +5,7 @@ import T2Controls from "./T2Controls";
 
 import { AppContext } from "../../context/AppContext";
 import DisplayControls from "./DisplayControls";
+import T3Controls from "./T3Controls";
 
 const searchSliderModes = {
   knn: {
@@ -54,8 +55,9 @@ const Sidemenu = (props) => {
 
       <T1Controls handleDropdownChange={handleDropdownChange} searchSliderMode={searchSliderMode} searchSliderValue={searchSliderValue} handleSliderChange={handleSliderChange} onPointQuery={onPointQuery} onClearSelection={props.onClearSelection} />
 
-      <T2Controls onComputeSurface={props.onComputeSurface} initiallyOpened />
+      <T2Controls onComputeSurface={props.onComputeSurface} />
 
+      <T3Controls onComputeImplicit = {props.onComputeImplicit} initiallyOpened />
 
       <DisplayControls />
     </div >

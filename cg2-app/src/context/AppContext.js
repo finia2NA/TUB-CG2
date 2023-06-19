@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { defaultVertexSize } from '../components/UI/Sidemenu';
+import { implicitAlphaDefault, implicitBasisFunctionDefault, implicitDimDefault, wendlandRadiusDefault } from '../components/UI/T3Controls';
 
 export const AppContext = React.createContext();
 
@@ -22,6 +23,12 @@ const AppContextProvider = ({ children }) => {
   const [vSubDiv, setVSubDiv] = useState(10);
   const [subDivMultiplier, setMultiplier] = useState(3);
 
+  const [implicitDim, setImplicitDim] = useState([implicitDimDefault, implicitDimDefault, implicitDimDefault]);
+  const [implicitAlpha, setImplicitAlpha] = useState(implicitAlphaDefault);
+  const [implicitDegree, setImplicitDegree] = useState(implicitBasisFunctionDefault);
+  const [wendlandRadius, setWendlandRadius] = useState(wendlandRadiusDefault);
+  const [hasNormals, setHasNormals] = useState(false);
+
   return (
     <AppContext.Provider value={{
       dataName, setDataName,
@@ -36,6 +43,11 @@ const AppContextProvider = ({ children }) => {
       uSubDiv, setUSubDiv,
       vSubDiv, setVSubDiv,
       subDivMultiplier, setMultiplier,
+      implicitDim, setImplicitDim,
+      implicitAlpha, setImplicitAlpha,
+      implicitDegree, setImplicitDegree,
+      wendlandRadius, setWendlandRadius,
+      hasNormals, setHasNormals,
     }}>
       {children}
     </AppContext.Provider>
