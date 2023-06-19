@@ -12,7 +12,7 @@ const T1Controls = ({ handleDropdownChange, searchSliderMode, searchSliderValue,
 
 
   return (
-    <Collapsing title={<PadlessH2>Task 1: KDTree</PadlessH2>} style={{ display: "flex", flexDirection: "column" }}>
+    <Collapsing title={<PadlessH2>Series 1: KDTree</PadlessH2>} style={{ display: "flex", flexDirection: "column" }}>
       <H3Wrapper>
         <PadlessH3>Gather Controls</PadlessH3>
         <FullWidthFormControl>

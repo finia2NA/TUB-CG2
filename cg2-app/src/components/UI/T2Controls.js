@@ -39,7 +39,7 @@ const T2Controls = (props) => {
   };
 
   return (
-    <Collapsing title={<PadlessH2>Task 2: Surfaces</PadlessH2>} initiallyOpened={props.initiallyOpened}>
+    <Collapsing title={<PadlessH2>Series 2: Surfaces</PadlessH2>} initiallyOpened={props.initiallyOpened}>
 
       <FullWidthFormControl>
         <FormLabel>Approximation Method</FormLabel>

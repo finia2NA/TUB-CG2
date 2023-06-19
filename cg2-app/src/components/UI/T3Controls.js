@@ -44,7 +44,7 @@ const T3Controls = (props) => {
   }
 
   return (
-    <Collapsing title={<PadlessH2>Task 3: Implicit</PadlessH2>} initiallyOpened={props.initiallyOpened}>
+    <Collapsing title={<PadlessH2>Series 3: Implicit</PadlessH2>} initiallyOpened={props.initiallyOpened}>
 
       <FullWidthFormControl disabled={!hasNormals}>
         <PadlessH3>Cube Grid</PadlessH3>
