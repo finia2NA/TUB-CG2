@@ -71,7 +71,7 @@ const Sidemenu = (props) => {
             // value={props.vertexSize}
             onChange={(e) => props.setVertexSize((vertexSizeSliderScale(e.target.value)))}
             valueLabelDisplay="auto"
-            defaultValue={4}
+            defaultValue={0}
             step={1}
             min={1}
             max={12}

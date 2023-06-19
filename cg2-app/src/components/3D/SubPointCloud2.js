@@ -20,22 +20,38 @@ const modeBasedColoring = (coloring, length) => {
 }
 
 const valueBasedColoring = (functionValues) => {
-  const colors = {
-    "in": [0, 0, 1],
-    "out": [1, 0, 0],
-    "on": [0, 1, 0],
-  }
+  // Compute the maximum absolute value for normalization
+  const maxAbsVal = Math.max(...functionValues.map(Math.abs));
 
-  const decisionFunction = (x) => {
-    if (x < 0) return "out"
-    if (x > 0) return "in"
-    return "on"
-  }
+  // Define start and end of gradients
+  const red = [1, 0, 0];
+  const green = [0, 1, 0];
+  const blue = [0, 0, 1];
 
-  const nativeArray = functionValues.map(x => colors[decisionFunction(x)]).flat()
+  // Function to interpolate between two colors
+  const interpolate = (color1, color2, fraction) => color1.map((start, i) => start + fraction * (color2[i] - start));
 
-  return new Float32Array(nativeArray)
-}
+  // Normalize values and map to gradient
+  const nativeArray = functionValues.flatMap(x => {
+    // Normalize x to [-1, 1] range
+    const normalizedX = x / maxAbsVal;
+
+    // Choose gradient based on sign of x
+    if (normalizedX < 0) {
+      // For negative values, interpolate between red and green. Scale to [0, 1] range.
+      return interpolate(red, green, (normalizedX + 1) / 1.2);
+    } else if (normalizedX > 0) {
+      // For positive values, interpolate between green and blue. Scale to [0, 1] range.
+      return interpolate(green, blue, normalizedX / 1.2);
+    } else {
+      // For zero, return green
+      return green;
+    }
+  });
+
+  return new Float32Array(nativeArray);
+};
+
 
 
 

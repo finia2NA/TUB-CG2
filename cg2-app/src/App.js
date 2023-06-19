@@ -90,7 +90,8 @@ const App = () => {
 
 
       const implicit = new Implicit(lpoints);
-      setPointGrid(implicit.calculateGridValues(10, 10, 10))
+      const grid = await implicit.calculateGridValues(10, 10, 10);
+      setPointGrid(grid)
     }
 
     readData()

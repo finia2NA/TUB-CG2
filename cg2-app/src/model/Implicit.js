@@ -14,7 +14,7 @@ class Implicit {
   computeInitialAlpha() {
     const bb = this._basePoints.getBoundingBox();
     const bbDiagonal = bb.max.distanceTo(bb.min)
-    return bbDiagonal * 1.01
+    return bbDiagonal * 0.01
   }
 
   calculateOffsetPoints() {
@@ -56,9 +56,6 @@ class Implicit {
     this._3NPoints = new PointDataStructure()
     this._3NPoints.points = [...this._basePoints.points, ...posOffsetPoints, ...negOffsetPoints];
     this._3NPoints.buildTree();
-    console.log(this._3NPoints.points)
-    console.log(this._3NPoints.points.map(point => point.functionValue))
-    debugger;
   }
 
   _wls(x, y, z, h, degree = 0, computeNormals = false) {
@@ -119,10 +116,17 @@ class Implicit {
     return re;
   }
 
+  _asyncWLS(x, y, z, h, degree = 0, computeNormals = false) {
+    return Promise.resolve(this._wls(x, y, z, h, degree, computeNormals));
+  }
 
-  calculateGridValues(nx, ny, nz) {
+
+
+  async calculateGridValues(nx, ny, nz) {
+    // TODO: use worker threads to speed this up
+    // https://chat.openai.com/share/bf388ef3-a0d6-42ed-a483-496290c7a406
     this.calculateOffsetPoints();
-    const bb = this._basePoints.getBoundingBox();
+    const bb = this._3NPoints.getBoundingBox();
 
     // set up from where to where and in what steps to iterate
     const xRange = bb.max.x - bb.min.x;
@@ -138,6 +142,9 @@ class Implicit {
     const grid = new Array(nx).fill().map(() => new Array(ny).fill().map(() => new Array(nz)));
 
     // fill grid with points
+    console.log("computing grid values...")
+    let progressIndex = 0
+    const promises = [];
     for (let i = 0; i < nx; i++) {
       for (let j = 0; j < ny; j++) {
         for (let k = 0; k < nz; k++) {
@@ -145,25 +152,31 @@ class Implicit {
           const y = bb.min.y + j * yStep;
           const z = bb.min.z + k * zStep;
 
-          const thePoint = new PointRep(new Vector3(x, y, z))
-          thePoint.functionValue = this._wls(x, y, z, 0.1).functionValue;
-          grid[i][j][k] = thePoint
+          // Push the promises into the promises array
+          promises.push(
+            this._asyncWLS(x, y, z, 0.1).then(wlsPoint => {
+              grid[i][j][k] = wlsPoint
 
-          // print progress
-          const currentStep = i * ny * nz + j * nz + k;
-          if ((currentStep / totalSteps) % 0.1 < 0.001) {
-            const progress = (currentStep / totalSteps).toFixed(2);
-            console.log(`${progress * 100}%`)
-          }
+              // print progress
+              // const currentStep = i * ny * nz + j * nz + k;
+              // if ((currentStep / totalSteps) * 10 > progressIndex) {
+              //   console.log(`${progressIndex * 10}%`)
+              //   progressIndex++;
+              // }
+            })
+          );
         }
       }
     }
 
+    // Wait for all promises to be resolved
+    await Promise.all(promises);
+    console.log("done computing grid values")
+
+
     this.pointGrid = grid;
     return grid;
   }
-
-
 }
 
 export default Implicit
