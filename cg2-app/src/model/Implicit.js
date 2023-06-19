@@ -17,7 +17,7 @@ class Implicit {
   computeInitialAlpha() {
     const bb = this._basePoints.getBoundingBox();
     const bbDiagonal = bb.max.distanceTo(bb.min)
-    return bbDiagonal * this.baseAlpha;
+    return bbDiagonal * this._baseAlpha;
   }
 
   calculateOffsetPoints() {
@@ -40,7 +40,6 @@ class Implicit {
           const offsetVector = point.normal.clone().multiplyScalar(sign * currentAlpha);
           const offsetPoint = new PointRep(point.position.clone().add(offsetVector), point.normal.clone());
           offsetPoint.functionValue = sign * currentAlpha;
-
           // check taht the original point is the closest point to the offset point
           const closestPoint = this._basePoints.findNearest(offsetPoint);
           if (closestPoint === point) {

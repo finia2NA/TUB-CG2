@@ -268,8 +268,6 @@ export class KDTreePointDataStructure extends PointDataStructure {
     return this.points.includes(point);
   }
 
-  // TODO: isn't this just a KNN search with k = 1?
-  // if so, this could be drastically simplified
   findNearest(point) {
     if (!this.treeIsBuilt) throw new Error("Tree is not built yet!");
     const recur_search = (node, point, depth = 0, best = null) => {

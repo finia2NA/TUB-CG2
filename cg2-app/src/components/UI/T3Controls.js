@@ -4,7 +4,6 @@ import { PadlessH2, PadlessH3 } from "./Text"
 import React from "react"
 import { AppContext } from "../../context/AppContext";
 
-const implicitDimSliderFunction = x => (1 / (Math.pow(2, (x - 1)))).toFixed(3);
 export const implicitDimDefault = 5;
 
 export const implicitAlphaDefault = 0.01;

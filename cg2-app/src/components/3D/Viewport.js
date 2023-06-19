@@ -40,8 +40,6 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
     }
   }
 
-  console.log(points)
-
   // Function that is called when point is clicked 
   const handlePointClick = (position) => {
     const matchingPoints = points.toArray().filter(p => p.distanceToPosition(position) < 0.0001)
@@ -97,7 +95,7 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
         points={surfacePoints} wireFrameMode={wireFrameMode}
       />
 
-      <ValueBasedPoints points={grid} />
+      <ValueBasedPoints points={grid} vertexSize={vertexSize*20} />
 
       {/* Controls */}
       <OrbitControls />

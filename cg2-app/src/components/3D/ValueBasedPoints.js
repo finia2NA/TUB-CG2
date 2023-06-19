@@ -24,7 +24,7 @@ const ValueBasedPoints = (props) => {
   return (
     <>
       {(props.points && props.points.length > 0) &&
-        < SubPointCloud2 points={points} vertexSize={20} valueBasedColoring />
+        < SubPointCloud2 points={points} vertexSize={props.vertexSize} valueBasedColoring />
       }
 
     </>

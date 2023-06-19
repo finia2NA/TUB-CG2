@@ -3,7 +3,6 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import React from "react";
 
-const clickEnabled = false
 const logging = false
 
 const modeBasedColoring = (coloring, length) => {
@@ -66,47 +65,12 @@ const valueBasedColoring = (functionValues, gradientColoring = false) => {
   return new Float32Array(nativeArray);
 };
 
-
-
-
-
 const SubPointCloud2 = (props) => {
+  const pointsRef = React.useRef()
 
-  // click logic
-  const myBoundingRect = document.getElementById("canvas").getBoundingClientRect()
-  const { scene, camera } = useThree()
-  // Create a custom raycaster
-  const raycaster = new THREE.Raycaster();
   const vertexSize = props.vertexSize ? props.vertexSize : 0.01
   // const vertexSize = (desiredSize / window.innerHeight) * 2 * Math.tan(Math.PI * camera.fov / 360);
-  // Listen for click events on the document
-  document.addEventListener('click', onClick);
-  function onClick(event) {
-    if (!clickEnabled) return
-    // FIXME: deal with the too-large radius of points that are detected as hits
-    // Calculate the mouse position in normalized device coordinates
-    const mouse = new THREE.Vector2();
-    mouse.x = ((event.clientX - myBoundingRect.left) / myBoundingRect.width) * 2 - 1;
-    mouse.y = - ((event.clientY - myBoundingRect.top) / myBoundingRect.height) * 2 + 1;
-    if (mouse.x < -1 || mouse.x > 1 || mouse.y < -1 || mouse.y > 1) return
-    // Set the raycaster's origin and direction based on the mouse position
-    raycaster.setFromCamera(mouse, camera);
-    // Find all intersected objects
-    const intersects = raycaster.intersectObjects(scene.children);
-    const hits = intersects.filter(p => p.distanceToRay < vertexSize)
-    hits.sort((a, b) => a.distanceToRay - b.distanceToRay)
-    if (hits.length === 0) return
-    const eventArray = hits[0].object.geometry.attributes.position.array
-    const pointPosition = new THREE.Vector3(
-      eventArray[hits[0].index * 3],
-      eventArray[hits[0].index * 3 + 1],
-      eventArray[hits[0].index * 3 + 2]
-    )
-    props.handlePointClick(pointPosition)
-  }
 
-  // -------------------
-  // The rest
   const positions = props.points.map(p => p.position)
   const functionValues = props.points.map(p => p.functionValue)
 
@@ -164,8 +128,43 @@ const SubPointCloud2 = (props) => {
       colors={colorsBuffer}
       sizes={sizesBuffer}
       material={material}
+      ref={pointsRef}
     />
   );
 };
 
 export default SubPointCloud2;
+
+// Click logic:
+
+  // const myBoundingRect = document.getElementById("canvas").getBoundingClientRect()
+  // const { scene, camera } = useThree()
+  // // Create a custom raycaster
+  // const raycaster = new THREE.Raycaster();
+  // const vertexSize = props.vertexSize ? props.vertexSize : 0.01
+  // // const vertexSize = (desiredSize / window.innerHeight) * 2 * Math.tan(Math.PI * camera.fov / 360);
+  // // Listen for click events on the document
+  // document.addEventListener('click', onClick);
+  // function onClick(event) {
+  //   if (!clickEnabled) return
+  //   // FIXME: deal with the too-large radius of points that are detected as hits
+  //   // Calculate the mouse position in normalized device coordinates
+  //   const mouse = new THREE.Vector2();
+  //   mouse.x = ((event.clientX - myBoundingRect.left) / myBoundingRect.width) * 2 - 1;
+  //   mouse.y = - ((event.clientY - myBoundingRect.top) / myBoundingRect.height) * 2 + 1;
+  //   if (mouse.x < -1 || mouse.x > 1 || mouse.y < -1 || mouse.y > 1) return
+  //   // Set the raycaster's origin and direction based on the mouse position
+  //   raycaster.setFromCamera(mouse, camera);
+  //   // Find all intersected objects
+  //   const intersects = raycaster.intersectObjects(scene.children);
+  //   const hits = intersects.filter(p => p.distanceToRay < vertexSize)
+  //   hits.sort((a, b) => a.distanceToRay - b.distanceToRay)
+  //   if (hits.length === 0) return
+  //   const eventArray = hits[0].object.geometry.attributes.position.array
+  //   const pointPosition = new THREE.Vector3(
+  //     eventArray[hits[0].index * 3],
+  //     eventArray[hits[0].index * 3 + 1],
+  //     eventArray[hits[0].index * 3 + 2]
+  //   )
+  //   props.handlePointClick(pointPosition)
+  // }
