@@ -3,6 +3,7 @@ import { Vector3 } from "three";
 import PointRep from './PointRep';
 import * as math from "mathjs";
 import { BasisFunction } from './BasisFunction';
+import { flattenArray } from '../components/3D/ValueBasedPoints';
 
 class Implicit {
   constructor(basePoints, degree, wendlandRadius, baseAlpha) {
@@ -160,12 +161,6 @@ class Implicit {
             this._asyncWLS(x, y, z).then(wlsPoint => {
               grid[i][j][k] = wlsPoint
 
-              // print progress
-              // const currentStep = i * ny * nz + j * nz + k;
-              // if ((currentStep / totalSteps) * 10 > progressIndex) {
-              //   console.log(`${progressIndex * 10}%`)
-              //   progressIndex++;
-              // }
             })
           );
         }
