@@ -25,7 +25,7 @@ $C_1(x,y) + C_2(x,y) = 0 \Leftrightarrow \\
 $
 
 ## Task 3:
-The implicit function used in this exercise is approximated by the application of constant-basis WLS the the 3N points, obtained by adding control points displaced by the positive and negative normal direction. with values of $\alpha$, $-\alpha$ respectively. The WLS will evaluate to 0 at the initial points, $\alpha$ / $-\alpha$ at the added points, and in between these everywhere else. So, the range of the implicit function is $\[-\alpha, \alpha\]$. When moving farther and farther away from the surface, it will start approaching 0 again, but should (aside from numerical issues) never reach it.
+The implicit function used in this exercise is approximated by the application of constant-basis WLS on the 3N points, which have been obtained by adding control points displaced by the positive and negative normal direction, with values of $\alpha$, $-\alpha$ respectively. The WLS will evaluate to 0 at the initial points, $\alpha$ / $-\alpha$ at the added points, and in between these everywhere else. So, the range of the implicit function is $\[-\alpha, \alpha\]$. When moving farther and farther away from the surface, it will start approaching 0 again, but should (aside from numerical issues) never reach it.
 
 
 ## Task 4:
