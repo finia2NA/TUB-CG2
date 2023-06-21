@@ -95,7 +95,6 @@ class Implicit {
       return ((1 - d/r) ** 4) * (4 * d/r + 1); // biggest at d=0, zero at d=r 
     }
    
-
     let weightVector = []; // weight value
     for (let i = 0; i < rD.length; i++) {
       const weight = wf_wendland(rD[i]);
