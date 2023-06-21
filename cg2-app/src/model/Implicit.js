@@ -4,8 +4,9 @@ import PointRep from './PointRep';
 import * as math from "mathjs";
 import { BasisFunction } from './BasisFunction';
 import { flattenArray } from '../components/3D/ValueBasedPoints';
-import { edgeTable, triangulationTable} from './lookup.js';
+import { edgeTable, triangulationTable } from './lookup.js';
 
+const useWendland = true;
 class Implicit {
   constructor(basePoints, degree, wendlandRadius, baseAlpha) {
     this._basePoints = basePoints;
@@ -14,11 +15,11 @@ class Implicit {
     this._degree = degree;
     this._wendlandRadius = wendlandRadius;
     this._baseAlpha = baseAlpha;
-    this.xStep=null
-    this.yStep=null
-    this.zStep=null
+    this.xStep = null
+    this.yStep = null
+    this.zStep = null
   }
-  
+
   computeInitialAlpha() {
     const bb = this._basePoints.getBoundingBox();
     const bbDiagonal = bb.max.distanceTo(bb.min)
@@ -68,24 +69,13 @@ class Implicit {
     // https://chat.openai.com/share/7e6aeaf8-d5a6-43a7-85e5-8ac1271c1151
 
     // get relevant values
-    // const pointArray = this._3NPoints.points;
-
-    const point = new PointRep(new Vector3(x, y, z)) // reference point
-    const r = this._wendlandRadius // wendland radius from UI (changeable)
-
-    const target = this._3NPoints.radiusSearch(point, r) // local points for wendland function
-
-    const radiusPoint = new PointDataStructure()
-    for (let i=0; i<target.length; i++) {
-      radiusPoint.addPoint(target[i]);
-    }
-    const radiusPointArray = radiusPoint.points;
-
-    const positions = radiusPointArray.map(point => point.position.toArray());
+    const pointArray = this._3NPoints.points;
+    const positions = pointArray.map(point => point.position.toArray());
     const X = positions.map(row => row[0]);
     const Y = positions.map(row => row[1]);
     const Z = positions.map(row => row[2]);
-    const F = radiusPointArray.map(point => point.functionValue); // interpolated function value
+    const F = pointArray.map(point => point.functionValue); // interpolated function value
+
 
     // choose and compute polybase
     const basisFunction = new BasisFunction(degree);
@@ -93,31 +83,26 @@ class Implicit {
     for (let i = 0; i < X.length; i++) {
       polyBases.push(basisFunction.getBasisFunctionArray(X[i], Y[i], Z[i]))
     }
-        
-    const rD = radiusPointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
+
+    const D = pointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
+
+
+    const bb = this._basePoints.getBoundingBox();
+    const bbDiagonal = bb.max.distanceTo(bb.min)
+    const diagWL = bbDiagonal * this._wendlandRadius;
     const wf_wendland = (d) => {
-      return ((1 - d/r) ** 4) * (4 * d/r + 1); // biggest at d=0, zero at d=r 
+      return ((1 - d / diagWL) ** 4) * (4 * d / (diagWL + 1));
     }
-   
+    const wf_epsilon = (d, epsilon = 0.1) => {
+      return 1 / (d ** 2 + epsilon ** 2)
+    }
+    const wf = useWendland ? wf_wendland : wf_epsilon;
+
     let weightVector = []; // weight value
-    for (let i = 0; i < rD.length; i++) {
-      const weight = wf_wendland(rD[i]);
+    for (let i = 0; i < D.length; i++) {
+      const weight = wf(D[i]);
       weightVector[i] = weight;
     }
-
-    // // compute weight vector
-    // const D = pointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
-    // // FIXME: wendland is not working rn, using epsilon instead so Task 4 can be implemented.
-    // // Figure out what is going wrong with wendland, then replace epsilon.
-    // const wf_epsilon = (d, epsilon = 0.1) => {
-    //   return 1 / (d ** 2 + epsilon ** 2)
-    // }
-
-    // let weightVector = []; // weight value
-    // for (let i = 0; i < D.length; i++) {
-    //   const weight = wf_epsilon(D[i]);
-    //   weightVector[i] = weight;
-    // }
 
     // apply the weights to the polybases
     const weightedPolyBases = math.multiply(math.diag(weightVector), polyBases)
@@ -200,92 +185,92 @@ class Implicit {
   }
 
 
-  marchingCubes(isolevel=0) {
+  marchingCubes(isolevel = 0) {
 
     // init
     var surfacePointsMC = [];
 
     // iterate over pointGrid
-    for (var x = 0; x < this.pointGrid.length-1; x++) {
-      for (var y = 0; y < this.pointGrid[0].length-1; y++) {
-          for (var z = 0; z < this.pointGrid[0][0].length-1; z++) {
-              
-              // define all 8 cube vertices 
-              var cube = [
-                this.pointGrid[x][y][z],
-                this.pointGrid[x+1][y][z],
-                this.pointGrid[x+1][y+1][z],
-                this.pointGrid[x][y+1][z],
-                this.pointGrid[x][y][z+1],
-                this.pointGrid[x+1][y][z+1],
-                this.pointGrid[x+1][y+1][z+1],
-                this.pointGrid[x][y+1][z+1]
-              ];
+    for (var x = 0; x < this.pointGrid.length - 1; x++) {
+      for (var y = 0; y < this.pointGrid[0].length - 1; y++) {
+        for (var z = 0; z < this.pointGrid[0][0].length - 1; z++) {
 
-              // Determine the index into the edge table which
-              // tells us which vertices are inside of the surface
-              var cubeindex = 0;
-              if (cube[0].functionValue < isolevel) cubeindex |= 1; // bitwise or operator
-              if (cube[1].functionValue < isolevel) cubeindex |= 2;
-              if (cube[2].functionValue < isolevel) cubeindex |= 4;
-              if (cube[3].functionValue < isolevel) cubeindex |= 8;
-              if (cube[4].functionValue < isolevel) cubeindex |= 16;
-              if (cube[5].functionValue < isolevel) cubeindex |= 32;
-              if (cube[6].functionValue < isolevel) cubeindex |= 64;
-              if (cube[7].functionValue < isolevel) cubeindex |= 128;
+          // define all 8 cube vertices 
+          var cube = [
+            this.pointGrid[x][y][z],
+            this.pointGrid[x + 1][y][z],
+            this.pointGrid[x + 1][y + 1][z],
+            this.pointGrid[x][y + 1][z],
+            this.pointGrid[x][y][z + 1],
+            this.pointGrid[x + 1][y][z + 1],
+            this.pointGrid[x + 1][y + 1][z + 1],
+            this.pointGrid[x][y + 1][z + 1]
+          ];
 
-
-              // Find the vertices where the surface intersects the cube 
-              let vertlist = []
-              if (edgeTable[cubeindex] & 1)
-                vertlist[0] = this.VertexInterp(isolevel,cube[0].position,cube[1].position,cube[0].functionValue,cube[1].functionValue);
-              if (edgeTable[cubeindex] & 2)
-                vertlist[1] = this.VertexInterp(isolevel,cube[1].position,cube[2].position,cube[1].functionValue,cube[2].functionValue);
-              if (edgeTable[cubeindex] & 4)
-                vertlist[2] = this.VertexInterp(isolevel,cube[2].position,cube[3].position,cube[2].functionValue,cube[3].functionValue);
-              if (edgeTable[cubeindex] & 8)
-                vertlist[3] = this.VertexInterp(isolevel,cube[3].position,cube[0].position,cube[3].functionValue,cube[0].functionValue);
-              if (edgeTable[cubeindex] & 16)
-                vertlist[4] = this.VertexInterp(isolevel,cube[4].position,cube[5].position,cube[4].functionValue,cube[5].functionValue);
-              if (edgeTable[cubeindex] & 32)
-                vertlist[5] = this.VertexInterp(isolevel,cube[5].position,cube[6].position,cube[5].functionValue,cube[6].functionValue);
-              if (edgeTable[cubeindex] & 64)
-                vertlist[6] = this.VertexInterp(isolevel,cube[6].position,cube[7].position,cube[6].functionValue,cube[7].functionValue);
-              if (edgeTable[cubeindex] & 128)
-                vertlist[7] = this.VertexInterp(isolevel,cube[7].position,cube[4].position,cube[7].functionValue,cube[4].functionValue);
-              if (edgeTable[cubeindex] & 256)
-                vertlist[8] = this.VertexInterp(isolevel,cube[0].position,cube[4].position,cube[0].functionValue,cube[4].functionValue);
-              if (edgeTable[cubeindex] & 512)
-                vertlist[9] = this.VertexInterp(isolevel,cube[1].position,cube[5].position,cube[1].functionValue,cube[5].functionValue);
-              if (edgeTable[cubeindex] & 1024)
-                vertlist[10] = this.VertexInterp(isolevel,cube[2].position,cube[6].position,cube[2].functionValue,cube[6].functionValue);
-              if (edgeTable[cubeindex] & 2048)
-                vertlist[11] = this.VertexInterp(isolevel,cube[3].position,cube[7].position,cube[3].functionValue,cube[7].functionValue);
+          // Determine the index into the edge table which
+          // tells us which vertices are inside of the surface
+          var cubeindex = 0;
+          if (cube[0].functionValue < isolevel) cubeindex |= 1; // bitwise or operator
+          if (cube[1].functionValue < isolevel) cubeindex |= 2;
+          if (cube[2].functionValue < isolevel) cubeindex |= 4;
+          if (cube[3].functionValue < isolevel) cubeindex |= 8;
+          if (cube[4].functionValue < isolevel) cubeindex |= 16;
+          if (cube[5].functionValue < isolevel) cubeindex |= 32;
+          if (cube[6].functionValue < isolevel) cubeindex |= 64;
+          if (cube[7].functionValue < isolevel) cubeindex |= 128;
 
 
-              // get normal + surfacePoints 
-              for (let i=0; triangulationTable[cubeindex][i]!=-1;i++) {
-                const p = vertlist[triangulationTable[cubeindex][i]];
-                
-                // gradient = normal (according to paper)
-                // not working on border due to need of neighbors 
-                if (x > 0 && y > 0 && z > 0 && 
-                  x < this.pointGrid.length - 1 && 
-                  y < this.pointGrid[0].length - 1 && 
-                  z < this.pointGrid[0][0].length - 1) {
-                    // finite differences
-                    const px = (this.pointGrid[x+1][y][z].functionValue - this.pointGrid[x-1][y][z].functionValue) / this.xStep
-                    const py = (this.pointGrid[x][y+1][z].functionValue - this.pointGrid[x][y-1][z].functionValue) / this.yStep
-                    const pz = (this.pointGrid[x][y][z+1].functionValue - this.pointGrid[x][y][z-1].functionValue) / this.zStep
-                    const gradient = new PointRep((new Vector3(px, py, pz)).normalize())
+          // Find the vertices where the surface intersects the cube 
+          let vertlist = []
+          if (edgeTable[cubeindex] & 1)
+            vertlist[0] = this.VertexInterp(isolevel, cube[0].position, cube[1].position, cube[0].functionValue, cube[1].functionValue);
+          if (edgeTable[cubeindex] & 2)
+            vertlist[1] = this.VertexInterp(isolevel, cube[1].position, cube[2].position, cube[1].functionValue, cube[2].functionValue);
+          if (edgeTable[cubeindex] & 4)
+            vertlist[2] = this.VertexInterp(isolevel, cube[2].position, cube[3].position, cube[2].functionValue, cube[3].functionValue);
+          if (edgeTable[cubeindex] & 8)
+            vertlist[3] = this.VertexInterp(isolevel, cube[3].position, cube[0].position, cube[3].functionValue, cube[0].functionValue);
+          if (edgeTable[cubeindex] & 16)
+            vertlist[4] = this.VertexInterp(isolevel, cube[4].position, cube[5].position, cube[4].functionValue, cube[5].functionValue);
+          if (edgeTable[cubeindex] & 32)
+            vertlist[5] = this.VertexInterp(isolevel, cube[5].position, cube[6].position, cube[5].functionValue, cube[6].functionValue);
+          if (edgeTable[cubeindex] & 64)
+            vertlist[6] = this.VertexInterp(isolevel, cube[6].position, cube[7].position, cube[6].functionValue, cube[7].functionValue);
+          if (edgeTable[cubeindex] & 128)
+            vertlist[7] = this.VertexInterp(isolevel, cube[7].position, cube[4].position, cube[7].functionValue, cube[4].functionValue);
+          if (edgeTable[cubeindex] & 256)
+            vertlist[8] = this.VertexInterp(isolevel, cube[0].position, cube[4].position, cube[0].functionValue, cube[4].functionValue);
+          if (edgeTable[cubeindex] & 512)
+            vertlist[9] = this.VertexInterp(isolevel, cube[1].position, cube[5].position, cube[1].functionValue, cube[5].functionValue);
+          if (edgeTable[cubeindex] & 1024)
+            vertlist[10] = this.VertexInterp(isolevel, cube[2].position, cube[6].position, cube[2].functionValue, cube[6].functionValue);
+          if (edgeTable[cubeindex] & 2048)
+            vertlist[11] = this.VertexInterp(isolevel, cube[3].position, cube[7].position, cube[3].functionValue, cube[7].functionValue);
 
-                    // interpolation of gradient 
-                    p.normal = this.VertexInterp(isolevel,p.position,gradient.position,p.functionValue,gradient.functionValue);
 
-                }
-                surfacePointsMC.push(p)
-              }
+          // get normal + surfacePoints 
+          for (let i = 0; triangulationTable[cubeindex][i] != -1; i++) {
+            const p = vertlist[triangulationTable[cubeindex][i]];
+
+            // gradient = normal (according to paper)
+            // not working on border due to need of neighbors 
+            if (x > 0 && y > 0 && z > 0 &&
+              x < this.pointGrid.length - 1 &&
+              y < this.pointGrid[0].length - 1 &&
+              z < this.pointGrid[0][0].length - 1) {
+              // finite differences
+              const px = (this.pointGrid[x + 1][y][z].functionValue - this.pointGrid[x - 1][y][z].functionValue) / this.xStep
+              const py = (this.pointGrid[x][y + 1][z].functionValue - this.pointGrid[x][y - 1][z].functionValue) / this.yStep
+              const pz = (this.pointGrid[x][y][z + 1].functionValue - this.pointGrid[x][y][z - 1].functionValue) / this.zStep
+              const gradient = new PointRep((new Vector3(px, py, pz)).normalize())
+
+              // interpolation of gradient 
+              p.normal = this.VertexInterp(isolevel, p.position, gradient.position, p.functionValue, gradient.functionValue);
+
+            }
+            surfacePointsMC.push(p)
           }
+        }
       }
     }
     return surfacePointsMC;
@@ -295,13 +280,13 @@ class Implicit {
    Linearly interpolate the position where an isosurface cuts
    an edge between two vertices, each with their own scalar value
   */
-  VertexInterp(isolevel,p1,p2,valp1,valp2){
-    if (Math.abs(isolevel-valp1) < 0.00001)
-        return(p1);
-    if (Math.abs(isolevel-valp2) < 0.00001)
-        return(p2);
-    if (Math.abs(valp1-valp2) < 0.00001)
-        return(p1);
+  VertexInterp(isolevel, p1, p2, valp1, valp2) {
+    if (Math.abs(isolevel - valp1) < 0.00001)
+      return (p1);
+    if (Math.abs(isolevel - valp2) < 0.00001)
+      return (p2);
+    if (Math.abs(valp1 - valp2) < 0.00001)
+      return (p1);
     const mu = (isolevel - valp1) / (valp2 - valp1);
     const x = p1.x + mu * (p2.x - p1.x);
     const y = p1.y + mu * (p2.y - p1.y);

@@ -10,7 +10,7 @@ export const implicitAlphaDefault = 0.01;
 
 export const implicitBasisFunctionDefault = 0;
 
-export const wendlandRadiusDefault = 0.1;
+export const wendlandRadiusDefault = 2;
 
 
 const T3Controls = (props) => {
@@ -81,9 +81,9 @@ const T3Controls = (props) => {
             value={wendlandRadius}
             onChange={(e) => setWendlandRadius(e.target.value)}
             valueLabelDisplay="auto"
-            step={50}
-            min={1000}
-            max={1500}
+            step={0.1}
+            min={1}
+            max={10}
           />
         </div>
 
