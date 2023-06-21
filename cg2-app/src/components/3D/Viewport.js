@@ -7,6 +7,7 @@ import PointCloud2 from './PointCloud2';
 import PointCloud from './PointCloud';
 import { OrbitControls } from "@react-three/drei";
 import Surface3D from "./Surface3D";
+import MarchingCube3D from "./MarchingCube3D";
 import Normals3D from "./Normals3D";
 import { Vector3 } from "three";
 import ValueBasedPoints from "./ValueBasedPoints";
@@ -15,7 +16,7 @@ import { AppContext } from "../../context/AppContext";
 
 const logging = true
 
-const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, surfacePoints }) => {
+const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlightedPoints, highlightedLines, surfacePoints, surfacePointsMC }) => {
 
   const {
     dsDisplayDepth,
@@ -90,10 +91,10 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
 
       {/* Coordinate system */}
       {displayCoords && <CoordSystem size={10} />}
-
-      <Surface3D
-        points={surfacePoints} wireFrameMode={wireFrameMode}
-      />
+      {surfacePointsMC?  
+        <MarchingCube3D surfacePointsMC={surfacePointsMC}/>: 
+        <Surface3D points={surfacePoints} wireFrameMode={wireFrameMode}/>
+      } 
 
       <ValueBasedPoints points={grid} vertexSize={vertexSize*20} />
 

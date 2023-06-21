@@ -31,6 +31,7 @@ const App = () => {
   // task 2
   const [surface, setSurface] = useState(null);
   const [surfacePoints, setSurfacePoints] = useState([]);
+  const [surfacePointsMC, setSurfacePointsMC] = useState(null);
 
   useEffect(() => {
     setSurface(new Surface(points))
@@ -91,6 +92,7 @@ const App = () => {
       const implicit = new Implicit(points, degree, wendlandRadius, alpha);
       const grid = await implicit.calculateGridValues(nx, ny, nz);
       setPointGrid(grid)
+      setSurfacePointsMC(implicit.marchingCubes())
     }
     compute()
   }
@@ -99,7 +101,7 @@ const App = () => {
     < div style={{ display: "flex", flexDirection: "row", padding: "16px", height: "80vh" }
     }>
       <Card style={{ flex: 5 }}>
-        <Viewport points={points} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} surfacePoints={surfacePoints} grid={pointGrid} />
+        <Viewport points={points} selectedPoints={selectedPoints} setSelectedPoints={setSelectedPoints} highlightedPoints={highlightedPoints} highlightedLines={highlightedLines} surfacePoints={surfacePoints} surfacePointsMC={surfacePointsMC} grid={pointGrid} />
       </Card>
 
       {/* side menu */}
