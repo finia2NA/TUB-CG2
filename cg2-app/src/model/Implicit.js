@@ -68,12 +68,24 @@ class Implicit {
     // https://chat.openai.com/share/7e6aeaf8-d5a6-43a7-85e5-8ac1271c1151
 
     // get relevant values
-    const pointArray = this._3NPoints.points;
-    const positions = pointArray.map(point => point.position.toArray());
+    // const pointArray = this._3NPoints.points;
+
+    const point = new PointRep(new Vector3(x, y, z)) // reference point
+    const r = this._wendlandRadius // wendland radius from UI (changeable)
+
+    const target = this._3NPoints.radiusSearch(point, r) // local points for wendland function
+
+    const radiusPoint = new PointDataStructure()
+    for (let i=0; i<target.length; i++) {
+      radiusPoint.addPoint(target[i]);
+    }
+    const radiusPointArray = radiusPoint.points;
+
+    const positions = radiusPointArray.map(point => point.position.toArray());
     const X = positions.map(row => row[0]);
     const Y = positions.map(row => row[1]);
     const Z = positions.map(row => row[2]);
-    const F = pointArray.map(point => point.functionValue); // interpolated function value
+    const F = radiusPointArray.map(point => point.functionValue); // interpolated function value
 
     // choose and compute polybase
     const basisFunction = new BasisFunction(degree);
@@ -81,23 +93,31 @@ class Implicit {
     for (let i = 0; i < X.length; i++) {
       polyBases.push(basisFunction.getBasisFunctionArray(X[i], Y[i], Z[i]))
     }
-
-    // compute weight vector
-    const D = pointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
-    // FIXME: wendland is not working rn, using epsilon instead so Task 4 can be implemented.
-    // Figure out what is going wrong with wendland, then replace epsilon.
-    const wf_wendland = (r, h = this._wendlandRadius) => {
-      return (((1 - r) / h) ** 4) * (4 * r / h + 1);
+        
+    const rD = radiusPointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
+    const wf_wendland = (d) => {
+      return ((1 - d/r) ** 4) * (4 * d/r + 1); // biggest at d=0, zero at d=r 
     }
-    const wf_epsilon = (d, epsilon = 0.1) => {
-      return 1 / (d ** 2 + epsilon ** 2)
-    }
-
+   
     let weightVector = []; // weight value
-    for (let i = 0; i < D.length; i++) {
-      const weight = wf_epsilon(D[i]);
+    for (let i = 0; i < rD.length; i++) {
+      const weight = wf_wendland(rD[i]);
       weightVector[i] = weight;
     }
+
+    // // compute weight vector
+    // const D = pointArray.map(point => point.distanceToPosition(new Vector3(x, y, z)));
+    // // FIXME: wendland is not working rn, using epsilon instead so Task 4 can be implemented.
+    // // Figure out what is going wrong with wendland, then replace epsilon.
+    // const wf_epsilon = (d, epsilon = 0.1) => {
+    //   return 1 / (d ** 2 + epsilon ** 2)
+    // }
+
+    // let weightVector = []; // weight value
+    // for (let i = 0; i < D.length; i++) {
+    //   const weight = wf_epsilon(D[i]);
+    //   weightVector[i] = weight;
+    // }
 
     // apply the weights to the polybases
     const weightedPolyBases = math.multiply(math.diag(weightVector), polyBases)
