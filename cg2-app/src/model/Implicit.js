@@ -6,7 +6,7 @@ import { BasisFunction } from './BasisFunction';
 import { flattenArray } from '../components/3D/ValueBasedPoints';
 import { edgeTable, triangulationTable } from './lookup.js';
 
-const useWendland = true;
+const useWendland = false;
 class Implicit {
   constructor(basePoints, degree, wendlandRadius, baseAlpha) {
     this._basePoints = basePoints;
