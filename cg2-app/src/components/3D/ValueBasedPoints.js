@@ -1,4 +1,5 @@
 import SubPointCloud2 from "./SubPointCloud2";
+import React from 'react';
 
 export const flattenArray = data => {
   const result = [];

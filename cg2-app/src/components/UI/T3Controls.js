@@ -81,9 +81,9 @@ const T3Controls = (props) => {
             value={wendlandRadius}
             onChange={(e) => setWendlandRadius(e.target.value)}
             valueLabelDisplay="auto"
-            step={0.01}
-            min={0.01}
-            max={1}
+            step={100}
+            min={1000}
+            max={2000}
           />
         </div>
 
