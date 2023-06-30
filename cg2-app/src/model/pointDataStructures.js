@@ -80,6 +80,7 @@ export class KDTreePointDataStructure extends PointDataStructure {
   constructor() {
     super();
     this.points = []; // list of points
+    this.faces = []
     this.root = null; // the root of the tree
     this.selfSelection = false; // wether the radius and kn search should include the point itself
     this.treeIsBuilt = false;
