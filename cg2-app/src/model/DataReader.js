@@ -54,6 +54,7 @@ class DataReader {
       normals = model.vertexNormals.map((normal) => new THREE.Vector3(normal.x, normal.y, normal.z));
     }
 
+    // write to DS and return
     for (let i = 0; i < vertices.length; i++) {
       const position = vertices[i];
       const normal = normals ? normals[i] : null;
@@ -107,7 +108,5 @@ class DataReader {
     return points;
   }
 }
-
-// export default DataReader;
 
 export default DataReader;

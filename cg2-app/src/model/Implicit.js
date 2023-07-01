@@ -3,7 +3,7 @@ import { Vector3 } from "three";
 import PointRep from './PointRep';
 import * as math from "mathjs";
 import { BasisFunction } from './BasisFunction';
-import { flattenArray } from '../components/3D/ValueBasedPoints';
+import { flattenArray } from "../util/flattenArray";
 import { edgeTable, triangulationTable } from './lookup.js';
 
 const useWendland = false;

@@ -13,6 +13,7 @@ import { Vector3 } from "three";
 import ValueBasedPoints from "./ValueBasedPoints";
 import PointRep from "../../model/PointRep";
 import { AppContext } from "../../context/AppContext";
+import Obj3D from "./Obj3D";
 
 const logging = true
 
@@ -97,6 +98,7 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
       } 
 
       <ValueBasedPoints points={grid} vertexSize={vertexSize*20} />
+      <Obj3D/>
 
       {/* Controls */}
       <OrbitControls />
