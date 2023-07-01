@@ -47,32 +47,27 @@ const unwrapVertexData = (vertexArray) => {
   }
 }
 
-
 const Obj3D = (props) => {
 
   // const { vertices, faces } = props;
-  const { vertices: vertexArray, faces: facesArray } = testData;
+  const { vertices: vertexArray, faces: facesArray } = props;
 
-  // debugger;
-  const positions = unwrapVertexData(vertexArray);
-  const indices = new Uint32Array(flattenArray(facesArray));
+  const ref = useRef();
+
+  useEffect(() => {
+    const geo = new BufferGeometry();
+
+    const vertices = unwrapVertexData(vertexArray);
+    const indices = flattenArray(facesArray);
+    geo.setIndex(indices);
+    geo.setAttribute('position', new BufferAttribute(vertices, 3));
+
+    ref.current.geometry = geo;
+  }, []);
 
   return (
-    <mesh>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          array={positions}
-          count={positions.length / 3}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="index"
-          array={indices}
-          count={indices.length}
-        />
-        <meshBasicMaterial color="violet" transparent opacity={0.5} side={DoubleSide} depthTest={false} />
-      </bufferGeometry >
+    <mesh ref={ref}>
+      <meshBasicMaterial color="violet" transparent opacity={0.5} side={DoubleSide} depthTest={false} />
     </mesh>
   );
 };
