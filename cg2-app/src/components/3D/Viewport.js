@@ -9,10 +9,9 @@ import { OrbitControls } from "@react-three/drei";
 import Surface3D from "./Surface3D";
 import MarchingCube3D from "./MarchingCube3D";
 import Normals3D from "./Normals3D";
-import { Vector3 } from "three";
 import ValueBasedPoints from "./ValueBasedPoints";
-import PointRep from "../../model/PointRep";
 import { AppContext } from "../../context/AppContext";
+import Obj3D from "./Obj3D";
 
 const logging = true
 
@@ -66,7 +65,7 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
   return (
     <Canvas
       camera={{ position: [0, 0, 2], near: 0.01, far: 10000 }}
-      style={{ background: "grey" }}
+      style={{ background: "black" }}
       id='canvas'>
 
       {/* points */}
@@ -76,7 +75,6 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
       {pointCloudVersion === 2 && points.toArray().length > 0 &&
         // <SubPointCloud2 points={points} coloring="highlighted" vertexSize={vertexSize} />
         <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
-
       }
 
       {hasNormals && <Normals3D points={points.points} />}
@@ -91,12 +89,16 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
 
       {/* Coordinate system */}
       {displayCoords && <CoordSystem size={10} />}
-      {surfacePointsMC?  
-        <MarchingCube3D surfacePointsMC={surfacePointsMC}/>: 
-        <Surface3D points={surfacePoints} wireFrameMode={wireFrameMode}/>
-      } 
+      {surfacePointsMC ?
+        <MarchingCube3D surfacePointsMC={surfacePointsMC} /> :
+        <Surface3D points={surfacePoints} wireFrameMode={wireFrameMode} />
+      }
 
-      <ValueBasedPoints points={grid} vertexSize={vertexSize*20} />
+      <ValueBasedPoints points={grid} vertexSize={vertexSize * 20} />
+
+      {points.isOBJ &&
+        <Obj3D obj={points} />
+      }
 
       {/* Controls */}
       <OrbitControls />

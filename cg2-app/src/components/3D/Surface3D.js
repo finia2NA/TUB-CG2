@@ -24,7 +24,7 @@ const Surface3D = ({ points = exampleData, wireFrameMode = false }) => {
       console.error("points must be an array")
     }
 
-    // notthing to render if there are no points
+    // nothing to render if there are no points
     if (points.length === 0) return;
 
     // check if points is a 2D array

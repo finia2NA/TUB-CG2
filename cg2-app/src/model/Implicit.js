@@ -3,7 +3,6 @@ import { Vector3 } from "three";
 import PointRep from './PointRep';
 import * as math from "mathjs";
 import { BasisFunction } from './BasisFunction';
-import { flattenArray } from '../components/3D/ValueBasedPoints';
 import { edgeTable, triangulationTable } from './lookup.js';
 
 const useWendland = false;
@@ -249,7 +248,7 @@ class Implicit {
 
 
           // get normal + surfacePoints 
-          for (let i = 0; triangulationTable[cubeindex][i] != -1; i++) {
+          for (let i = 0; triangulationTable[cubeindex][i] !== -1; i++) {
             const p = vertlist[triangulationTable[cubeindex][i]];
 
             // gradient = normal (according to paper)

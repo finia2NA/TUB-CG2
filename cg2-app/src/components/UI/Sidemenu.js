@@ -3,7 +3,6 @@ import { PadlessH1 } from "./Text";
 import T1Controls from "./T1Controls";
 import T2Controls from "./T2Controls";
 
-import { AppContext } from "../../context/AppContext";
 import DisplayControls from "./DisplayControls";
 import T3Controls from "./T3Controls";
 
@@ -27,8 +26,9 @@ const searchSliderModes = {
   }
 }
 
+// TODO: why is this here? (and not in display controls)
 export const vertexSizeSliderScale = x => (1 / (Math.pow(2, (x - 1)))).toFixed(3);
-export const vertexSizeDefaultValue = 0;
+export const vertexSizeDefaultValue = 12;
 export const defaultVertexSize = vertexSizeSliderScale(vertexSizeDefaultValue);
 
 const Sidemenu = (props) => {
@@ -57,7 +57,7 @@ const Sidemenu = (props) => {
 
       <T2Controls onComputeSurface={props.onComputeSurface} />
 
-      <T3Controls onComputeImplicit = {props.onComputeImplicit} initiallyOpened />
+      <T3Controls onComputeImplicit = {props.onComputeImplicit} />
 
       <DisplayControls />
     </div >

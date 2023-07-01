@@ -6,7 +6,7 @@ export const AppContext = React.createContext();
 
 const AppContextProvider = ({ children }) => {
   // Model to load
-  const [dataName, setDataName] = useState("cat");
+  const [dataName, setDataName] = useState("shapes/eight.obj");
   const [rotateModel, setRotateModel] = useState(false); // WIP
 
   // Display Control State
@@ -16,7 +16,7 @@ const AppContextProvider = ({ children }) => {
   const [displayCoords, setDisplayCoords] = useState(false);
   const [vertexSize, setVertexSize] = useState(defaultVertexSize);
 
-  const [wireFrameMode, setWireFrameMode] = useState(false);
+  const [wireFrameMode, setWireFrameMode] = useState(true);
 
   const [approximationMethod, setApproximationMethod] = useState("btps");
   const [uSubDiv, setUSubDiv] = useState(10);
