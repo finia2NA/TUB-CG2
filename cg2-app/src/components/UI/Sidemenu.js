@@ -57,7 +57,7 @@ const Sidemenu = (props) => {
 
       <T2Controls onComputeSurface={props.onComputeSurface} />
 
-      <T3Controls onComputeImplicit = {props.onComputeImplicit} initiallyOpened />
+      <T3Controls onComputeImplicit = {props.onComputeImplicit} />
 
       <DisplayControls />
     </div >

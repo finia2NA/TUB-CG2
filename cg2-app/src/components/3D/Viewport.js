@@ -9,9 +9,7 @@ import { OrbitControls } from "@react-three/drei";
 import Surface3D from "./Surface3D";
 import MarchingCube3D from "./MarchingCube3D";
 import Normals3D from "./Normals3D";
-import { Vector3 } from "three";
 import ValueBasedPoints from "./ValueBasedPoints";
-import PointRep from "../../model/PointRep";
 import { AppContext } from "../../context/AppContext";
 import Obj3D from "./Obj3D";
 
@@ -71,14 +69,14 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
       id='canvas'>
 
       {/* points */}
-      {pointCloudVersion === 1 && points.toArray().length > 0 &&
+      {/* {pointCloudVersion === 1 && points.toArray().length > 0 &&
         <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
       }
       {pointCloudVersion === 2 && points.toArray().length > 0 &&
         // <SubPointCloud2 points={points} coloring="highlighted" vertexSize={vertexSize} />
         <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
 
-      }
+      } */}
 
       {hasNormals && <Normals3D points={points.points} />}
 
@@ -92,13 +90,16 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
 
       {/* Coordinate system */}
       {displayCoords && <CoordSystem size={10} />}
-      {surfacePointsMC?  
-        <MarchingCube3D surfacePointsMC={surfacePointsMC}/>: 
-        <Surface3D points={surfacePoints} wireFrameMode={wireFrameMode}/>
-      } 
+      {surfacePointsMC ?
+        <MarchingCube3D surfacePointsMC={surfacePointsMC} /> :
+        <Surface3D points={surfacePoints} wireFrameMode={wireFrameMode} />
+      }
 
-      <ValueBasedPoints points={grid} vertexSize={vertexSize*20} />
-      <Obj3D/>
+      <ValueBasedPoints points={grid} vertexSize={vertexSize * 20} />
+
+      {points.points !== null && points.points.length > 0 &&
+        <Obj3D vertices={points.points} faces={points.faces} />
+      }
 
       {/* Controls */}
       <OrbitControls />

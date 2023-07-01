@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { DoubleSide, BufferGeometry, BufferAttribute } from "three";
+import { DoubleSide, BufferGeometry, BufferAttribute, Vector3 } from "three";
 import { flattenArray } from '../../util/flattenArray';
+import PointRep from '../../model/PointRep';
 
 const testData = {
-  vertexArray: [
+  vertices: [
     [-1, -1, 1],   // 0
     [1, -1, 1],    // 1
     [1, 1, 1],     // 2
@@ -13,7 +14,7 @@ const testData = {
     [1, 1, -1],    // 6
     [-1, 1, -1]    // 7
   ],
-  facesArray: [
+  faces: [
     [0, 1, 2],
     [2, 3, 0],
     [4, 5, 6],
@@ -30,27 +31,48 @@ const testData = {
 
 }
 
+const unwrapVertexData = (vertexArray) => {
+  if (vertexArray.length === 0) new Float32Array(0);
+
+  if (vertexArray[0] instanceof Array) {
+    return new Float32Array(flattenArray(vertexArray));
+  } else if (vertexArray[0] instanceof Vector3) {
+    const myArray = vertexArray.map(v => [v.x, v.y, v.z]);
+    return new Float32Array(flattenArray(myArray));
+  } else if (vertexArray[0] instanceof PointRep) {
+    const myArray = vertexArray.map(v => [v.position.x, v.position.y, v.position.z]);
+    return new Float32Array(flattenArray(myArray));
+  } else {
+    throw new Error("Invalid vertex data type");
+  }
+}
+
+
 const Obj3D = (props) => {
 
   // const { vertices, faces } = props;
-  const {vertexArray, facesArray } = testData;
+  const { vertices: vertexArray, faces: facesArray } = testData;
 
-  const ref = useRef();
-
-  useEffect(() => {
-    const geo = new BufferGeometry();
-
-    const vertices = new Float32Array(flattenArray(vertexArray));
-    const indices = flattenArray(facesArray);
-    geo.setIndex(indices);
-    geo.setAttribute('position', new BufferAttribute(vertices, 3));
-
-    ref.current.geometry = geo;
-  }, []);
+  // debugger;
+  const positions = unwrapVertexData(vertexArray);
+  const indices = new Uint32Array(flattenArray(facesArray));
 
   return (
-    <mesh ref={ref}>
-      <meshBasicMaterial color="violet" transparent opacity={0.5} side={DoubleSide} depthTest={false} />
+    <mesh>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          array={positions}
+          count={positions.length / 3}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="index"
+          array={indices}
+          count={indices.length}
+        />
+        <meshBasicMaterial color="violet" transparent opacity={0.5} side={DoubleSide} depthTest={false} />
+      </bufferGeometry >
     </mesh>
   );
 };
