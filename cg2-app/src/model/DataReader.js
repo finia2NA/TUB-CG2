@@ -1,5 +1,7 @@
 import PointRep from "./PointRep";
 import * as THREE from "three";
+import { Vector3 } from "three";
+import Face from "./Face";
 const OBJFile = require('obj-file-parser');
 
 function rotate(arr) {
@@ -40,33 +42,39 @@ class DataReader {
     }
   }
 
-  readOBJ(content, points) {
+  readOBJ(content, pointsDS) {
     // read file
     const objFile = new OBJFile(content);
     objFile.parse()
     if (objFile.result.models.length !== 1) throw new Error("Invalid OBJ file");
 
-    // extract data
     const model = objFile.result.models[0];
-    const vertices = model.vertices.map((vertex) => new THREE.Vector3(vertex.x, vertex.y, vertex.z));
-    const faces = model.faces.map((face) => face.vertices.map(v => v.vertexIndex));
-    let normals = null
-    if (model.vertexNormals.length !== 0) {
-      normals = model.vertexNormals.map((normal) => new THREE.Vector3(normal.x, normal.y, normal.z));
-    }
+
+    // load vertices
+    const points = model.vertices.map((vertex, index) => {
+      const point = new PointRep(new Vector3(vertex.x, vertex.y, vertex.z))
+      point.index = index;
+      return point;
+    });
+
+    const faces = model.faces.map((faceOBJ, index) => {
+      const indices = faceOBJ.vertices.map(v => v.vertexIndex - 1); // -1 because obj is 1-indexed for some reason
+      const triagPoints = indices.map(index => points[index]);
+      const face = new Face(triagPoints, indices, index);
+
+      // associate points with face
+      triagPoints.forEach(point => point.faces.push(face));
+      return face;
+    });
 
     // write to DS and return
-    for (let i = 0; i < vertices.length; i++) {
-      const position = vertices[i];
-      const normal = normals ? normals[i] : null;
-      points.addPoint(new PointRep(position, normal));
-    }
-    points.faces = faces;
+    pointsDS.points = points;
+    pointsDS.faces = faces;
 
-    points.buildTree();
+    pointsDS.buildTree();
 
-    points.isOBJ = true;
-    return points;
+    pointsDS.isOBJ = true;
+    return pointsDS;
   }
 
 
@@ -85,7 +93,7 @@ class DataReader {
           if (this.switchAxis) {
             positionArray = rotate(positionArray);
           }
-          const position = new THREE.Vector3(...positionArray);
+          const position = new Vector3(...positionArray);
 
           points.addPoint(new PointRep(position));
         }
@@ -99,8 +107,8 @@ class DataReader {
             positionArray = rotate(positionArray);
             normalArray = rotate(normalArray);
           }
-          const position = new THREE.Vector3(...pointDataArray.slice(0, 3));
-          const normal = new THREE.Vector3(...pointDataArray.slice(3));
+          const position = new Vector3(...pointDataArray.slice(0, 3));
+          const normal = new Vector3(...pointDataArray.slice(3));
           points.addPoint(new PointRep(position, normal));
         }
         break;

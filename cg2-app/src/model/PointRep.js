@@ -20,6 +20,12 @@ class PointRep {
     // This is used for Poisson Surface Reconstruction.
     // Default value is 0, for the original (non-offset) point set
     this.functionValue = 0
+
+    // this is used to keep track of which faces this point is part of
+    this.faces = []
+
+    // index if read from obj
+    this.index = null
   }
 
   distanceTo(point) {

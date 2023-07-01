@@ -7,6 +7,7 @@ import Viewport from './components/3D/Viewport';
 import Surface from './model/surface';
 import Implicit from './model/Implicit';
 import { AppContext } from './context/AppContext';
+import { computeNormals } from './model/Smoothing';
 
 const App = () => {
   const {
@@ -58,6 +59,7 @@ const App = () => {
     const readData = async () => {
       const readPoints = await reader.read_file(new PointDataStructure());
       readPoints.buildTree();
+      if (readPoints.isOBJ) computeNormals(readPoints);
       setHasNormals(readPoints.hasNormals());
       setPoints(readPoints);
     }
