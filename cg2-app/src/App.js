@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Sidemenu, { defaultVertexSize } from './components/UI/Sidemenu';
+import React, { useState, useEffect } from 'react';
+import Sidemenu from './components/UI/Sidemenu';
 import Card from './components/UI/Card';
 import { KDTreePointDataStructure as PointDataStructure } from './model/pointDataStructures'; // change import here to switch between data structures
 import DataReader from './model/DataReader'; // change import here to switch between data structures

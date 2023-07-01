@@ -1,6 +1,5 @@
-import { DoubleSide, Vector3 } from "three";
+import { DoubleSide } from "three";
 import * as THREE from "three";
-import PointRep from "../../model/PointRep";
 import Line3D from "./Line3D";
 import React, { useMemo } from "react";
 

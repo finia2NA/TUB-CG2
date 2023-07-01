@@ -16,7 +16,7 @@ const AppContextProvider = ({ children }) => {
   const [displayCoords, setDisplayCoords] = useState(false);
   const [vertexSize, setVertexSize] = useState(defaultVertexSize);
 
-  const [wireFrameMode, setWireFrameMode] = useState(false);
+  const [wireFrameMode, setWireFrameMode] = useState(true);
 
   const [approximationMethod, setApproximationMethod] = useState("btps");
   const [uSubDiv, setUSubDiv] = useState(10);

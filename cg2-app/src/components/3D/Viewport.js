@@ -65,18 +65,17 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
   return (
     <Canvas
       camera={{ position: [0, 0, 2], near: 0.01, far: 10000 }}
-      style={{ background: "grey" }}
+      style={{ background: "black" }}
       id='canvas'>
 
       {/* points */}
-      {/* {pointCloudVersion === 1 && points.toArray().length > 0 &&
+      {pointCloudVersion === 1 && points.toArray().length > 0 &&
         <PointCloud points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
       }
       {pointCloudVersion === 2 && points.toArray().length > 0 &&
         // <SubPointCloud2 points={points} coloring="highlighted" vertexSize={vertexSize} />
         <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
-
-      } */}
+      }
 
       {hasNormals && <Normals3D points={points.points} />}
 
@@ -97,8 +96,8 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
 
       <ValueBasedPoints points={grid} vertexSize={vertexSize * 20} />
 
-      {points.points !== null && points.points.length > 0 &&
-        <Obj3D vertices={points.points} faces={points.faces} />
+      {points.isOBJ &&
+        <Obj3D obj={points} />
       }
 
       {/* Controls */}

@@ -28,6 +28,7 @@ class DataReader {
     const fileName =
       "data/" + this.baseName.replace(/\s+/g, "").toLowerCase();
     const content = await fetch(fileName).then((x) => x.text());
+    points.text = content;
 
 
 
@@ -49,7 +50,7 @@ class DataReader {
     const model = objFile.result.models[0];
     const vertices = model.vertices.map((vertex) => new THREE.Vector3(vertex.x, vertex.y, vertex.z));
     const faces = model.faces.map((face) => face.vertices.map(v => v.vertexIndex));
-    const normals = null
+    let normals = null
     if (model.vertexNormals.length !== 0) {
       normals = model.vertexNormals.map((normal) => new THREE.Vector3(normal.x, normal.y, normal.z));
     }
@@ -63,6 +64,8 @@ class DataReader {
     points.faces = faces;
 
     points.buildTree();
+
+    points.isOBJ = true;
     return points;
   }
 

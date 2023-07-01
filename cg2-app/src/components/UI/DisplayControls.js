@@ -9,8 +9,7 @@ const DisplayControls = () => {
 
   const {
     pointCloudVersion, setPointCloudVersion,
-    displayCoords, setDisplayCoords,
-    vertexSize, setVertexSize,
+    displayCoords, setDisplayCoords, setVertexSize, wireFrameMode, setWireFrameMode
   } = React.useContext(AppContext);
 
 
@@ -41,6 +40,9 @@ const DisplayControls = () => {
         <MenuItem value={1}>Interactivity (V1)</MenuItem>
         <MenuItem value={2}>Performance (V2)</MenuItem>
       </Select>
+
+      <FormControlLabel control={<Checkbox checked={wireFrameMode} onClick={() => setWireFrameMode(!wireFrameMode)} />} label="Wireframe Mode" />
+      {/* <Checkbox checked={wireFrameMode} onClick={() => setWireFrameMode(!wireFrameMode)} /> */}
     </FullWidthFormControl>
   </Collapsing>;
 }

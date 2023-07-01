@@ -1,18 +1,12 @@
-import { Button, Checkbox, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
-import { Collapsing, FullWidthFormControl } from "./Containers"
-import { PadlessH2, PadlessH3 } from "./Text"
-import React from "react"
+import { Button, FormLabel, MenuItem, Select, Slider } from "@mui/material";
+import { Collapsing, FullWidthFormControl } from "./Containers";
+import { PadlessH2, PadlessH3 } from "./Text";
+import React from "react";
 import { AppContext } from "../../context/AppContext";
 
 
 const T2Controls = (props) => {
   const {
-    dataName, setDataName,
-    rotateModel, setRotateModel,
-    pointCloudVersion, setPointCloudVersion,
-    displayCoords, setDisplayCoords,
-    vertexSize, setVertexSize,
-    wireFrameMode, setWireFrameMode,
     approximationMethod, setApproximationMethod,
     uSubDiv, setUSubDiv,
     vSubDiv, setVSubDiv,
@@ -90,10 +84,6 @@ const T2Controls = (props) => {
         <Button variant="contained" color="primary" onClick={props.onComputeSurface}>Compute Surface</Button>
 
       </FullWidthFormControl>
-
-
-      <FormControlLabel control={<Checkbox checked={wireFrameMode} onClick={() => setWireFrameMode(!wireFrameMode)} />} label="Wireframe Mode" />
-      {/* <Checkbox checked={wireFrameMode} onClick={() => setWireFrameMode(!wireFrameMode)} /> */}
     </Collapsing>
 
   );

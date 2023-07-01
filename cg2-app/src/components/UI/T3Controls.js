@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material";
+import { Button, FormLabel, MenuItem, Select, Slider } from "@mui/material";
 import { Collapsing, FullWidthFormControl } from "./Containers"
 import { PadlessH2, PadlessH3 } from "./Text"
 import React from "react"
