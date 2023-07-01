@@ -6,7 +6,7 @@ const Normals3D = ({ points, normalize = true }) => {
         const normals = []
         for (const point of points) {
             const start = point.position;
-            const end = point.position.clone().add(point.normal.clone().multiplyScalar(20))
+            const end = point.position.clone().add(point.normal.clone().multiplyScalar(0.05))
             normals.push({ start, end })
         }
         return normals;
@@ -15,7 +15,7 @@ const Normals3D = ({ points, normalize = true }) => {
     return (
         <>
             {normals.map((p, id) => (
-                <Line3D key={id} start={p.start} end={p.end} color='red' />
+                <Line3D key={id} start={p.start} end={p.end} color='orange' opacity={0.5} />
             ))}
         </>
     )

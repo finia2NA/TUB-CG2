@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef } from 'react'
 
-function Line3D({ start, end, color = "skyblue" }) {
+function Line3D({ start, end, color = "skyblue", opacity = 1 }) {
   const ref = useRef()
   useLayoutEffect(() => {
     ref.current.geometry.setFromPoints([start, end])
@@ -8,7 +8,7 @@ function Line3D({ start, end, color = "skyblue" }) {
   return (
     <line ref={ref}>
       <bufferGeometry />
-      <lineBasicMaterial color={color} />
+      <lineBasicMaterial color={color} opacity={opacity} />
     </line>
   )
 }
