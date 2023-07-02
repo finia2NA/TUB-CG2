@@ -6,7 +6,7 @@ const Normals3D = ({ points, normalize = true }) => {
         const normals = []
         for (const point of points) {
             const start = point.position;
-            const end = point.position.clone().add(point.normal.clone().multiplyScalar(0.05))
+            const end = point.position.clone().add(point.normal.clone().multiplyScalar(0.03))
             normals.push({ start, end })
         }
         return normals;

@@ -86,8 +86,17 @@ export class KDTreePointDataStructure extends PointDataStructure {
     this.treeIsBuilt = false;
   }
 
-  hasNormals() {
+  copy(){
+    const copy = new KDTreePointDataStructure();
+    copy.points = this.points;
+    copy.faces = this.faces;
+    copy.root = this.root;
+    copy.selfSelection = this.selfSelection;
+    copy.treeIsBuilt = this.treeIsBuilt;
+    return copy;
+  }
 
+  hasNormals() {
     return !!this.points && this.points.length !== 0 && !!this.points[0].normal
   }
 

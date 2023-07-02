@@ -21,12 +21,12 @@ export const graphLaplacian = (pointDS) => {
     const neighbours = point.tier1Neighbours();
     const n = neighbours.length;
     const sum = neighbours.reduce((sum, neighbour) => sum.add(neighbour.position), new Vector3());
-    const laplacian = sum.sub(point.position.multiplyScalar(n));
+    const laplacian = sum.sub(point.position.clone().multiplyScalar(n));
     point.laplacian = laplacian;
   }
 }
 
-export const smooth = (pointDS, lambda = 0.5, steps = 1) => {
+export const smooth = (pointDS, lambda = 1000000, steps = 1) => {
   // NOTE TO READERS:
   // this function is in-place, so make sure you pass a copy of the pointDS if you want to keep the original
   // OR if pointDS is a react STATE!
@@ -35,14 +35,13 @@ export const smooth = (pointDS, lambda = 0.5, steps = 1) => {
   // Depending on the desired level of smoothness, you may want to repeat this multiple times
   for (let i = 0; i < steps; i++) {
     graphLaplacian(pointDS);
-    debugger;
     const points = pointDS.points;
     for (const point of points) {
       point.position.add(point.laplacian.multiplyScalar(lambda));
+      // console.log(point.laplacian)
     }
   }
   // After the final smoothing operation, you need to recompute the normals for each vertex or face, as these will have changed when the vertices moved.
   computeNormals(pointDS);
-  debugger;
   return pointDS;
 }

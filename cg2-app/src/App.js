@@ -45,8 +45,7 @@ const App = () => {
   }
 
   const onSmooth = () => {
-    // FIXME: right now, react does not actually update the points, so we have to create a new object
-    const newPoints = smooth(points);
+    const newPoints = smooth(points,0.005,10).copy();
     setPoints(newPoints);
   }
 
