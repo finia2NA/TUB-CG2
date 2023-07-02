@@ -1,4 +1,5 @@
 import { Vector3 } from "three";
+import * as math from "mathjs";
 
 export const computeNormals = (pointDS) => {
   const points = pointDS.points;
@@ -42,6 +43,73 @@ export const smooth = (pointDS, lambda = 1000000, steps = 1) => {
     }
   }
   // After the final smoothing operation, you need to recompute the normals for each vertex or face, as these will have changed when the vertices moved.
+  computeNormals(pointDS);
+  return pointDS;
+}
+
+export const cotanLaplacian = (pointDS) => {
+  const points = pointDS.points;
+  const num = points.length;
+
+  let cotan = Array.from({ length: num }, () => Array(num).fill(0));
+  let mass = Array.from({ length: num }, () => Array(num).fill(0));
+
+  for (let i=0; i<num; i++) {
+    const target = points[i];
+
+    for (let j=0; j<num; j++) {
+      let w = 0;
+      const sub = points[j];
+      const neighbors = target.tier1Neighbours();
+
+      if (neighbors.includes(sub)) {
+        const n_neighbor = sub.tier1Neighbours();
+        const intersection = neighbors.filter(x => n_neighbor.includes(x));
+
+        for (const intersect of intersection) {
+          const vector1 = new Vector3().subVectors(target.position, intersect.position);
+          const vector2 = new Vector3().subVectors(sub.position, intersect.position);
+          w += 1 / (2 * Math.tan(vector1.angleTo(vector2)));
+        }
+      }
+      cotan[i][j] = w;
+    }
+
+    const areas = target.faces.map(face => face.area);
+    let A = 0;
+    for (const area of areas) {
+      A += (1/3) * area;
+    }
+    mass[i][i] = A;
+  }
+
+  for (let i=0; i<num; i++) {
+    const w_diag = -(cotan[i].reduce((a, b) => a+b, 0));
+    console.log(cotan[i])
+    cotan[i][i] = w_diag;
+    console.log(w_diag)
+  }
+
+  const laplacianOperator = math.multiply(math.inv(mass), cotan);
+
+  return laplacianOperator;
+}
+
+export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
+  for (let i=0; i<steps; i++) {
+    const laplacianOperator = cotanLaplacian(pointDS);
+    const points = pointDS.points;
+    const position = points.map(point => [point.position.x, point.position.y, point.position.z]);
+
+    const delta = math.multiply(laplacianOperator, position);
+
+    for (let j=0; j<points.length; j++) {
+      const delVector = new Vector3(delta[j][0], delta[j][1], delta[j][2]);
+      delVector.normalize();
+      points[j].position.add(delVector.multiplyScalar(lambda));
+    }
+  }
+
   computeNormals(pointDS);
   return pointDS;
 }

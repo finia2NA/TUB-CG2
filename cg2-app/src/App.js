@@ -7,7 +7,7 @@ import Viewport from './components/3D/Viewport';
 import Surface from './model/surface';
 import Implicit from './model/Implicit';
 import { AppContext } from './context/AppContext';
-import { computeNormals, graphLaplacian, smooth } from './model/Smoothing';
+import { computeNormals, graphLaplacian, smooth, cotanSmooth } from './model/Smoothing';
 
 const App = () => {
   const {
@@ -45,7 +45,8 @@ const App = () => {
   }
 
   const onSmooth = () => {
-    const newPoints = smooth(points,0.005,10).copy();
+    // const newPoints = smooth(points,0.005,10).copy();
+    const newPoints = cotanSmooth(points, 0.05, 1).copy();
     setPoints(newPoints);
   }
 

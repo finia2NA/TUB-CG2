@@ -67,7 +67,9 @@ class PointRep {
   }
 
   tier1Neighbours() {
-    return this.faces.map(face => face.points).flat().filter(point => point !== this)
+    let faceNeighbors = this.faces.map(face => face.points).flat().filter(point => point !== this);
+    let adjacent = [...new Set(faceNeighbors)];
+    return adjacent;
   }
 
   laplacian() {
