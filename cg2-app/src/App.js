@@ -7,7 +7,7 @@ import Viewport from './components/3D/Viewport';
 import Surface from './model/surface';
 import Implicit from './model/Implicit';
 import { AppContext } from './context/AppContext';
-import { computeNormals } from './model/Smoothing';
+import { computeNormals, graphLaplacian, smooth } from './model/Smoothing';
 
 const App = () => {
   const {
@@ -40,10 +40,14 @@ const App = () => {
   }, [points])
 
   const onComputeSurface = () => {
-
     const newSurfacePoints = surface.getMovingSampling(uSubDiv, vSubDiv, subDivMultiplier, approximationMethod)
-
     setSurfacePoints(newSurfacePoints);
+  }
+
+  const onSmooth = () => {
+    // FIXME: right now, react does not actually update the points, so we have to create a new object
+    const newPoints = smooth(points);
+    setPoints(newPoints);
   }
 
 
@@ -108,7 +112,7 @@ const App = () => {
 
       {/* side menu */}
       <Card style={{ flex: 2 }} >
-        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} onComputeSurface={onComputeSurface} onComputeImplicit={onComputeImplicit} />
+        <Sidemenu onClearSelection={onClearSelection} onPointQuery={onPointQuery} onComputeSurface={onComputeSurface} onComputeImplicit={onComputeImplicit} onSmooth={onSmooth} />
       </Card>
 
     </div >
