@@ -54,33 +54,29 @@ export const cotanLaplacian = (pointDS) => {
   let cotan = Array.from({ length: num }, () => Array(num).fill(0));
   let mass = Array.from({ length: num }, () => Array(num).fill(0));
 
-  for (let i=0; i<num; i++) {
-    const target = points[i];
-
-    for (let j=0; j<num; j++) {
+  for (const point of points) {
+    const connected = point.tier1Neighbours()
+    for (const neighbor of connected) {
       let w = 0;
-      const sub = points[j];
-      const neighbors = target.tier1Neighbours();
+      
+      const n_neighbor = neighbor.tier1Neighbours();
+      const intersection = connected.filter(x => n_neighbor.includes(x));
 
-      if (neighbors.includes(sub)) {
-        const n_neighbor = sub.tier1Neighbours();
-        const intersection = neighbors.filter(x => n_neighbor.includes(x));
-
-        for (const intersect of intersection) {
-          const vector1 = new Vector3().subVectors(target.position, intersect.position);
-          const vector2 = new Vector3().subVectors(sub.position, intersect.position);
-          w += 1 / (2 * Math.tan(vector1.angleTo(vector2)));
-        }
+      for (const intersect of intersection) {
+        const vector1 = new Vector3().subVectors(point.position, intersect.position);
+        const vector2 = new Vector3().subVectors(neighbor.position, intersect.position);
+        w += 1 / (2 * Math.tan(vector1.angleTo(vector2)));
       }
-      cotan[i][j] = w;
+
+      cotan[point.index][neighbor.index] = w
     }
 
-    const areas = target.faces.map(face => face.area);
+    const areas = point.faces.map(face => face.area);
     let A = 0;
     for (const area of areas) {
       A += (1/3) * area;
     }
-    mass[i][i] = A;
+    mass[point.index][point.index] = A;
   }
 
   for (let i=0; i<num; i++) {
