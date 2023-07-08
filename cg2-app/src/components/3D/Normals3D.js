@@ -4,7 +4,7 @@ import Line3D from './Line3D'
 const Normals3D = ({ points, normalize = true }) => {
     const normals = useMemo(() => {
         const normals = []
-        for (const point of points) {
+        for (const point of points.points) {
             const start = point.position;
             const end = point.position.clone().add(point.normal.clone().multiplyScalar(0.03))
             normals.push({ start, end })

@@ -84,8 +84,13 @@ export class KDTreePointDataStructure extends PointDataStructure {
     this.root = null; // the root of the tree
     this.selfSelection = false; // wether the radius and kn search should include the point itself
     this.treeIsBuilt = false;
+    this.text = null
+    this.isOBJ = false;
   }
 
+  /**
+   * Creates a copy of this data structure, BUT KEEPS THE SAME POINTS, TREE AND FACES
+   */
   copy(){
     const copy = new KDTreePointDataStructure();
     copy.points = this.points;
@@ -93,6 +98,8 @@ export class KDTreePointDataStructure extends PointDataStructure {
     copy.root = this.root;
     copy.selfSelection = this.selfSelection;
     copy.treeIsBuilt = this.treeIsBuilt;
+    copy.text = this.text;
+    copy.isOBJ = this.isOBJ;
     return copy;
   }
 

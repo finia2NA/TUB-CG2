@@ -27,7 +27,7 @@ export const graphLaplacian = (pointDS) => {
   }
 }
 
-export const laplaceSmooth = (pointDS, lambda = 1000000, steps = 1) => {
+export const laplaceSmooth = (pointDS, lambda = 0.2, steps = 1) => {
   // NOTE TO READERS:
   // this function is in-place, so make sure you pass a copy of the pointDS if you want to keep the original
   // OR if pointDS is a react STATE!

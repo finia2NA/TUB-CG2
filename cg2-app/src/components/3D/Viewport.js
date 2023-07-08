@@ -77,7 +77,7 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
         <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
       }
 
-      {hasNormals && <Normals3D points={points.points} />}
+      {hasNormals && <Normals3D points={points} />}
 
       {/* Lines */}
       {displayLines && highlightedLines.map((line, index) => (
