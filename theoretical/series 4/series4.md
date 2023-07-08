@@ -26,3 +26,6 @@ Disadvantages
   - Slower than flat shading, as it requires averaging and weighting.
 
 We have implemented this method in practical part 1.
+
+## Task 3:
+![Alt text](<Task 3.jpg>)
