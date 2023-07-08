@@ -29,6 +29,10 @@ const AppContextProvider = ({ children }) => {
   const [wendlandRadius, setWendlandRadius] = useState(wendlandRadiusDefault);
   const [hasNormals, setHasNormals] = useState(false);
 
+  const [smoothingMethod, setSmoothingMethod] = useState("laplace");
+  const [smoothingSteps, setSmoothingSteps] = useState(1);
+  const [smoothingLambda, setSmoothingLambda] = useState(0.05);
+
   return (
     <AppContext.Provider value={{
       dataName, setDataName,
@@ -48,6 +52,9 @@ const AppContextProvider = ({ children }) => {
       implicitDegree, setImplicitDegree,
       wendlandRadius, setWendlandRadius,
       hasNormals, setHasNormals,
+      smoothingMethod, setSmoothingMethod,
+      smoothingSteps, setSmoothingSteps,
+      smoothingLambda, setSmoothingLambda,
     }}>
       {children}
     </AppContext.Provider>

@@ -7,7 +7,7 @@ import Viewport from './components/3D/Viewport';
 import Surface from './model/surface';
 import Implicit from './model/Implicit';
 import { AppContext } from './context/AppContext';
-import { computeNormals, graphLaplacian, smooth, cotanSmooth } from './model/Smoothing';
+import { computeNormals, graphLaplacian, laplaceSmooth, cotanSmooth, eulerSmooth } from './model/Smoothing';
 
 const App = () => {
   const {
@@ -18,6 +18,9 @@ const App = () => {
     vSubDiv,
     subDivMultiplier,
     setHasNormals,
+    smoothingMethod,
+    smoothingSteps,
+    smoothingLambda
   } = React.useContext(AppContext);
 
   // Point Storing DSs
@@ -45,8 +48,27 @@ const App = () => {
   }
 
   const onSmooth = () => {
-    // const newPoints = smooth(points,0.005,10).copy();
-    const newPoints = cotanSmooth(points, 0.05, 1).copy();
+
+    // select smoothing function
+    let smoothingFunction = null;
+    switch (smoothingMethod) {
+      case "laplace":
+        smoothingFunction = laplaceSmooth;
+        break;
+      case "cotan-laplace":
+        smoothingFunction = cotanSmooth;
+        break;
+      case "euler-laplace":
+        smoothingFunction = eulerSmooth;
+        break;
+      default:
+        throw new Error("Invalid smoothing method");
+    }
+
+    let newPoints = points.copy();
+
+
+    newPoints = smoothingFunction(newPoints, smoothingLambda, smoothingSteps)
     setPoints(newPoints);
   }
 

@@ -27,7 +27,7 @@ export const graphLaplacian = (pointDS) => {
   }
 }
 
-export const smooth = (pointDS, lambda = 1000000, steps = 1) => {
+export const laplaceSmooth = (pointDS, lambda = 1000000, steps = 1) => {
   // NOTE TO READERS:
   // this function is in-place, so make sure you pass a copy of the pointDS if you want to keep the original
   // OR if pointDS is a react STATE!
@@ -108,4 +108,8 @@ export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
 
   computeNormals(pointDS);
   return pointDS;
+}
+
+export const eulerSmooth = (pointDS, lambda = 1, steps = 1) => {
+  throw new Error("Not implemented");
 }
