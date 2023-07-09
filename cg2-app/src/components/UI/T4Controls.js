@@ -14,12 +14,14 @@ const T4Controls = (props) => {
     smoothingLambda, setSmoothingLambda,
     smoothingSteps, setSmoothingSteps,
     showPreSmoothing, setShowPreSmoothing,
+    smoothingEigenPercentage, setEigenPercentage,
   } = useContext(AppContext);
 
   const smoothingMethods = [
     "laplace",
     "cotan-laplace",
-    "euler-laplace",
+    "cotan-laplace-implicit",
+    "cotan-eigen",
   ]
 
 
@@ -37,23 +39,39 @@ const T4Controls = (props) => {
             )
           })}
         </Select>
-        <FormLabel>Lambda</FormLabel>
-          <Slider
-            value={smoothingLambda}
-            onChange={(e) => setSmoothingLambda(e.target.value)}
-            valueLabelDisplay="auto"
-            step={0.005}
-            min={0.005}
-            max={0.2}
-          /><FormLabel>Steps</FormLabel>
-          <Slider
-            value={smoothingSteps}
-            onChange={(e) => setSmoothingSteps(e.target.value)}
-            valueLabelDisplay="auto"
-            step={1}
-            min={1}
-            max={20}
-          />
+       
+        {smoothingMethod==="cotan-eigen"?
+          <div>
+            <FormLabel>Eigenvectors Percentage</FormLabel>
+            <Slider
+              value={smoothingEigenPercentage}
+              onChange={(e) => setEigenPercentage(e.target.value)}
+              valueLabelDisplay="auto"
+              step={0.01}
+              min={0}
+              max={1}
+            />
+          </div>
+          :<div>
+            <FormLabel>Lambda</FormLabel>
+            <Slider
+              value={smoothingLambda}
+              onChange={(e) => setSmoothingLambda(e.target.value)}
+              valueLabelDisplay="auto"
+              step={0.005}
+              min={0.005}
+              max={0.2}
+            />
+            <FormLabel>Steps</FormLabel>
+            <Slider
+              value={smoothingSteps}
+              onChange={(e) => setSmoothingSteps(e.target.value)}
+              valueLabelDisplay="auto"
+              step={1}
+              min={1}
+              max={20}
+            />
+          </div>}
         <Button variant="contained" color="primary" onClick={props.onSmooth}>Smooth</Button>
         <FormControlLabel control={<Checkbox checked={showPreSmoothing} onChange={(e) => setShowPreSmoothing(e.target.checked)
         } />} label="Show Pre-smoothing geometry" />

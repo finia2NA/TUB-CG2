@@ -1,5 +1,6 @@
 import { Vector3 } from "three";
 import * as math from "mathjs";
+import choleskySolve from "cholesky-solve"
 
 export const computeNormals = (pointDS) => {
   const points = pointDS.points;
@@ -47,7 +48,7 @@ export const laplaceSmooth = (pointDS, lambda = 0.2, steps = 1) => {
   return pointDS;
 }
 
-export const cotanLaplacian = (pointDS) => {
+export const cotanLaplacian = (pointDS, type="explicit") => {
   const points = pointDS.points;
   const num = points.length;
 
@@ -81,14 +82,17 @@ export const cotanLaplacian = (pointDS) => {
 
   for (let i=0; i<num; i++) {
     const w_diag = -(cotan[i].reduce((a, b) => a+b, 0));
-    console.log(cotan[i])
     cotan[i][i] = w_diag;
-    console.log(w_diag)
   }
 
-  const laplacianOperator = math.multiply(math.inv(mass), cotan);
-
-  return laplacianOperator;
+  if (type==="explicit"){
+    const laplacianOperator = math.multiply(math.inv(mass), cotan);
+    return laplacianOperator
+  } else if (type==="implicit"){
+    return {mass, cotan}
+  } else {
+    console.error("cotanLaplacian(): wrong 'type' parameter");
+  }
 }
 
 export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
@@ -110,6 +114,70 @@ export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
   return pointDS;
 }
 
-export const eulerSmooth = (pointDS, lambda = 1, steps = 1) => {
-  throw new Error("Not implemented");
+export const cotanSmoothImplicit = (pointDS, lambda = 0.01, steps = 1) => {
+  for (let i=0; i<steps; i++) {
+    // init
+    const {mass, cotan} = cotanLaplacian(pointDS, "implicit");
+    const points = pointDS.points;
+    const position = points.map(point => [point.position.x, point.position.y, point.position.z]);
+
+    // set variables for: Nx = b 
+    const N = math.subtract(mass, math.multiply(lambda, cotan)) // N = mass-lambda*cotan
+    const b = math.multiply(mass, position) // b = mass*points
+    const b_1 = b.map(x => x[0]);
+    const b_2 = b.map(x => x[1]);
+    const b_3 = b.map(x => x[2]);
+
+    // get sparse matrix of N
+    let N_sparse = [];
+    for (let i = 0; i < N.length; i++) {
+      for (let j = i; j < N[i].length; j++) {
+        if (N[i][j] !== 0) {
+          N_sparse.push([i, j, N[i][j]]);
+        }
+      }
+    }
+    
+    // solving with sparse Cholesky
+    const x = choleskySolve.prepare(N_sparse, N.length)(b_1)
+    const y = choleskySolve.prepare(N_sparse, N.length)(b_2)
+    const z = choleskySolve.prepare(N_sparse, N.length)(b_3)
+
+    // set new position
+    if (!(x.some(Number.isNaN) || y.some(Number.isNaN) ||z.some(Number.isNaN) )) {
+      for (let j=0; j<points.length; j++) {
+        points[j].position = new Vector3(x[j], y[j], z[j]);
+      }
+    }
+
+    // compute normals
+    computeNormals(pointDS);
+  }
+  return pointDS;
+}
+
+
+export const eigenSmooth = (pointDS, eigenPercentage=0.95) => {
+  // init
+  const {cotan} = cotanLaplacian(pointDS, "implicit");
+  const coords = pointDS.points.map(point => [point.position.x,point.position.y,point.position.z]);
+
+  // Compute eigenvectors
+  let eigenvectors = math.eigs(cotan).vectors
+  eigenvectors = eigenvectors.slice(0,Math.floor(eigenvectors.length*eigenPercentage))
+  
+  // Compute new coordinates 
+  let result = math.multiply(math.transpose(coords), math.transpose(eigenvectors));
+  result = math.multiply(result, eigenvectors);
+  console.log(result)
+
+  // set new position
+  for (let j=0; j<result[0].length; j++) {
+    pointDS.points[j].position = new Vector3(result[0][j], result[1][j], result[2][j]);
+  }
+
+  // compute normals
+  computeNormals(pointDS);
+
+  return pointDS
 }

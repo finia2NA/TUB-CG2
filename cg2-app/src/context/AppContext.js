@@ -33,6 +33,7 @@ const AppContextProvider = ({ children }) => {
   const [smoothingSteps, setSmoothingSteps] = useState(1);
   const [smoothingLambda, setSmoothingLambda] = useState(0.05);
   const [showPreSmoothing, setShowPreSmoothing] = useState(true);
+  const [smoothingEigenPercentage, setEigenPercentage] = useState(0.99);
 
   return (
     <AppContext.Provider value={{
@@ -57,6 +58,7 @@ const AppContextProvider = ({ children }) => {
       smoothingSteps, setSmoothingSteps,
       smoothingLambda, setSmoothingLambda,
       showPreSmoothing, setShowPreSmoothing,
+      smoothingEigenPercentage, setEigenPercentage,
     }}>
       {children}
     </AppContext.Provider>

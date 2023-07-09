@@ -7,7 +7,7 @@ import Viewport from './components/3D/Viewport';
 import Surface from './model/surface';
 import Implicit from './model/Implicit';
 import { AppContext } from './context/AppContext';
-import { computeNormals, graphLaplacian, laplaceSmooth, cotanSmooth, eulerSmooth } from './model/Smoothing';
+import { computeNormals, graphLaplacian, laplaceSmooth, cotanSmooth, cotanSmoothImplicit, eigenSmooth } from './model/Smoothing';
 
 const App = () => {
   const {
@@ -20,7 +20,8 @@ const App = () => {
     setHasNormals,
     smoothingMethod,
     smoothingSteps,
-    smoothingLambda
+    smoothingLambda,
+    smoothingEigenPercentage
   } = React.useContext(AppContext);
 
   // Point Storing DSs
@@ -50,25 +51,25 @@ const App = () => {
   const onSmooth = () => {
 
     // select smoothing function
-    let smoothingFunction = null;
+    let newPoints = points.copy();
+
     switch (smoothingMethod) {
       case "laplace":
-        smoothingFunction = laplaceSmooth;
+        newPoints = laplaceSmooth(newPoints, smoothingLambda, smoothingSteps)
         break;
       case "cotan-laplace":
-        smoothingFunction = cotanSmooth;
+        newPoints = cotanSmooth(newPoints, smoothingLambda, smoothingSteps)
         break;
-      case "euler-laplace":
-        smoothingFunction = eulerSmooth;
+      case "cotan-laplace-implicit":
+        newPoints = cotanSmoothImplicit(newPoints, smoothingLambda, smoothingSteps)
+        break;
+      case "cotan-eigen":
+        newPoints = eigenSmooth(newPoints, smoothingEigenPercentage)
         break;
       default:
         throw new Error("Invalid smoothing method");
     }
-
-    let newPoints = points.copy();
-
-
-    newPoints = smoothingFunction(newPoints, smoothingLambda, smoothingSteps)
+    
     setPoints(newPoints);
   }
 
