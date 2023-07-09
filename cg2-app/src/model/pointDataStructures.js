@@ -161,7 +161,8 @@ export class KDTreePointDataStructure extends PointDataStructure {
       return thisNode;
     }
 
-    this.root = recur_buildTree(this.points, 0);
+    const points = this.points.slice();
+    this.root = recur_buildTree(points, 0);
     this.treeIsBuilt = true;
   }
 
