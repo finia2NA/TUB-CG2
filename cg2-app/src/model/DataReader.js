@@ -50,22 +50,41 @@ class DataReader {
 
     const model = objFile.result.models[0];
 
-    // load vertices
-    const points = model.vertices.map((vertex, index) => {
-      const point = new PointRep(new Vector3(vertex.x, vertex.y, vertex.z))
+    const points = [];
+    for (let index = 0; index < model.vertices.length; index++) {
+      const vertex = model.vertices[index];
+      const point = new PointRep(new Vector3(vertex.x, vertex.y, vertex.z));
       point.index = index;
-      return point;
-    });
+      points.push(point);
+    }
 
-    const faces = model.faces.map((faceOBJ, index) => {
-      const indices = faceOBJ.vertices.map(v => v.vertexIndex - 1); // -1 because obj is 1-indexed for some reason
-      const triagPoints = indices.map(index => points[index]);
-      const face = new Face(triagPoints, indices, index);
+
+    console.log(model.vertices);
+    console.log(points.map(p => p.position));
+
+    const faces = [];
+    for (let i = 0; i < model.faces.length; i++) {
+      const faceOBJ = model.faces[i];
+      const indices = [];
+      for (let j = 0; j < faceOBJ.vertices.length; j++) {
+        indices.push(faceOBJ.vertices[j].vertexIndex - 1); // -1 because obj is 1-indexed for some reason
+      }
+
+      const triagPoints = [];
+      for (let k = 0; k < indices.length; k++) {
+        triagPoints.push(points[indices[k]]);
+      }
+
+      const face = new Face(triagPoints, indices, i);
 
       // associate points with face
-      triagPoints.forEach(point => point.faces.push(face));
-      return face;
-    });
+      for (let point of triagPoints) {
+        point.faces.push(face);
+      }
+
+      faces.push(face);
+    }
+
 
     // write to DS and return
     pointsDS.points = points;
