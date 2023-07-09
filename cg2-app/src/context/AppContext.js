@@ -32,6 +32,7 @@ const AppContextProvider = ({ children }) => {
   const [smoothingMethod, setSmoothingMethod] = useState("laplace");
   const [smoothingSteps, setSmoothingSteps] = useState(1);
   const [smoothingLambda, setSmoothingLambda] = useState(0.05);
+  const [showPreSmoothing, setShowPreSmoothing] = useState(true);
 
   return (
     <AppContext.Provider value={{
@@ -55,6 +56,7 @@ const AppContextProvider = ({ children }) => {
       smoothingMethod, setSmoothingMethod,
       smoothingSteps, setSmoothingSteps,
       smoothingLambda, setSmoothingLambda,
+      showPreSmoothing, setShowPreSmoothing,
     }}>
       {children}
     </AppContext.Provider>

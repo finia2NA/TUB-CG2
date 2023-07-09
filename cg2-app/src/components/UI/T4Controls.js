@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 
-import { Button, FormLabel, MenuItem, Select, Slider } from "@mui/material"
+import { Button, Checkbox, FormControlLabel, FormLabel, MenuItem, Select, Slider } from "@mui/material"
 import { Collapsing, FullWidthFormControl } from "./Containers"
 import { PadlessH2 } from "./Text"
 import { AppContext } from "../../context/AppContext"
@@ -13,6 +13,7 @@ const T4Controls = (props) => {
     smoothingMethod, setSmoothingMethod,
     smoothingLambda, setSmoothingLambda,
     smoothingSteps, setSmoothingSteps,
+    showPreSmoothing, setShowPreSmoothing,
   } = useContext(AppContext);
 
   const smoothingMethods = [
@@ -54,6 +55,8 @@ const T4Controls = (props) => {
             max={20}
           />
         <Button variant="contained" color="primary" onClick={props.onSmooth}>Smooth</Button>
+        <FormControlLabel control={<Checkbox checked={showPreSmoothing} onChange={(e) => setShowPreSmoothing(e.target.checked)
+        } />} label="Show Pre-smoothing geometry" />
       </FullWidthFormControl>
     </Collapsing>
   )

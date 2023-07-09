@@ -25,7 +25,8 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
     displayCoords,
     vertexSize,
     wireFrameMode,
-    hasNormals
+    hasNormals,
+    showPreSmoothing,
   } = React.useContext(AppContext);
 
   // Keyboard State
@@ -99,7 +100,8 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
 
       {points.isOBJ &&
         <>
-          <Obj3D obj={points} />
+          {showPreSmoothing && <Obj3D obj={points} />
+          }
           <Mesh3D obj={points} />
         </>
       }
