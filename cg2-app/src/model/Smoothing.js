@@ -48,7 +48,7 @@ export const laplaceSmooth = (pointDS, lambda = 0.2, steps = 1) => {
   return pointDS;
 }
 
-export const cotanLaplacian = (pointDS, type="explicit") => {
+export const cotanLaplacian = (pointDS) => {
   const points = pointDS.points;
   const num = points.length;
 
@@ -85,19 +85,13 @@ export const cotanLaplacian = (pointDS, type="explicit") => {
     cotan[i][i] = w_diag;
   }
 
-  if (type==="explicit"){
-    const laplacianOperator = math.multiply(math.inv(mass), cotan);
-    return laplacianOperator
-  } else if (type==="implicit"){
-    return {mass, cotan}
-  } else {
-    console.error("cotanLaplacian(): wrong 'type' parameter");
-  }
+  return {mass, cotan}
 }
 
 export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
   for (let i=0; i<steps; i++) {
-    const laplacianOperator = cotanLaplacian(pointDS);
+    const {mass, cotan} = cotanLaplacian(pointDS);
+    const laplacianOperator = math.multiply(math.inv(mass), cotan);
     const points = pointDS.points;
     const position = points.map(point => [point.position.x, point.position.y, point.position.z]);
 
@@ -117,7 +111,7 @@ export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
 export const cotanSmoothImplicit = (pointDS, lambda = 0.01, steps = 1) => {
   for (let i=0; i<steps; i++) {
     // init
-    const {mass, cotan} = cotanLaplacian(pointDS, "implicit");
+    const {mass, cotan} = cotanLaplacian(pointDS);
     const points = pointDS.points;
     const position = points.map(point => [point.position.x, point.position.y, point.position.z]);
 
