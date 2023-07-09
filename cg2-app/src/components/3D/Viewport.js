@@ -12,6 +12,7 @@ import Normals3D from "./Normals3D";
 import ValueBasedPoints from "./ValueBasedPoints";
 import { AppContext } from "../../context/AppContext";
 import Obj3D from "./Obj3D";
+import Mesh3D from "./Mesh3D";
 
 const logging = true
 
@@ -24,7 +25,8 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
     displayCoords,
     vertexSize,
     wireFrameMode,
-    hasNormals
+    hasNormals,
+    showPreSmoothing,
   } = React.useContext(AppContext);
 
   // Keyboard State
@@ -77,7 +79,7 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
         <PointCloud2 points={points} selectedPoints={selectedPoints} highlightedPoints={highlightedPoints} handlePointClick={handlePointClick} isSelectMode={shiftPressed} vertexSize={vertexSize * 20} />
       }
 
-      {hasNormals && <Normals3D points={points.points} />}
+      {hasNormals && <Normals3D points={points} />}
 
       {/* Lines */}
       {displayLines && highlightedLines.map((line, index) => (
@@ -97,8 +99,13 @@ const Viewport = ({ points, grid, selectedPoints, setSelectedPoints, highlighted
       <ValueBasedPoints points={grid} vertexSize={vertexSize * 20} />
 
       {points.isOBJ &&
-        <Obj3D obj={points} />
+        <>
+          {showPreSmoothing && <Obj3D obj={points} />
+          }
+          <Mesh3D obj={points} />
+        </>
       }
+
 
       {/* Controls */}
       <OrbitControls />

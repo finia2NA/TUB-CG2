@@ -65,6 +65,21 @@ class PointRep {
       return this2D.distanceTo(position);
     }
   }
+
+  tier1Neighbours() {
+    let faceNeighbors = this.faces.map(face => face.points).flat().filter(point => point !== this);
+    let adjacent = [...new Set(faceNeighbors)];
+    return adjacent;
+  }
+
+  laplacian() {
+    const neighbours = this.tier1Neighbours()
+    const n = neighbours.length
+    const sum = neighbours.reduce((sum, neighbour) => sum + neighbour.position, new Vector3())
+    return sum.divideScalar(n)
+  }
+
+
 }
 
 export default PointRep;

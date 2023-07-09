@@ -11,7 +11,7 @@ const Obj3D = ({ obj }) => {
 
   const object = useMemo(() => {
     const object = new OBJLoader().parse(obj.text);
-    const materialFull = new MeshBasicMaterial({ color: "red", opacity: 0.7, transparent: true });
+    const materialFull = new MeshBasicMaterial({ color: "red", opacity: 0.3, transparent: true });
     const materialWireframe = new MeshBasicMaterial({ color: "red", wireframe: true });
 
     object.traverse(function (child) {
