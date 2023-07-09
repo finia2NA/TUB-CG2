@@ -6,7 +6,7 @@ export const AppContext = React.createContext();
 
 const AppContextProvider = ({ children }) => {
   // Model to load
-  const [dataName, setDataName] = useState("shapes/eight.obj");
+  const [dataName, setDataName] = useState("shapes/arma1.obj");
   const [rotateModel, setRotateModel] = useState(false); // WIP
 
   // Display Control State

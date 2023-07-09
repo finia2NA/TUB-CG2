@@ -157,25 +157,27 @@ export const cotanSmoothImplicit = (pointDS, lambda = 0.01, steps = 1) => {
 }
 
 
-export const eigenSmooth = (pointDS, eigenPercentage=0.95) => {
-  // init
-  const {cotan} = cotanLaplacian(pointDS, "implicit");
-  const coords = pointDS.points.map(point => [point.position.x,point.position.y,point.position.z]);
+export const eigenSmooth = (pointDS, eigenPercentage=0.95, steps = 1) => {
+  for (let i=0; i<steps; i++) {
+    // init
+    const {cotan} = cotanLaplacian(pointDS, "implicit");
+    const coords = pointDS.points.map(point => [point.position.x,point.position.y,point.position.z]);
 
-  // Compute eigenvectors
-  let eigenvectors = math.eigs(cotan).vectors
-  eigenvectors = eigenvectors.slice(0,Math.floor(eigenvectors.length*eigenPercentage))
-  
-  // Compute new coordinates 
-  let result = math.multiply(math.transpose(coords), math.transpose(eigenvectors));
-  result = math.multiply(result, eigenvectors);
-  console.log(result)
+    // Compute eigenvectors
+    let eigenvectors = math.eigs(cotan).vectors
+    eigenvectors = eigenvectors.slice(0,Math.floor(eigenvectors.length*eigenPercentage))
+    
+    // Compute new coordinates 
+    let result = math.multiply(math.transpose(coords), math.transpose(eigenvectors));
+    result = math.multiply(result, eigenvectors);
+    console.log(result)
 
-  // set new position
-  for (let j=0; j<result[0].length; j++) {
-    pointDS.points[j].position = new Vector3(result[0][j], result[1][j], result[2][j]);
+    // set new position
+    for (let j=0; j<result[0].length; j++) {
+      pointDS.points[j].position = new Vector3(result[0][j], result[1][j], result[2][j]);
+    }
   }
-
+  
   // compute normals
   computeNormals(pointDS);
 

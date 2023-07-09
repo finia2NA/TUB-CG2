@@ -64,7 +64,7 @@ const App = () => {
         newPoints = cotanSmoothImplicit(newPoints, smoothingLambda, smoothingSteps)
         break;
       case "cotan-eigen":
-        newPoints = eigenSmooth(newPoints, smoothingEigenPercentage)
+        newPoints = eigenSmooth(newPoints, smoothingEigenPercentage, smoothingSteps)
         break;
       default:
         throw new Error("Invalid smoothing method");

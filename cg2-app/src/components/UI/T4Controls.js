@@ -62,7 +62,8 @@ const T4Controls = (props) => {
               min={0.005}
               max={0.2}
             />
-            <FormLabel>Steps</FormLabel>
+          </div>}
+          <FormLabel>Steps</FormLabel>
             <Slider
               value={smoothingSteps}
               onChange={(e) => setSmoothingSteps(e.target.value)}
@@ -71,7 +72,6 @@ const T4Controls = (props) => {
               min={1}
               max={20}
             />
-          </div>}
         <Button variant="contained" color="primary" onClick={props.onSmooth}>Smooth</Button>
         <FormControlLabel control={<Checkbox checked={showPreSmoothing} onChange={(e) => setShowPreSmoothing(e.target.checked)
         } />} label="Show Pre-smoothing geometry" />
