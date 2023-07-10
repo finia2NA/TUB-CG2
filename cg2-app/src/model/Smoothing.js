@@ -2,6 +2,8 @@ import { Vector3 } from "three";
 import * as math from "mathjs";
 import choleskySolve from "cholesky-solve"
 
+const sparseCotan = false
+
 export const computeNormals = (pointDS) => {
   const points = pointDS.points;
   for (const point of points) {
@@ -59,7 +61,7 @@ export const cotanLaplacian = (pointDS) => {
     const connected = point.tier1Neighbours()
     for (const neighbor of connected) {
       let w = 0;
-      
+
       const n_neighbor = neighbor.tier1Neighbours();
       const intersection = connected.filter(x => n_neighbor.includes(x));
 
@@ -75,29 +77,37 @@ export const cotanLaplacian = (pointDS) => {
     const areas = point.faces.map(face => face.area);
     let A = 0;
     for (const area of areas) {
-      A += (1/3) * area;
+      A += (1 / 3) * area;
     }
     mass[point.index][point.index] = A;
   }
 
-  for (let i=0; i<num; i++) {
-    const w_diag = -(cotan[i].reduce((a, b) => a+b, 0));
-    cotan[i][i] = w_diag;
+  if (!sparseCotan) {
+    for (let i = 0; i < num; i++) {
+      const w_diag = -(cotan[i].reduce((a, b) => a + b, 0));
+      cotan[i][i] = w_diag;
+    }
+  } else {
+    for (let i = 0; i < num; i++) {
+      const w_diag = -(cotan[i].reduce((a, b) => a + b, 0));
+      cotan[i] = cotan[i].map((_, j) => i === j ? w_diag : 0);
+    }
   }
 
-  return {mass, cotan}
+
+  return { mass, cotan }
 }
 
 export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
-  for (let i=0; i<steps; i++) {
-    const {mass, cotan} = cotanLaplacian(pointDS);
+  for (let i = 0; i < steps; i++) {
+    const { mass, cotan } = cotanLaplacian(pointDS);
     const laplacianOperator = math.multiply(math.inv(mass), cotan);
     const points = pointDS.points;
     const position = points.map(point => [point.position.x, point.position.y, point.position.z]);
 
     const delta = math.multiply(laplacianOperator, position);
 
-    for (let j=0; j<points.length; j++) {
+    for (let j = 0; j < points.length; j++) {
       const delVector = new Vector3(delta[j][0], delta[j][1], delta[j][2]);
       delVector.normalize();
       points[j].position.add(delVector.multiplyScalar(lambda));
@@ -109,9 +119,9 @@ export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
 }
 
 export const cotanSmoothImplicit = (pointDS, lambda = 0.01, steps = 1) => {
-  for (let i=0; i<steps; i++) {
+  for (let i = 0; i < steps; i++) {
     // init
-    const {mass, cotan} = cotanLaplacian(pointDS);
+    const { mass, cotan } = cotanLaplacian(pointDS);
     const points = pointDS.points;
     const positions = points.map(point => [point.position.x, point.position.y, point.position.z]);
 
@@ -131,15 +141,15 @@ export const cotanSmoothImplicit = (pointDS, lambda = 0.01, steps = 1) => {
         }
       }
     }
-    
+
     // solving with sparse Cholesky
     const x = choleskySolve.prepare(N_sparse, N.length)(b_1)
     const y = choleskySolve.prepare(N_sparse, N.length)(b_2)
     const z = choleskySolve.prepare(N_sparse, N.length)(b_3)
 
     // set new position
-    if (!(x.some(Number.isNaN) || y.some(Number.isNaN) ||z.some(Number.isNaN) )) {
-      for (let j=0; j<points.length; j++) {
+    if (!(x.some(Number.isNaN) || y.some(Number.isNaN) || z.some(Number.isNaN))) {
+      for (let j = 0; j < points.length; j++) {
         points[j].position = new Vector3(x[j], y[j], z[j]);
       }
     }
@@ -151,27 +161,27 @@ export const cotanSmoothImplicit = (pointDS, lambda = 0.01, steps = 1) => {
 }
 
 
-export const eigenSmooth = (pointDS, eigenPercentage=0.95, steps = 1) => {
-  for (let i=0; i<steps; i++) {
+export const eigenSmooth = (pointDS, eigenPercentage = 0.95, steps = 1) => {
+  for (let i = 0; i < steps; i++) {
     // init
-    const {cotan} = cotanLaplacian(pointDS, "implicit");
-    const coords = pointDS.points.map(point => [point.position.x,point.position.y,point.position.z]);
+    const { cotan } = cotanLaplacian(pointDS, "implicit");
+    const coords = pointDS.points.map(point => [point.position.x, point.position.y, point.position.z]);
 
     // Compute eigenvectors
     let eigenvectors = math.eigs(cotan).vectors
-    eigenvectors = eigenvectors.slice(0,Math.floor(eigenvectors.length*eigenPercentage))
-    
+    eigenvectors = eigenvectors.slice(0, Math.floor(eigenvectors.length * eigenPercentage))
+
     // Compute new coordinates 
     let result = math.multiply(math.transpose(coords), math.transpose(eigenvectors));
     result = math.multiply(result, eigenvectors);
     console.log(result)
 
     // set new position
-    for (let j=0; j<result[0].length; j++) {
+    for (let j = 0; j < result[0].length; j++) {
       pointDS.points[j].position = new Vector3(result[0][j], result[1][j], result[2][j]);
     }
   }
-  
+
   // compute normals
   computeNormals(pointDS);
 
