@@ -12,10 +12,6 @@ const Mesh3D = (props) => {
   const points = props.obj.points;
   const faces = props.obj.faces;
 
-  // console.log(props.obj)
-  // console.log(points.map(p => p.position));
-  // console.log(faces.map(f => f.indices));
-
   const geometry = new BufferGeometry();
   const vertices = new Float32Array(points.length * 3);
   for (let i = 0; i < points.length; i++) {
