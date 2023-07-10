@@ -39,8 +39,8 @@ const T4Controls = (props) => {
             )
           })}
         </Select>
-       
-        {smoothingMethod==="cotan-eigen"?
+
+        {smoothingMethod === "cotan-eigen" ?
           <div>
             <FormLabel>Eigenvectors Percentage</FormLabel>
             <Slider
@@ -52,7 +52,7 @@ const T4Controls = (props) => {
               max={1}
             />
           </div>
-          :<div>
+          : <div>
             <FormLabel>Lambda</FormLabel>
             <Slider
               value={smoothingLambda}
@@ -63,15 +63,15 @@ const T4Controls = (props) => {
               max={0.2}
             />
           </div>}
-          <FormLabel>Steps</FormLabel>
-            <Slider
-              value={smoothingSteps}
-              onChange={(e) => setSmoothingSteps(e.target.value)}
-              valueLabelDisplay="auto"
-              step={1}
-              min={1}
-              max={20}
-            />
+        <FormLabel>Steps</FormLabel>
+        <Slider
+          value={smoothingSteps}
+          onChange={(e) => setSmoothingSteps(e.target.value)}
+          valueLabelDisplay="auto"
+          step={1}
+          min={1}
+          max={20}
+        />
         <Button variant="contained" color="primary" onClick={props.onSmooth}>Smooth</Button>
         <FormControlLabel control={<Checkbox checked={showPreSmoothing} onChange={(e) => setShowPreSmoothing(e.target.checked)
         } />} label="Show Pre-smoothing geometry" />

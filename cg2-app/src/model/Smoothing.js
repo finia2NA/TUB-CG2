@@ -113,11 +113,11 @@ export const cotanSmoothImplicit = (pointDS, lambda = 0.01, steps = 1) => {
     // init
     const {mass, cotan} = cotanLaplacian(pointDS);
     const points = pointDS.points;
-    const position = points.map(point => [point.position.x, point.position.y, point.position.z]);
+    const positions = points.map(point => [point.position.x, point.position.y, point.position.z]);
 
     // set variables for: Nx = b 
     const N = math.subtract(mass, math.multiply(lambda, cotan)) // N = mass-lambda*cotan
-    const b = math.multiply(mass, position) // b = mass*points
+    const b = math.multiply(mass, positions) // b = mass*points
     const b_1 = b.map(x => x[0]);
     const b_2 = b.map(x => x[1]);
     const b_3 = b.map(x => x[2]);

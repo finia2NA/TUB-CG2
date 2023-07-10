@@ -16,7 +16,7 @@ const Obj3D = ({ obj }) => {
 
     object.traverse(function (child) {
       if (child.isMesh) {
-        child.material = wireFrameMode ? materialWireframe : materialFull;
+        child.material = true ? materialWireframe : materialFull; // here, wireframe mode =false could be used to display the obj's faces, but we don't want that for S4 so I just hardcoded it to wireframe rn
       }
     });
 

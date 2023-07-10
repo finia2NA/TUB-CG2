@@ -58,10 +58,6 @@ class DataReader {
       points.push(point);
     }
 
-
-    console.log(model.vertices);
-    console.log(points.map(p => p.position));
-
     const faces = [];
     for (let i = 0; i < model.faces.length; i++) {
       const faceOBJ = model.faces[i];
