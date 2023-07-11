@@ -29,3 +29,14 @@ We have implemented this method in practical part 1.
 
 ## Task 3:
 ![Alt text](<Task 3.jpg>)
+
+
+## Task 4:
+### a)
+The Cotan-Laplacian can be calculated with the matrix L and the mass matrix M. M consists by Definition only of diagonal values >= 0 as it represents a weighting with the area of the voronoi cell surrounding a vertex.
+Thus, we should get a negative value in the Cotan-Laplacian, if L has for the case of $v_j \in N_i$ at least one value where $\cot \alpha_{ij}+\cot \beta_{ij}$ is negative. An example would be $\alpha_{ij},\beta_{ij} = 120°$.
+
+### b)
+The computation of the cotan-Laplacian operators can become numerically instable, if the cotan-Laplacian contains many values that are extremely large and/or small. An example case are triangles containing angles that are close to 0°/180° leading to large cotan values, and voronoi cells that are extremely large leading to small 1/$A_i$.
+
+
