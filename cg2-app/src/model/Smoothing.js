@@ -3,21 +3,40 @@ import * as math from "mathjs";
 import choleskySolve from "cholesky-solve"
 
 const aContainsB = (a, b) => {
-  a.map(x => x.toSorted())
-  b.sort()
-
-  for (const sublist of a) {
-    let found = true
-    for (let i = 0; i < sublist.length; i++) {
-      if (sublist[i] !== b[i]) {
-        found = false
+  b = [...b].sort((a, b) => a - b);
+  for (let i = 0; i < a.length; i++) {
+    const sublist = [...a[i]].sort((a, b) => a - b);
+    if (sublist.length !== b.length) continue;
+    let found = true;
+    // debugger;
+    for (let j = 0; j < sublist.length; j++) {
+      if (sublist[j] !== b[j]) {
+        found = false;
         break;
       }
     }
-    if (found) return true
+    if (found) return true;
   }
-  return false
-}
+  return false;
+};
+
+const testAContainsB = () => {
+  const testCases = [
+    { a: [[1, 2, 3], [4, 5, 6], [7, 8, 9]], b: [3, 1, 2], expected: true },
+    { a: [[1, 2, 3], [4, 5, 6], [7, 8, 9]], b: [3, 4, 5], expected: false },
+    { a: [[10, 20, 30], [40, 50, 60], [70, 80, 90]], b: [20, 10, 30], expected: true },
+    { a: [[10, 20, 30], [40, 50, 60], [70, 80, 90]], b: [10, 20, 30, 40], expected: false },
+  ];
+
+  for (const { a, b, expected } of testCases) {
+    const result = aContainsB(a, b);
+    console.log(`aContainsB(${JSON.stringify(a)}, ${JSON.stringify(b)}) = ${result}; expected ${expected}`);
+    console.assert(result === expected, `Test failed for input a = ${JSON.stringify(a)}, b = ${JSON.stringify(b)}`);
+  }
+};
+
+
+
 
 export const computeNormals = (pointDS) => {
   const points = pointDS.points;
@@ -88,7 +107,10 @@ export const cotanLaplacian = (pointDS) => {
         const b = [point, neighbor, intersect].map(x => x.index)
         console.log(a)
         console.log(b)
+        // debugger;
         const theFaceExistsInTheMesh = aContainsB(a, b)
+        console.log(theFaceExistsInTheMesh)
+        // debugger;
         if (!theFaceExistsInTheMesh) {
           falsect++;
           continue
