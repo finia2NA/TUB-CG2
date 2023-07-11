@@ -150,7 +150,6 @@ export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
 
     for (let j = 0; j < points.length; j++) {
       const delVector = new Vector3(delta[j][0], delta[j][1], delta[j][2]);
-      delVector.normalize();
       points[j].position.add(delVector.multiplyScalar(lambda));
     }
   }
