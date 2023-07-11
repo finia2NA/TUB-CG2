@@ -99,7 +99,7 @@ export const cotanLaplacian = (pointDS) => {
         const angle = vector1.angleTo(vector2);
 
         if (angle < Math.PI) { w += 1 / (2 * Math.tan(angle)); }
-        else { w -= math.abs(1 / (2 * Math.tan(angle))); }
+        else { w -= 1 / (2 * Math.tan(angle)); }
         processedNumberOfFaces++
       }
 
@@ -120,6 +120,7 @@ export const cotanLaplacian = (pointDS) => {
     const w_diag = -(cotan[i].reduce((a, b) => a + b, 0));
     cotan[i][i] = w_diag;
   }
+  console.log(cotan)
   return { mass, cotan }
 }
 
