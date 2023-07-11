@@ -2,6 +2,23 @@ import { Vector3 } from "three";
 import * as math from "mathjs";
 import choleskySolve from "cholesky-solve"
 
+const aContainsB = (a, b) => {
+  a.map(x => x.toSorted())
+  b.sort()
+
+  for (const sublist of a) {
+    let found = true
+    for (let i = 0; i < sublist.length; i++) {
+      if (sublist[i] !== b[i]) {
+        found = false
+        break;
+      }
+    }
+    if (found) return true
+  }
+  return false
+}
+
 export const computeNormals = (pointDS) => {
   const points = pointDS.points;
   for (const point of points) {
@@ -54,6 +71,7 @@ export const cotanLaplacian = (pointDS) => {
 
   let cotan = Array.from({ length: num }, () => Array(num).fill(0));
   let mass = Array.from({ length: num }, () => Array(num).fill(0));
+  let falsect = 0
 
   for (const point of points) {
     const connected = point.tier1Neighbours()
@@ -63,55 +81,45 @@ export const cotanLaplacian = (pointDS) => {
       const n_neighbor = neighbor.tier1Neighbours();
       let intersection = connected.filter(x => n_neighbor.includes(x));
 
-
-      if (intersection.length !== 2) {
-        console.log("hi!")
-        // debugger;
-      }
+      let calculatednumberoffaces = 0
       for (const intersect of intersection) {
 
-        const pointFacesSet = new Set(point.faces.map(face => face.indices).map(x => x))
-        const comparisonSet = new Set([point.index, neighbor.index, intersect.index])
-
-        for (const point of comparisonSet) {
-          if (!pointFacesSet.has(point)) { continue; }
+        const a = point.faces.map(face => [...face.indices])
+        const b = [point, neighbor, intersect].map(x => x.index)
+        console.log(a)
+        console.log(b)
+        const theFaceExistsInTheMesh = aContainsB(a, b)
+        if (!theFaceExistsInTheMesh) {
+          falsect++;
+          continue
         }
 
-      let skip = true
-      const apointFaces = point.faces.map(face => [...face.indices].sort())
-      const acomparisonFace = [point, neighbor, intersect].map(x => x.index).sort()
-
-      for (const aface of apointFaces) {
-        if (aface.toString === acomparisonFace.toString) {
-          skip = false
-        }
+        const vector1 = new Vector3().subVectors(point.position, intersect.position);
+        const vector2 = new Vector3().subVectors(neighbor.position, intersect.position);
+        w += 1 / (2 * Math.tan(vector1.angleTo(vector2)));
+        calculatednumberoffaces++
       }
 
-      console.log(skip)
-      if (skip) continue;
+      if (calculatednumberoffaces !== 2) console.warn("oh no!" + calculatednumberoffaces)
 
-      const vector1 = new Vector3().subVectors(point.position, intersect.position);
-      const vector2 = new Vector3().subVectors(neighbor.position, intersect.position);
-      w += 1 / (2 * Math.tan(vector1.angleTo(vector2)));
+      cotan[point.index][neighbor.index] = w
     }
 
-    cotan[point.index][neighbor.index] = w
+    const areas = point.faces.map(face => face.area);
+    let A = 0;
+    for (const area of areas) {
+      A += (1 / 3) * area;
+    }
+    mass[point.index][point.index] = A;
   }
 
-  const areas = point.faces.map(face => face.area);
-  let A = 0;
-  for (const area of areas) {
-    A += (1 / 3) * area;
+  for (let i = 0; i < num; i++) {
+    const w_diag = -(cotan[i].reduce((a, b) => a + b, 0));
+    cotan[i][i] = w_diag;
   }
-  mass[point.index][point.index] = A;
-}
 
-for (let i = 0; i < num; i++) {
-  const w_diag = -(cotan[i].reduce((a, b) => a + b, 0));
-  cotan[i][i] = w_diag;
-}
-
-return { mass, cotan }
+  console.log(falsect)
+  return { mass, cotan }
 }
 
 export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
