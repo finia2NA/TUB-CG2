@@ -20,24 +20,6 @@ const aContainsB = (a, b) => {
   return false;
 };
 
-const testAContainsB = () => {
-  const testCases = [
-    { a: [[1, 2, 3], [4, 5, 6], [7, 8, 9]], b: [3, 1, 2], expected: true },
-    { a: [[1, 2, 3], [4, 5, 6], [7, 8, 9]], b: [3, 4, 5], expected: false },
-    { a: [[10, 20, 30], [40, 50, 60], [70, 80, 90]], b: [20, 10, 30], expected: true },
-    { a: [[10, 20, 30], [40, 50, 60], [70, 80, 90]], b: [10, 20, 30, 40], expected: false },
-  ];
-
-  for (const { a, b, expected } of testCases) {
-    const result = aContainsB(a, b);
-    console.log(`aContainsB(${JSON.stringify(a)}, ${JSON.stringify(b)}) = ${result}; expected ${expected}`);
-    console.assert(result === expected, `Test failed for input a = ${JSON.stringify(a)}, b = ${JSON.stringify(b)}`);
-  }
-};
-
-
-
-
 export const computeNormals = (pointDS) => {
   const points = pointDS.points;
   for (const point of points) {
@@ -113,7 +95,11 @@ export const cotanLaplacian = (pointDS) => {
 
         const vector1 = new Vector3().subVectors(point.position, intersect.position);
         const vector2 = new Vector3().subVectors(neighbor.position, intersect.position);
-        w += math.abs(1 / (2 * Math.tan(vector1.angleTo(vector2))));
+
+        const angle = vector1.angleTo(vector2);
+
+        if (angle < Math.PI) { w += 1 / (2 * Math.tan(angle)); }
+        else { w -= math.abs(1 / (2 * Math.tan(angle))); }
         processedNumberOfFaces++
       }
 
@@ -134,8 +120,6 @@ export const cotanLaplacian = (pointDS) => {
     const w_diag = -(cotan[i].reduce((a, b) => a + b, 0));
     cotan[i][i] = w_diag;
   }
-
-  console.log(filteredFalseFaces)
   return { mass, cotan }
 }
 
