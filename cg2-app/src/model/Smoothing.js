@@ -90,7 +90,7 @@ export const cotanLaplacian = (pointDS) => {
 
   let cotan = Array.from({ length: num }, () => Array(num).fill(0));
   let mass = Array.from({ length: num }, () => Array(num).fill(0));
-  let falsect = 0
+  let filteredFalseFaces = 0
 
   for (const point of points) {
     const connected = point.tier1Neighbours()
@@ -100,29 +100,24 @@ export const cotanLaplacian = (pointDS) => {
       const n_neighbor = neighbor.tier1Neighbours();
       let intersection = connected.filter(x => n_neighbor.includes(x));
 
-      let calculatednumberoffaces = 0
+      let processedNumberOfFaces = 0
       for (const intersect of intersection) {
 
         const a = point.faces.map(face => [...face.indices])
         const b = [point, neighbor, intersect].map(x => x.index)
-        console.log(a)
-        console.log(b)
-        // debugger;
         const theFaceExistsInTheMesh = aContainsB(a, b)
-        console.log(theFaceExistsInTheMesh)
-        // debugger;
         if (!theFaceExistsInTheMesh) {
-          falsect++;
+          filteredFalseFaces++;
           continue
         }
 
         const vector1 = new Vector3().subVectors(point.position, intersect.position);
         const vector2 = new Vector3().subVectors(neighbor.position, intersect.position);
-        w += 1 / (2 * Math.tan(vector1.angleTo(vector2)));
-        calculatednumberoffaces++
+        w += math.abs(1 / (2 * Math.tan(vector1.angleTo(vector2))));
+        processedNumberOfFaces++
       }
 
-      if (calculatednumberoffaces !== 2) console.warn("oh no!" + calculatednumberoffaces)
+      if (processedNumberOfFaces !== 2) console.warn("processed !==2 faces for this point:" + processedNumberOfFaces)
 
       cotan[point.index][neighbor.index] = w
     }
@@ -140,7 +135,7 @@ export const cotanLaplacian = (pointDS) => {
     cotan[i][i] = w_diag;
   }
 
-  console.log(falsect)
+  console.log(filteredFalseFaces)
   return { mass, cotan }
 }
 
