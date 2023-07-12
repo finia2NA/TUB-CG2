@@ -34,47 +34,44 @@ export const computeNormals = (pointDS) => {
   }
 }
 
+/* in-place operation*/
 export const graphLaplacian = (pointDS) => {
-  // The Laplacian at a point is calculated as the average of the differences between a point and each of its neighbors. For each vertex, calculate the sum of the positions of its neighboring vertices and subtract the product of the degree of the vertex (number of neighboring vertices) and the vertex position. This results in a Laplacian vector for each vertex.
-  const points = pointDS.points;
-  for (const point of points) {
+
+  for (const point of pointDS.points) {
+    // calculate: sum(f_vj-f_vi)
     const neighbours = point.tier1Neighbours();
     const n = neighbours.length;
     const sum = neighbours.reduce((sum, neighbour) => sum.add(neighbour.position), new Vector3());
     const laplacian = sum.sub(point.position.clone().multiplyScalar(n));
-    point.laplacian = laplacian;
+
+    // calculate: 1/n*sum
+    point.laplacian = laplacian.multiplyScalar(1 / n);
   }
 }
 
 export const laplaceSmooth = (pointDS, lambda = 0.2, steps = 1) => {
-  // NOTE TO READERS:
-  // this function is in-place, so make sure you pass a copy of the pointDS if you want to keep the original
-  // OR if pointDS is a react STATE!
-
-  // To smooth the mesh, move each vertex along the direction of its Laplacian vector. The distance you move the vertex can be modulated by a scalar value, typically called the "smoothing factor" or "time step". For example, if the smoothing factor is 0.5, each vertex is moved halfway along its Laplacian vector. This step is also sometimes referred to as "relaxation".
-  // Depending on the desired level of smoothness, you may want to repeat this multiple times
   for (let i = 0; i < steps; i++) {
     graphLaplacian(pointDS);
-    const points = pointDS.points;
-    for (const point of points) {
+    for (const point of pointDS.points) {
       point.position.add(point.laplacian.multiplyScalar(lambda));
-      // console.log(point.laplacian)
     }
   }
-  // After the final smoothing operation, you need to recompute the normals for each vertex or face, as these will have changed when the vertices moved.
   computeNormals(pointDS);
   return pointDS;
 }
 
 export const cotanLaplacian = (pointDS) => {
+
+  // init
   const points = pointDS.points;
   const num = points.length;
-
   let cotan = Array.from({ length: num }, () => Array(num).fill(0));
   let mass = Array.from({ length: num }, () => Array(num).fill(0));
   let filteredFalseFaces = 0
 
   for (const point of points) {
+
+    // calc L: i/=j
     const connected = point.tier1Neighbours()
     for (const neighbor of connected) {
       let w = 0;
@@ -100,11 +97,12 @@ export const cotanLaplacian = (pointDS) => {
 
         const vector1 = new Vector3().subVectors(point.position, intersect.position);
         const vector2 = new Vector3().subVectors(neighbor.position, intersect.position);
-
         const angle = vector1.angleTo(vector2);
 
         if (angle < Math.PI) { w += 1 / (2 * Math.tan(angle)); }
         else { w -= 1 / (2 * Math.tan(angle)); }
+
+        // cotan[point.index][neighbor.index] += 1 / (2 * Math.tan(vector1.angleTo(vector2)));
         processedNumberOfFaces++
       }
 
@@ -113,6 +111,7 @@ export const cotanLaplacian = (pointDS) => {
       cotan[point.index][neighbor.index] = w
     }
 
+    // calc mass M
     const areas = point.faces.map(face => face.area);
     let A = 0;
     for (const area of areas) {
@@ -136,6 +135,7 @@ export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
     const points = pointDS.points;
     const position = points.map(point => [point.position.x, point.position.y, point.position.z]);
 
+    // M*L*f
     const delta = math.multiply(laplacianOperator, position);
 
     for (let j = 0; j < points.length; j++) {
@@ -191,15 +191,15 @@ export const cotanSmoothImplicit = (pointDS, lambda = 0.01, steps = 1) => {
 }
 
 
-export const eigenSmooth = (pointDS, eigenPercentage = 0.95, steps = 1) => {
-  for (let i = 0; i < steps; i++) {
+export const eigenSmooth = (pointDS, eigenPercentage=0.99, steps = 1) => {
+  for (let i=0; i<steps; i++) {
     // init
-    const { cotan } = cotanLaplacian(pointDS, "implicit");
-    const coords = pointDS.points.map(point => [point.position.x, point.position.y, point.position.z]);
+    const {cotan} = cotanLaplacian(pointDS);
+    const coords = pointDS.points.map(point => [point.position.x,point.position.y,point.position.z]);
 
     // Compute eigenvectors
-    let eigenvectors = math.eigs(cotan).vectors
-    eigenvectors = eigenvectors.slice(0, Math.floor(eigenvectors.length * eigenPercentage))
+    let eigenvectors = math.transpose(math.eigs(cotan).vectors)
+    eigenvectors = eigenvectors.slice(0,Math.floor(eigenvectors.length*eigenPercentage))
 
     // Compute new coordinates 
     let result = math.multiply(math.transpose(coords), math.transpose(eigenvectors));
