@@ -15,7 +15,7 @@ const aContainsB = (a, b) => {
         break;
       }
     }
-    if (found) return true;
+    if (found) return [true, i];
   }
   return false;
 };
@@ -87,11 +87,16 @@ export const cotanLaplacian = (pointDS) => {
 
         const a = point.faces.map(face => [...face.indices])
         const b = [point, neighbor, intersect].map(x => x.index)
-        const theFaceExistsInTheMesh = aContainsB(a, b)
+        const [theFaceExistsInTheMesh, index] = aContainsB(a, b)
         if (!theFaceExistsInTheMesh) {
           filteredFalseFaces++;
           continue
         }
+
+        // const [pointA, pointB, pointC] = pointFaces.faces[index]
+
+        // const vector1 = new Vector3().subVectors(pointA, pointC);
+        // const vector2 = new Vector3().subVectors(pointB, pointC);
 
         const vector1 = new Vector3().subVectors(point.position, intersect.position);
         const vector2 = new Vector3().subVectors(neighbor.position, intersect.position);
@@ -115,12 +120,12 @@ export const cotanLaplacian = (pointDS) => {
     }
     mass[point.index][point.index] = A;
   }
+  console.log("filtered false faces:" + filteredFalseFaces)
 
   for (let i = 0; i < num; i++) {
     const w_diag = -(cotan[i].reduce((a, b) => a + b, 0));
     cotan[i][i] = w_diag;
   }
-  console.log(cotan)
   return { mass, cotan }
 }
 
@@ -199,7 +204,6 @@ export const eigenSmooth = (pointDS, eigenPercentage = 0.95, steps = 1) => {
     // Compute new coordinates 
     let result = math.multiply(math.transpose(coords), math.transpose(eigenvectors));
     result = math.multiply(result, eigenvectors);
-    console.log(result)
 
     // set new position
     for (let j = 0; j < result[0].length; j++) {
