@@ -118,7 +118,7 @@ export const cotanLaplacian = (pointDS) => {
     for (const area of areas) {
       A += (1 / 3) * area;
     }
-    mass[point.index][point.index] = A;
+    mass[point.index][point.index] = 1 / A;
   }
   console.log("filtered false faces:" + filteredFalseFaces)
 
@@ -132,7 +132,7 @@ export const cotanLaplacian = (pointDS) => {
 export const cotanSmooth = (pointDS, lambda = 1, steps = 1) => {
   for (let i = 0; i < steps; i++) {
     const { mass, cotan } = cotanLaplacian(pointDS);
-    const laplacianOperator = math.multiply(math.inv(mass), cotan);
+    const laplacianOperator = math.multiply(mass, cotan);
     const points = pointDS.points;
     const position = points.map(point => [point.position.x, point.position.y, point.position.z]);
 
