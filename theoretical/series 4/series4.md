@@ -27,6 +27,9 @@ Disadvantages
 
 We have implemented this method in practical part 1.
 
+## Task 2:
+See last 2 pages.
+
 ## Task 3:
 ![Alt text](<Task 3.jpg>)
 
@@ -34,9 +37,10 @@ We have implemented this method in practical part 1.
 ## Task 4:
 ### a)
 The Cotan-Laplacian can be calculated with the matrix L and the mass matrix M. M consists by Definition only of diagonal values >= 0 as it represents a weighting with the area of the voronoi cell surrounding a vertex.
-Thus, we should get a negative value in the Cotan-Laplacian, if L has for the case of $v_j \in N_i$ at least one value where $\cot \alpha_{ij}+\cot \beta_{ij}$ is negative. An example would be $\alpha_{ij},\beta_{ij} = 120°$.
+Thus, we should get a negative value in the Cotan-Laplacian, if L has for the case of $v_j \in N_i$ at least one value where $\cot \alpha_{ij}+\cot \beta_{ij}$ is negative. This is the case for $\alpha_{ij},\beta_{ij} > 90°$. E.g. a mesh with {(-1,4,0),(0,0,0),(0,8,0),(1,4,0)} where the first and last three values form a triangle each.
+
 
 ### b)
-The computation of the cotan-Laplacian operators can become numerically instable, if the cotan-Laplacian contains many values that are extremely large and/or small. An example case are triangles containing angles that are close to 0°/180° leading to large cotan values, and voronoi cells that are extremely large leading to small 1/$A_i$.
+The computation of the cotan-Laplacian operators can become numerically instable, if the cotan-Laplacian contains many values that are extremely large and/or small. An example case are triangles containing angles that are close to 0°/180° leading to large cotan values. E.g. two triangles in {(0, 0, 0),(1, 0, 0),(0, 1, 0), (0,1.000000000000000000000001,0)}.
 
 

@@ -6,7 +6,7 @@ export const AppContext = React.createContext();
 
 const AppContextProvider = ({ children }) => {
   // Model to load
-  const [dataName, setDataName] = useState("shapes/arma1.obj");
+  const [dataName, setDataName] = useState("shapes/bunny_202.obj");
   const [rotateModel, setRotateModel] = useState(false); // WIP
 
   // Display Control State
@@ -29,7 +29,7 @@ const AppContextProvider = ({ children }) => {
   const [wendlandRadius, setWendlandRadius] = useState(wendlandRadiusDefault);
   const [hasNormals, setHasNormals] = useState(false);
 
-  const [smoothingMethod, setSmoothingMethod] = useState("laplace");
+  const [smoothingMethod, setSmoothingMethod] = useState("cotan-laplace");
   const [smoothingSteps, setSmoothingSteps] = useState(1);
   const [smoothingLambda, setSmoothingLambda] = useState(0.05);
   const [showPreSmoothing, setShowPreSmoothing] = useState(true);
