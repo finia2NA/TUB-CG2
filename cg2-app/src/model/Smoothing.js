@@ -17,7 +17,7 @@ const aContainsB = (a, b) => {
     }
     if (found) return [true, i];
   }
-  return false;
+  return [false, -1];
 };
 
 export const computeNormals = (pointDS) => {
